@@ -1,6 +1,10 @@
-﻿namespace cineVote.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace cineVote.Models
 {
-    public class Admin
+    public class Admin:Person
     {
+        [Key]
+        public int adminId { get; set; }
     }
 }
