@@ -1,3 +1,5 @@
+using cineVote.Data;
+
 namespace cineVote
 {
     public class Program
@@ -5,6 +7,9 @@ namespace cineVote
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            //DbContext configuration
+            builder.Services.AddDbContext<AppDbContext>();
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
