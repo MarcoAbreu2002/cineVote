@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace cineVote.Models
+namespace cineVote.Models.Domain
 {
     public class Competition
     {

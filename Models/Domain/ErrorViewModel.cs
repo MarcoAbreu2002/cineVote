@@ -1,4 +1,4 @@
-namespace cineVote.Models
+namespace cineVote.Models.Domain
 {
     public class ErrorViewModel
     {

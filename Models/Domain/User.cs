@@ -1,12 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace cineVote.Models
+namespace cineVote.Models.Domain
 {
-    public class User:Person
+    public class User : Person
     {
-        [Key]
-        public int Id { get; set; }
-
         public string userName { get; set; }
 
     }
