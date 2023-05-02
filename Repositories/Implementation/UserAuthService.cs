@@ -1,6 +1,8 @@
-﻿namespace cineVote.Repositories.Implementation
+﻿using cineVote.Repositories.Abstract;
+
+namespace cineVote.Repositories.Implementation
 {
-    public class UserAuthService
+    public class UserAuthService : IUserAuthService
     {
     }
 }

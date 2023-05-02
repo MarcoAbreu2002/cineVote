@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace cineVote.Models.Domain
 {
-    public class Person
+    public class Person : IdentityUser
     {
         [Key]
         public int Id { get; set; }

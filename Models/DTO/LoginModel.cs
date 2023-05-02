@@ -1,6 +1,10 @@
 ﻿namespace cineVote.Models.DTO
 {
-    public class Login
+    public class LoginModel
     {
+        [Required]
+        public string Username { get; set; }
+        [Required]
+        public string Password { get; set; }
     }
 }

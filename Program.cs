@@ -1,5 +1,7 @@
 using cineVote.Data;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using cineVote.Models.Domain;
 
 namespace cineVote
 {
@@ -17,6 +19,12 @@ namespace cineVote
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddIdentity<Person, IdentityRole>()
+                .AddEntityFrameWorkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            builder.Services.ConfigureApplicationCookie(op => op.LoginPath"/Login");
 
             var app = builder.Build();
 
