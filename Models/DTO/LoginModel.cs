@@ -1,4 +1,6 @@
-﻿namespace cineVote.Models.DTO
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace cineVote.Models.DTO
 {
     public class LoginModel
     {
