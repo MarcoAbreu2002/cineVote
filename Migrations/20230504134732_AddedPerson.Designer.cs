@@ -12,41 +12,25 @@ using cineVote.Data;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20230502203256_addedPersons")]
-    partial class addedPersons
+    [Migration("20230504134732_AddedPerson")]
+    partial class AddedPerson
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.5")
+                .HasAnnotation("ProductVersion", "6.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("CompetitionNominee", b =>
-                {
-                    b.Property<int>("CompetitionListId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("NominesId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CompetitionListId", "NominesId");
-
-                    b.HasIndex("NominesId");
-
-                    b.ToTable("CompetitionNominee");
-                });
-
-            modelBuilder.Entity("cineVote.Models.Competition", b =>
+            modelBuilder.Entity("cineVote.Models.Domain.Competition", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Description")
                         .IsRequired()
@@ -71,13 +55,13 @@ namespace cineVote.Migrations
                     b.ToTable("Competitions");
                 });
 
-            modelBuilder.Entity("cineVote.Models.Nominee", b =>
+            modelBuilder.Entity("cineVote.Models.Domain.Nominee", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -100,24 +84,66 @@ namespace cineVote.Migrations
                     b.ToTable("Nomines");
                 });
 
-            modelBuilder.Entity("cineVote.Models.Person", b =>
+            modelBuilder.Entity("cineVote.Models.Domain.Person", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Discriminator")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("EmailAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("password")
@@ -129,13 +155,26 @@ namespace cineVote.Migrations
                     b.ToTable("Persons");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("Person");
-
-                    b.UseTphMappingStrategy();
                 });
 
-            modelBuilder.Entity("cineVote.Models.Admin", b =>
+            modelBuilder.Entity("CompetitionNominee", b =>
                 {
-                    b.HasBaseType("cineVote.Models.Person");
+                    b.Property<int>("CompetitionListId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("NominesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("CompetitionListId", "NominesId");
+
+                    b.HasIndex("NominesId");
+
+                    b.ToTable("CompetitionNominee");
+                });
+
+            modelBuilder.Entity("cineVote.Models.Domain.Admin", b =>
+                {
+                    b.HasBaseType("cineVote.Models.Domain.Person");
 
                     b.Property<int>("adminId")
                         .HasColumnType("int");
@@ -143,9 +182,9 @@ namespace cineVote.Migrations
                     b.HasDiscriminator().HasValue("Admin");
                 });
 
-            modelBuilder.Entity("cineVote.Models.User", b =>
+            modelBuilder.Entity("cineVote.Models.Domain.User", b =>
                 {
-                    b.HasBaseType("cineVote.Models.Person");
+                    b.HasBaseType("cineVote.Models.Domain.Person");
 
                     b.Property<string>("userName")
                         .IsRequired()
@@ -156,13 +195,13 @@ namespace cineVote.Migrations
 
             modelBuilder.Entity("CompetitionNominee", b =>
                 {
-                    b.HasOne("cineVote.Models.Competition", null)
+                    b.HasOne("cineVote.Models.Domain.Competition", null)
                         .WithMany()
                         .HasForeignKey("CompetitionListId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("cineVote.Models.Nominee", null)
+                    b.HasOne("cineVote.Models.Domain.Nominee", null)
                         .WithMany()
                         .HasForeignKey("NominesId")
                         .OnDelete(DeleteBehavior.Cascade)

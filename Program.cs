@@ -2,6 +2,8 @@ using cineVote.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using cineVote.Models.Domain;
+using cineVote.Repositories.Abstract;
+using cineVote.Repositories.Implementation;
 
 namespace cineVote
 {
@@ -20,12 +22,12 @@ namespace cineVote
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddIdentity<Person, IdentityRole>()
-                .AddEntityFrameWorkStores<AppDbContext>()
-                .AddDefaultTokenProviders();
+            builder.Services.AddIdentity<Person, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
 
-            builder.Services.ConfigureApplicationCookie(op => op.LoginPath"/Login");
 
+            builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/UserAuthenticationController/Login");   
+
+            builder.Services.AddScoped<IUserAuthService, UserAuthService>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -42,6 +44,8 @@ namespace cineVote
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseAuthentication();
 
             app.MapControllerRoute(
                 name: "default",

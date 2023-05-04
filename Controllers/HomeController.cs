@@ -1,6 +1,6 @@
-﻿using System.Diagnostics;
-using cineVote.Models;
+﻿using cineVote.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace cineVote.Controllers
 {
@@ -28,5 +28,7 @@ namespace cineVote.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+
     }
 }

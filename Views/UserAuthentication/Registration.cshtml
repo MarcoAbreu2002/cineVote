@@ -1,0 +1,45 @@
+﻿@model cineVote.Models.Domain.User;
+
+<div class="row" style="display: flex;justify-content: center; align-items: center;">
+	<h1 style="display: flex;justify-content: center; align-items: center;" >Create a new client</h1>
+	<hr>
+	<div class="col-6">
+
+		<div class="card">
+			<div class="card-header">
+				<h5>Fill the form</h5>
+			</div>
+			<div class="card-body">
+				<form asp-controller="UserAuthenticationController" asp-action="Registration" method="post">
+					<div class="mb-3">
+						<label class="form-label">Name</label>
+						<input asp-for=Name type="text" class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Email</label>
+						<input asp-for=EmailAddress type="email" class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Username</label>
+						<input asp-for=userName type="text" class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Password</label>
+						<input asp-for=password type ="password" class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Confirm Password</label>
+						<input type="password" class="form-control" />
+					</div>
+					<div class="mb-3">
+						<button type="submit" class="btn btn-primary">Create</button>
+					</div>
+				</form>
+			</div>
+			<div class="card-footer">
+			</div>
+
+		</div>
+
+	</div>
+</div>
