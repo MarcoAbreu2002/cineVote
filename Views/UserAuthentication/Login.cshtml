@@ -1,87 +1,38 @@
 ﻿@model cineVote.Models.DTO.LoginModel
 @{
-    Layout = null;
+    ViewData["Title"] = "Login";
 }
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>login</title>
-
-    <style>
-
-        form {
-            border: 3px solid #f1f1f1;
-            width: 60%;
-            margin: auto;
-            margin-top: 10%;
-        }
-
-        input[type=text], input[type=password] {
-            width: 100%;
-            padding: 12px 20px;
-            margin: 8px 0;
-            display: inline-block;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-
-        button {
-            background-color: #aa048b;
-            color: white;
-            padding: 14px 20px;
-            margin: 8px 0;
-            border: none;
-            cursor: pointer;
-            width: 100%;
-        }
-
-        .container {
-            padding: 16px;
-        }
-
-        .msg {
-            padding: 0px;
-        }
-
-
-        .err {
-            color: red;
-        }
-    </style>
-
-</head>
-<body>
-
-    <form asp-action="Login" method="post">
-
-        <div class="container">
-            <label asp-for="Username"><b>Username</b></label>
-            <input type="text" asp-for="Username" placeholder="Enter Username">
-            <div class="msg">
-                <span class="err" asp-validation-for="Username"></span>
+<div class="row">
+    <div class="col-md-6 offset-3">
+        <p>
+            <h4>Log in to your account</h4>
+        </p>
+        @if(TempData["Error"] != null)
+        {
+            <div class="col-md-12 alert alert-danger">
+                <span><b>Sorry!</b> - @TempData["Error"]</span>
             </div>
-
-
-
-            <label asp-for="Password"><b>Password</b></label>
-            <input type="password" asp-for="Password" placeholder="Enter Password">
-            <div class="msg">
-                <span asp-validation-for="Password" class="err"></span>
+        }
+        <div class="row">
+            <div class="col-md-8 offset-2">
+                <form asp-action="Login">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="EmailAddress" class="control-label"></label>
+                        <input asp-for="EmailAddress" class="form-control">
+                        <span asp-validation-for="EmailAddress" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Password" class="control-label"></label>
+                        <input asp-for="Password" class="form-control" />
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <input class="btn btn-outline-success float right" type="submit" value="Log in" />
+                        <a class="btn btn-outline-secondary" asp-controller="Home" asp-action="Index">Cancel</a>
+                    </div>
+                </form>
             </div>
-
-
-            @if (TempData["msg"] != null)
-            {
-                <div class="msg">@TempData["msg"]</div>
-            }
-
-            <button type="submit">Login</button>
-            <a class="text-alert" href="/UserAuthentication/Registration">Not a user? Signup</a>
         </div>
-    </form>
-
-</body>
-</html>
+    </div>
+</div>

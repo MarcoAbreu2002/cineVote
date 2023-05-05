@@ -3,67 +3,68 @@ using Microsoft.AspNetCore.Mvc;
 using cineVote.Repositories.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using cineVote.Models.Domain;
+using Microsoft.AspNetCore.Identity;
+using cineVote.Data;
 
 namespace cineVote.Controllers
 {
     public class UserAuthenticationController : Controller
     {
-        private readonly IUserAuthService _authService;
-        public UserAuthenticationController(IUserAuthService authService)
+        private readonly UserManager<Person>? _userManager;
+        private readonly SignInManager<Person>? _signInManager;
+        private readonly AppDbContext? _context;
+
+
+        public UserAuthenticationController(UserManager<Person>? userManager, SignInManager<Person>? signInManager, AppDbContext? context)
         {
-            this._authService = authService;
-        }
+            _userManager = userManager;
+            _signInManager = signInManager;
+            _context = context;
+        }   
+
         public IActionResult Index()
         {
             return Login();
         }
         public IActionResult Login()
         {
-            return View();
+            var response = new LoginModel();
+            return View(response);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login(LoginModel loginModel)
         {
-            if (!ModelState.IsValid)
-                return View(model);
-            var result = await _authService.LoginAsync(model);
-            if (result.StatusCode == 1)
+            if (!ModelState.IsValid) return View(loginModel);
+            var user = await _userManager.FindByEmailAsync(loginModel.EmailAddress);
+
+            if (user == null) 
             {
-                return RedirectToAction("Display", "Dashboard");
+                var passCheck = await _userManager.CheckPasswordAsync(user,loginModel.Password);
+                if (passCheck != null)
+                {
+                    var result = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false,false);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
+                TempData["Error"] = "Wrong credentials";
+                return View(loginModel);
             }
-            else
-            {
-                TempData["msg"] = result.Message;
-                return RedirectToAction(nameof(Login));
-            }
+            TempData["Error"] = "Wrong credentials. Please try again";
+            return View(loginModel);
+
         }
 
-        public IActionResult Logout()
-        {
-            return View();
-        }
 
         public IActionResult Registration()
         {
-            var user = new User();
-            return View(user);
+            var response = new RegistrationModel();
+            return View(response);
         }
 
-        public IActionResult RegistrationSubmit(User user)
-        {
-            return View("Index");
-        }
 
-        [HttpPost]
-        public async Task<IActionResult> Registration(RegistrationModel model)
-        {
-            if (!ModelState.IsValid) { return View(model); }
-            model.Role = "user";
-            var result = await this._authService.RegisterAsync(model);
-            TempData["msg"] = result.Message;
-            return RedirectToAction(nameof(Registration));
-        }
 
 
 

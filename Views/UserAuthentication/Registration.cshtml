@@ -1,4 +1,4 @@
-﻿@model cineVote.Models.Domain.User;
+﻿@model cineVote.Models.DTO.RegistrationModel;
 
 <div class="row" style="display: flex;justify-content: center; align-items: center;">
 	<h1 style="display: flex;justify-content: center; align-items: center;" >Create a new client</h1>
@@ -12,24 +12,28 @@
 			<div class="card-body">
 				<form asp-controller="UserAuthenticationController" asp-action="Registration" method="post">
 					<div class="mb-3">
-						<label class="form-label">Name</label>
-						<input asp-for=Name type="text" class="form-control" />
+						<label class="form-label">First Name:</label>
+						<input asp-for=FirstName type="text" class="form-control" />
+					</div>
+					<div class="mb-3">
+						<label class="form-label">Last Name:</label>
+						<input asp-for=LastName type="text" class="form-control" />
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Email</label>
-						<input asp-for=EmailAddress type="email" class="form-control" />
+						<input asp-for=Email type="email" class="form-control" />
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Username</label>
-						<input asp-for=userName type="text" class="form-control" />
+						<input asp-for=Username type="text" class="form-control" />
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Password</label>
-						<input asp-for=password type ="password" class="form-control" />
+						<input asp-for=Password type ="password" class="form-control" />
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Confirm Password</label>
-						<input type="password" class="form-control" />
+						<input asp-for=PasswordConfirm type="password" class="form-control" />
 					</div>
 					<div class="mb-3">
 						<button type="submit" class="btn btn-primary">Create</button>
