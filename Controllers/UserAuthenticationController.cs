@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using cineVote.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using cineVote.Data;
+using Microsoft.Data.SqlClient;
 
 namespace cineVote.Controllers
 {
@@ -13,6 +14,7 @@ namespace cineVote.Controllers
         private readonly UserManager<Person>? _userManager;
         private readonly SignInManager<Person>? _signInManager;
         private readonly AppDbContext? _context;
+        private readonly string _connectionString = "Data Source=engenhariasoftware.database.windows.net;Initial Catalog=cinevote;Persist Security Info=True;User ID=engenharisoftwareadmin;Password=pDu8jRkmh3kQAfx";
 
 
         public UserAuthenticationController(UserManager<Person>? userManager, SignInManager<Person>? signInManager, AppDbContext? context)
@@ -29,6 +31,11 @@ namespace cineVote.Controllers
         public IActionResult Login()
         {
             var response = new LoginModel();
+            return View(response);
+        }
+        public IActionResult Registration()
+        {
+            var response = new RegistrationModel();
             return View(response);
         }
 
@@ -56,17 +63,33 @@ namespace cineVote.Controllers
             return View(loginModel);
 
         }
-
-
-        public IActionResult Registration()
+        [HttpPost]
+        public IActionResult Registration(RegistrationModel registrationModel)
         {
-            var response = new RegistrationModel();
-            return View(response);
+
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    var sql =
+                        "INSERT INTO tblUsers (First_Name, Last_Name, Email, Username, Password, IsAdmin) VALUES (@First_Name, @Last_Name, @Email, @Username, @Password, @IsAdmin)";
+                    var command = new SqlCommand(sql, connection);
+                    command.Parameters.AddWithValue("@First_Name", registrationModel.FirstName);
+                    command.Parameters.AddWithValue("@Last_Name", registrationModel.LastName);
+                    command.Parameters.AddWithValue("@Email", registrationModel.Email);
+                    command.Parameters.AddWithValue("@Username", registrationModel.Username);
+                    command.Parameters.AddWithValue("@Password", registrationModel.Password);
+                    command.Parameters.AddWithValue("@IsAdmin", 0);
+                    command.ExecuteNonQuery();
+                }
+
+                return RedirectToAction("Index", "Home");
+            
+
+            return View(registrationModel);
+            // var response = new RegistrationModeSl();
+            // return View(response);
         }
-
-
-
-
+        
 
     }
 }

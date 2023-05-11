@@ -18,10 +18,20 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.13" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="5.1.1" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Data\Enums\" />
+    <Folder Include="Views\Register" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Remove="Microsoft.Data.SqlClient" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Remove="Views\Home\CreateAccount.cshtml" />
+    <Content Remove="Views\Register\Register.cshtml" />
+  </ItemGroup>
 </Project>
