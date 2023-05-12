@@ -22,10 +22,12 @@
 					<div class="mb-3">
 						<label class="form-label">Email</label>
 						<input asp-for=Email type="email" class="form-control" />
+						<span class="text-danger" asp-validation-for="Email"></span>
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Username</label>
 						<input asp-for=Username type="text" class="form-control" />
+						<span class="text-danger" asp-validation-for="Username"></span>
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Password</label>
