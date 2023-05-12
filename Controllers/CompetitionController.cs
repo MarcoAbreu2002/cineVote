@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using cineVote.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
 
 namespace cineVote.Controllers
 {
@@ -7,6 +8,12 @@ namespace cineVote.Controllers
         public IActionResult Index()
         {
             return View();
+        }
+        
+        public IActionResult createCompetition()
+        {
+            var response = new createCompetitionModel();
+            return View(response);
         }
     }
 }

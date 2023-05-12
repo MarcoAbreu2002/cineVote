@@ -8,6 +8,7 @@ namespace cineVote.Models.Domain
         public int Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public Boolean status {get;set;}
         public string imageURL { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
@@ -15,6 +16,10 @@ namespace cineVote.Models.Domain
         //Relatioships
 
         public List<Nominee> Nomines { get; set; }
+
+        public Category category {get;set;}
+
+        
 
     }
 }
