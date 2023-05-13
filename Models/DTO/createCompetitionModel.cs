@@ -15,7 +15,7 @@ namespace cineVote.Models.DTO
 
         [Display(Name = "Category of the Competition")]
         [Required(ErrorMessage = "Category is required")]
-        public Category? category { get; set; }
+        public string? category { get; set; }
 
         [Display(Name = "Start Date of the Competition")]
         [Required(ErrorMessage = "startDate is required")]
@@ -25,9 +25,12 @@ namespace cineVote.Models.DTO
         [Required(ErrorMessage = "endDate is required")]
         public string endDate { get; set; }
 
+
+        /*
         [Display(Name ="List of nominiees")]
         [Required(ErrorMessage = "List of Nominees is required")]
         public List<Nominee> nominees { get; set; }
 
+        */
     }
 }
