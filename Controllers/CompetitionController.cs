@@ -19,7 +19,8 @@ namespace cineVote.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            IEnumerable<Category> objCategoryList = _context.tblCategory;
+            return View(objCategoryList);
         }
         
         public IActionResult createCompetition()

@@ -4,9 +4,11 @@ namespace cineVote.Models.Domain
 {
     public class Category
     {
-        public string name { get; set; }
+        [Key]
+        public Guid CategoryId { get; set; }
+        public string Name { get; set; }
 
-        public string type {get;set;}
+        public string Description {get;set;}
 
     }
 }

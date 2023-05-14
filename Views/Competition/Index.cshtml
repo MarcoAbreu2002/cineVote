@@ -1,7 +1,36 @@
-﻿
+﻿@model IEnumerable<cineVote.Models.Domain.Category>
+
 @{
     ViewData["Title"] = "Competitions";
 }
 
-<h1>Competitions</h1>
+<div class="tbl-container">
+    <h2>Testing display of data from DB</h2>
+
+    <table class="table table-borded table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Category Name
+                </th>
+                <th>
+                    Category Description
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td width="50%">
+                        @item.Name
+                    </td>
+                    <td width="50%">
+                        @item.Description
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 

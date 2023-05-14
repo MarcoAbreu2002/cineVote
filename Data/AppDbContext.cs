@@ -5,6 +5,10 @@ namespace cineVote.Data
 {
     public class AppDbContext : DbContext
     {
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        {    
+        }
+
         public DbSet<Competition> Competitions { get; set; }
         public DbSet<Person> Persons { get; set; }
 
@@ -13,11 +17,8 @@ namespace cineVote.Data
         public DbSet<Admin> Admins { get; set; }
 
         public DbSet<Nominee> Nomines { get; set; }
+        public DbSet<Category> tblCategory { get; set; }
 
 
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
-        {
-            
-        }
     }
 }
