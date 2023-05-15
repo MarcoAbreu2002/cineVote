@@ -21,7 +21,13 @@
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Category of the competition:</label>
-						<input asp-for=category type ="text" class="form-control" />
+						<select asp-for="category" class="form-control">
+							@foreach (var item in Model.categoryList)
+							{
+								<option value="@item.CategoryId">@item.Name</option>
+							}
+						</select>
+						<span asp-validation-for="category" class="text-danger"></span>
 					</div>
 					<div class="mb-3">
 						<label class="form-label">Starting of the competition:</label>

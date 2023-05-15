@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using cineVote.Models.Domain;
 
 namespace cineVote.Models.DTO
@@ -19,12 +20,16 @@ namespace cineVote.Models.DTO
 
         [Display(Name = "Start Date of the Competition")]
         [Required(ErrorMessage = "startDate is required")]
-        public string startDate { get; set; }
+        public string? startDate { get; set; }
 
         [Display(Name = "End Date of the Competition")]
         [Required(ErrorMessage = "endDate is required")]
         public string endDate { get; set; }
+        public Category CategoryModel { get; internal set; }
 
+
+        [NotMapped]
+        public List<Category> ? categoryList { get; set; }
 
         /*
         [Display(Name ="List of nominiees")]

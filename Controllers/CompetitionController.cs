@@ -3,6 +3,7 @@ using cineVote.Models.DTO;
 using cineVote.Models.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 
 namespace cineVote.Controllers
 {
@@ -19,15 +20,19 @@ namespace cineVote.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Category> objCategoryList = _context.tblCategory;
-            return View(objCategoryList);
+            IEnumerable<Competition> objCompetitionList = _context.tblCompetition.Include(c => c.CategoryEntity).ToList();
+            return View(objCompetitionList);
         }
+
         
         public IActionResult createCompetition()
         {
-            var response = new createCompetitionModel();
-            return View(response);
+            var model = new createCompetitionModel();
+            model.categoryList = _context.tblCategory.ToList();
+            return View(model);
         }
+
+
 
         [HttpPost]
         public IActionResult createCompetition(createCompetitionModel createCompetitionModel)
@@ -40,7 +45,7 @@ namespace cineVote.Controllers
                 var command = new SqlCommand(sql, connection);
                 command.Parameters.AddWithValue("@Name", createCompetitionModel.Name);
                 command.Parameters.AddWithValue("@IsPublic", createCompetitionModel.isPublic);
-                command.Parameters.AddWithValue("@Category", Guid.NewGuid());
+                command.Parameters.AddWithValue("@Category", createCompetitionModel.category);
                 command.Parameters.AddWithValue("@StartDate", createCompetitionModel.startDate);
                 command.Parameters.AddWithValue("@EndDate", createCompetitionModel.endDate);
                 command.Parameters.AddWithValue("@Competition_Id", Guid.NewGuid());

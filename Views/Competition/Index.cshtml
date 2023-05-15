@@ -1,20 +1,18 @@
-﻿@model IEnumerable<cineVote.Models.Domain.Category>
-
+﻿@model IEnumerable<cineVote.Models.Domain.Competition>
 @{
     ViewData["Title"] = "Competitions";
 }
 
 <div class="tbl-container">
     <h2>Testing display of data from DB</h2>
-
-    <table class="table table-borded table-striped" style="width:100%">
+    <table class="table table-bordered table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>
-                    Category Name
+                    Competition Name
                 </th>
                 <th>
-                    Category Description
+                    Competition Category
                 </th>
             </tr>
         </thead>
@@ -26,11 +24,17 @@
                         @item.Name
                     </td>
                     <td width="50%">
-                        @item.Description
+                        @if (item.CategoryEntity != null)
+                        {
+                            @item.CategoryEntity.Name
+                        }
+                        else
+                        {
+                            <span>No category</span>
+                        }
                     </td>
                 </tr>
             }
         </tbody>
     </table>
 </div>
-
