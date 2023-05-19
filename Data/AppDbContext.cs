@@ -10,9 +10,9 @@ namespace cineVote.Data
         }
 
         public DbSet<Competition> tblCompetition { get; set; }
-        public DbSet<Person> Persons { get; set; }
+        public DbSet<Person> tblUsers { get; set; }
 
-        public DbSet<User> tblUsers { get; set; }
+        //public DbSet<User> tblUsers { get; set; }
 
         public DbSet<Admin> Admins { get; set; }
 
