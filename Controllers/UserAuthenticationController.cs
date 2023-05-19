@@ -14,17 +14,20 @@ namespace cineVote.Controllers
         private readonly UserManager<Person>? _userManager;
         private readonly SignInManager<Person>? _signInManager;
         private readonly AppDbContext? _context;
+        private readonly IUserAuthService _authService;
 
         private readonly string _connectionString =
             "Data Source=engenhariasoftware.database.windows.net;Initial Catalog=cinevote;Persist Security Info=True;User ID=engenharisoftwareadmin;Password=pDu8jRkmh3kQAfx";
 
 
         public UserAuthenticationController(UserManager<Person>? userManager, SignInManager<Person>? signInManager,
-            AppDbContext? context)
+            AppDbContext? context,IUserAuthService authService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _context = context;
+            this._authService = authService;
+
         }
 
         public IActionResult Index()
@@ -47,6 +50,23 @@ namespace cineVote.Controllers
         [HttpPost]
         public async Task<IActionResult> Login(LoginModel loginModel)
         {
+            if(!ModelState.IsValid)
+            {
+                return View(loginModel);
+            }
+
+            var result = await _authService.LoginAsync(loginModel);
+            if(result.StatusCode==1)
+            {
+                return RedirectToAction("Display", "Dashboard");
+            }
+            else
+            {
+                TempData["msg"] = result.Message;
+                return RedirectToAction(nameof(Login));
+            }
+
+            /*
             if (!ModelState.IsValid) return View(loginModel);
             var user = await _userManager.FindByEmailAsync(loginModel.EmailAddress);
 
@@ -68,11 +88,18 @@ namespace cineVote.Controllers
 
             TempData["Error"] = "Wrong credentials. Please try again";
             return View(loginModel);
+            */
         }
 
         [HttpPost]
-        public IActionResult Registration(RegistrationModel registrationModel)
+        public async Task<IActionResult> Registration(RegistrationModel registrationModel)
         {
+            if(!ModelState.IsValid) { return View(registrationModel); }
+            registrationModel.Role = "user";
+            var result = await this._authService.RegisterAsync(registrationModel);
+            TempData["msg"] = result.Message;
+            return RedirectToAction(nameof(Registration));
+            /*
             using (var connection = new SqlConnection(_connectionString))
             {
                 connection.Open();
@@ -113,9 +140,33 @@ namespace cineVote.Controllers
 
                 return RedirectToAction("Index", "Home");
             }
-
+            */
             // var response = new RegistrationModeSl();
             // return View(response);
+        }
+
+
+        [AllowAnonymous]
+        public async Task<IActionResult> RegisterAdmin()
+        {
+            RegistrationModel model = new RegistrationModel
+            {
+                Username="admin",
+                Email="admin@test.com",
+                FirstName="First",
+                LastName="Admin",
+                Password="passwordtest#",
+            };
+            model.Role = "admin";
+            var result = await this._authService.RegisterAsync(model);
+            return Ok(result);
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await this._authService.LogoutAsync();  
+            return RedirectToAction(nameof(Login));
         }
     }
 }
