@@ -1,49 +1,52 @@
 ﻿@model cineVote.Models.DTO.RegistrationModel;
 
 <div class="row" style="display: flex;justify-content: center; align-items: center;">
-	<h1 style="display: flex;justify-content: center; align-items: center;" >Create a new client</h1>
-	<hr>
-	<div class="col-6">
+    <h1 style="display: flex;justify-content: center; align-items: center;">Create a new client</h1>
+    <hr>
+    <div class="col-6">
 
-		<div class="card">
-			<div class="card-header">
-				<h5>Fill the form</h5>
-			</div>
-			<div class="card-body">
-				<form asp-controller="UserAuthentication" asp-action="Registration" method="post">
-					<div class="mb-3">
-						<label class="form-label">First Name:</label>
-						<input asp-for=FirstName type="text" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Last Name:</label>
-						<input asp-for=LastName type="text" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Email</label>
-						<input asp-for=Email type="email" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Username</label>
-						<input asp-for=Username type="text" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Password</label>
-						<input asp-for=Password type ="password" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Confirm Password</label>
-						<input asp-for=PasswordConfirm type="password" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<button type="submit" class="btn btn-primary">Create</button>
-					</div>
-				</form>
-			</div>
-			<div class="card-footer">
-			</div>
+        <div class="card">
+            <div class="card-header">
+                <h5>Fill the form</h5>
+            </div>
+            <div class="card-body">
+                <form asp-controller="UserAuthentication" asp-action="Registration" method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label class="form-label">First Name:</label>
+                        <input asp-for="FirstName" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Last Name:</label>
+                        <input asp-for="LastName" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Email</label>
+                        <input asp-for="Email" type="email" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Username</label>
+                        <input asp-for="Username" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Password</label>
+                        <input asp-for="Password" type="password" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirm Password</label>
+                        <input asp-for="PasswordConfirm" type="password" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Profile Image</label>
+                        <input type="file" asp-for="ImageUrl" name="ImageUrl" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
 
-		</div>
-
-	</div>
+    </div>
 </div>

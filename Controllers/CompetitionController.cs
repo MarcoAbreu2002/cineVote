@@ -1,9 +1,6 @@
-﻿using cineVote.Data;
-using cineVote.Models.DTO;
-using cineVote.Models.Domain;
+﻿using cineVote.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
 
 namespace cineVote.Controllers
 {
@@ -20,15 +17,15 @@ namespace cineVote.Controllers
         }
         public IActionResult Index()
         {
-            IEnumerable<Competition> objCompetitionList = _context.tblCompetition.Include(c => c.CategoryEntity).ToList();
-            return View(objCompetitionList);
+            //IEnumerable<Competition> objCompetitionList = _context.tblCompetition.Include(c => c.CategoryEntity).ToList();
+            return View(/*objCompetitionList*/);
         }
 
         
         public IActionResult createCompetition()
         {
             var model = new createCompetitionModel();
-            model.categoryList = _context.tblCategory.ToList();
+            //model.categoryList = _context.tblCategory.ToList();
             return View(model);
         }
 

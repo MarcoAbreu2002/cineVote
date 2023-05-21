@@ -1,33 +1,45 @@
-﻿using cineVote.Repositories.Abstract;
-using cineVote.Models;
+﻿using Microsoft.EntityFrameworkCore;
 using cineVote.Models.Domain;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
-using System.Text;
 using cineVote.Models.DTO;
+using Microsoft.Extensions.Options;
 
 namespace cineVote.Repositories.Implementation
 {
-    public class UserAuthService : IUserAuthService
+    public class UserAuthService 
     {
-        private readonly SignInManager<Person>? signInManager;
-        private readonly UserManager<Person>? userManager;
-        private readonly RoleManager<IdentityRole>? roleManager;
+        private readonly DbSet<Person>? _userCollection;
 
-        public UserAuthService(RoleManager<IdentityRole>? roleManager,UserManager<Person>? userManager,SignInManager<Person>? signInManager)
+        public UserAuthService(IOptions<AppDbContext> databaseSettings)
         {
-            this.signInManager = signInManager;
-            this.roleManager = roleManager;
-            this.userManager = userManager;
+             //var connectionString = databaseSettings.Value.ConnectionString;
+             var connectionString = "Data Source=engenhariasoftware.database.windows.net;Initial Catalog=cinevote;Persist Security Info=True;User ID=engenharisoftwareadmin;Password=pDu8jRkmh3kQAfx";
+             Console.WriteLine("Conection string: " + connectionString);
+            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
+            optionsBuilder.UseSqlServer(connectionString);
+
+            using (var dbContext = new AppDbContext(optionsBuilder.Options))
+            {
+                _userCollection = dbContext.Set<Person>();
+                if (_userCollection != null && _userCollection.Any())
+                {
+                    Console.WriteLine("User collection has been successfully loaded.");
+                }
+                else
+                {
+                    Console.WriteLine("Failed to load user collection or it is empty.");
+                }
+            }
         }
         public Task<Status> ChangePasswordAsync(ChangePasswordModel model, string username)
         {
             throw new NotImplementedException();
         }
 
+    /*
         public async Task<Status> LoginAsync(LoginModel model)
         {
-             var status = new Status();
+            var status = new Status();
             var user = await userManager.FindByNameAsync(model.EmailAddress);
             if (user == null)
             {
@@ -69,20 +81,21 @@ namespace cineVote.Repositories.Implementation
                 status.StatusCode = 0;
                 status.Message = "Error on logging in";
             }
-           
+
             return status;
         }
+        
 
         public async Task LogoutAsync()
         {
-             await signInManager.SignOutAsync();
+            await signInManager.SignOutAsync();
         }
 
         public async Task<Status> RegisterAsync(RegistrationModel model)
         {
             var status = new Status();
             var userExists = await userManager.FindByEmailAsync(model.Email);
-            if(userExists != null)
+            if (userExists != null)
             {
                 status.StatusCode = 0;
                 status.Message = "User already exists";
@@ -98,8 +111,8 @@ namespace cineVote.Repositories.Implementation
                 UserName = model.Username,
                 EmailConfirmed = true
             };
-            var result = await userManager.CreateAsync(user,model.Password);
-            if(!result.Succeeded)
+            var result = await userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
             {
                 status.StatusCode = 0;
                 status.Message = "User creation failed";
@@ -107,10 +120,10 @@ namespace cineVote.Repositories.Implementation
             }
 
             //roles
-            if(!await roleManager.RoleExistsAsync(model.Role))
+            if (!await roleManager.RoleExistsAsync(model.Role))
                 await roleManager.CreateAsync(new IdentityRole(model.Role));
-            
-            if(await roleManager.RoleExistsAsync(model.Role))
+
+            if (await roleManager.RoleExistsAsync(model.Role))
             {
                 await userManager.AddToRoleAsync(user, model.Role);
             }
@@ -119,5 +132,7 @@ namespace cineVote.Repositories.Implementation
             status.Message = "Message has been created";
             return status;
         }
+        */
     }
+    
 }

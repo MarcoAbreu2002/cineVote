@@ -1,19 +1,41 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using cineVote.Models.DTO;
 using Microsoft.AspNetCore.Identity;
 
 namespace cineVote.Models.Domain
 {
+    [Table("tblPerson")]
     public class Person : IdentityUser
     {
         [Key]
-        public int Id { get; set; }
+        [Column("PersonId")]
+        public int PersonId { get; set; }
+
         [Required]
-        public string FirstName { get; set; }
+        [Column("FirstName")]
+        public string? FirstName { get; set; }
+
         [Required]
-        public string LastName { get; set; }
+        [Column("LastName")]
+        public string? LastName { get; set; }
+
         [Required]
-        public string password { get; set; }
+        [Column("Password")]
+        public string? Password { get; set; }
+
         [Required]
-        public string EmailAddress { get; set; }
+        [Column("Email")]
+        public string? Email { get; set; }
+
+        [Required]
+        [Column("IsAdmin")]
+        public bool IsAdmin { get; set; }
+
+        [Required]
+        [Column("imageUrl")]
+        public string? ImageUrl { get; set; }
+
+
     }
 }

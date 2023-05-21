@@ -31,6 +31,9 @@ namespace cineVote.Models.DTO
         [Required(ErrorMessage = "Confirm Password is required")]
         [Compare("Password")]
         public string PasswordConfirm { get; set; }
+
+        [Display(Name = "ImageUrl")]
+        public String ImageUrl {get;set;}
         public string? Role { get; set; }
 
     }
