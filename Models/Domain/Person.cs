@@ -26,7 +26,8 @@ namespace cineVote.Models.Domain
 
         [Required]
         [Column("Email")]
-        public string? Email { get; set; }
+        [EmailAddress]
+        public string? EmailAddress { get; set; }
 
         [Required]
         [Column("IsAdmin")]

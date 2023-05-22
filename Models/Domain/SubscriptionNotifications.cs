@@ -10,14 +10,14 @@ namespace cineVote.Models.Domain
         [Key]
         public int SubscriptionNotificationsKey {get;set;}
 
-        [ForeignKey("Subscription")]
+        [ForeignKey("SubscriptionId")]
         [Column("SubscriptionId")]
         public int SubscriptionId { get; set; }
 
         [Column("Subscription")]
         public Subscription? Subscription { get; set; }
 
-        [ForeignKey("Notification")]
+        [ForeignKey("NotificationId")]
         [Column("NotificationId")]
         public int NotificationId { get; set; }
 

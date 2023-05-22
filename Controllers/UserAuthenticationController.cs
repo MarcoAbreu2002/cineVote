@@ -4,15 +4,18 @@ using cineVote.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using cineVote.Repositories.Implementation;
 using Microsoft.EntityFrameworkCore;
+using cineVote.Repositories.Abstract;
 
 namespace cineVote.Controllers
 {
     public class UserAuthenticationController : Controller
     {
         private readonly AppDbContext? _context;
+        private readonly IUserAuthService _authService;
 
-        public UserAuthenticationController(AppDbContext? context)
+        public UserAuthenticationController(AppDbContext? context, IUserAuthService authService)
         {
+            this._authService = authService;
             _context = context;
 
         }
@@ -35,15 +38,13 @@ namespace cineVote.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registration([Bind("PersonId, FirstName, ImageUrl ,LastName, Password, Email")] User user, RegistrationModel registrationModel)
+        public async Task<IActionResult> Registration(RegistrationModel registrationModel)
         {
             if (ModelState.IsValid) { return View(registrationModel); }
-            user.ImageUrl="testing";
-            user.IsAdmin = false;
-            Console.WriteLine("TEST: " + registrationModel + "USER: " + user);
-            _context.Add(user);
-            await _context.SaveChangesAsync();
-            return RedirectToAction("Index", "Home");
+            registrationModel.Role = "user";
+            var result = await this._authService.RegisterAsync(registrationModel);
+            TempData["msg"] = result.Message;
+            return RedirectToAction(nameof(Registration));
         }
 
 
@@ -56,14 +57,16 @@ namespace cineVote.Controllers
             }
 
             // Check if the login credentials are valid
-            User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == loginModel.EmailAddress && u.Password == loginModel.Password);
-            if (user == null)
+            var result = await _authService.LoginAsync(loginModel);
+            if (result.StatusCode == 1)
             {
-                ModelState.AddModelError("", "Invalid login credentials.");
-                return View(loginModel);
+                return RedirectToAction("Display", "Dashboard");
             }
-
-            return RedirectToAction("Index", "Home");
+            else
+            {
+                TempData["msg"] = result.Message;
+                return RedirectToAction(nameof(Login));
+            }
         }
 
     }

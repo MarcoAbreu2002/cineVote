@@ -13,7 +13,7 @@ namespace cineVote.Models.Domain
         [Column("Name")]
         public string? Name { get; set; }
 
-        [ForeignKey("User")]
+        [ForeignKey("UserId")]
         [Column("UserId")]
         public int UserId { get; set; }
 

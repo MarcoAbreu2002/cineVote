@@ -20,7 +20,7 @@ namespace cineVote.Models.Domain
         [Column("Participants")]
         public List<Participant>? Participants { get; set; }
 
-        [ForeignKey("Movie")]
+        [ForeignKey("MovieId")]
         [Column("MovieId")]
         public int MovieId {get;set;}
 

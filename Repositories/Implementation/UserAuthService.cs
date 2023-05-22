@@ -3,62 +3,96 @@ using cineVote.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using cineVote.Models.DTO;
 using Microsoft.Extensions.Options;
+using cineVote.Repositories.Abstract;
+using System.Security.Claims;
 
 namespace cineVote.Repositories.Implementation
 {
-    public class UserAuthService 
+    public class UserAuthService : IUserAuthService
     {
-        private readonly DbSet<Person>? _userCollection;
+        private readonly SignInManager<Person> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<Person> _userManager;
 
-        public UserAuthService(IOptions<AppDbContext> databaseSettings)
+        public UserAuthService(UserManager<Person> userManager, SignInManager<Person> signInManager, RoleManager<IdentityRole> roleManager)
         {
-             //var connectionString = databaseSettings.Value.ConnectionString;
-             var connectionString = "Data Source=engenhariasoftware.database.windows.net;Initial Catalog=cinevote;Persist Security Info=True;User ID=engenharisoftwareadmin;Password=pDu8jRkmh3kQAfx";
-             Console.WriteLine("Conection string: " + connectionString);
-            var optionsBuilder = new DbContextOptionsBuilder<AppDbContext>();
-            optionsBuilder.UseSqlServer(connectionString);
-
-            using (var dbContext = new AppDbContext(optionsBuilder.Options))
-            {
-                _userCollection = dbContext.Set<Person>();
-                if (_userCollection != null && _userCollection.Any())
-                {
-                    Console.WriteLine("User collection has been successfully loaded.");
-                }
-                else
-                {
-                    Console.WriteLine("Failed to load user collection or it is empty.");
-                }
-            }
+            this._roleManager = roleManager;
+            this._signInManager = signInManager;
+            this._userManager = userManager;
         }
+
+        public async Task<Status> RegisterAsync(RegistrationModel model)
+        {
+            var status = new Status();
+            var userExists = await _userManager.FindByEmailAsync(model.Email);
+            if (userExists != null)
+            {
+                status.StatusCode = 0;
+                status.Message = "User already exists";
+                return status;
+            }
+            User user = new User()
+            {
+                NormalizedEmail = model.Email,
+                EmailConfirmed = true,
+                NormalizedUserName = model.Username,
+                EmailAddress = model.Email,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                UserName = model.Username,
+                Password = model.Password,
+                ImageUrl = "Testing",
+            };
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (!result.Succeeded)
+            {
+                status.StatusCode = 0;
+                status.Message = "User creation failed";
+                return status;
+            }
+
+            if (!await _roleManager.RoleExistsAsync(model.Role))
+                await _roleManager.CreateAsync(new IdentityRole(model.Role));
+
+
+            if (await _roleManager.RoleExistsAsync(model.Role))
+            {
+                await _userManager.AddToRoleAsync(user, model.Role);
+            }
+
+            status.StatusCode = 1;
+            status.Message = "You have registered successfully";
+            return status;
+        }
+
         public Task<Status> ChangePasswordAsync(ChangePasswordModel model, string username)
         {
             throw new NotImplementedException();
         }
 
-    /*
         public async Task<Status> LoginAsync(LoginModel model)
         {
             var status = new Status();
-            var user = await userManager.FindByNameAsync(model.EmailAddress);
+            var user = await _userManager.FindByEmailAsync(model.EmailAddress);
             if (user == null)
             {
                 status.StatusCode = 0;
-                status.Message = "Invalid email address";
+                status.Message = "Invalid Email";
                 return status;
             }
 
-            if (!await userManager.CheckPasswordAsync(user, model.Password))
+            if (!await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 status.StatusCode = 0;
                 status.Message = "Invalid Password";
                 return status;
             }
 
-            var signInResult = await signInManager.PasswordSignInAsync(user, model.Password, false, true);
+            var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, true);
             if (signInResult.Succeeded)
             {
-                var userRoles = await userManager.GetRolesAsync(user);
+                var userRoles = await _userManager.GetRolesAsync(user);
                 var authClaims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, user.UserName),
@@ -84,55 +118,11 @@ namespace cineVote.Repositories.Implementation
 
             return status;
         }
-        
 
-        public async Task LogoutAsync()
+        public Task LogoutAsync()
         {
-            await signInManager.SignOutAsync();
+            throw new NotImplementedException();
         }
-
-        public async Task<Status> RegisterAsync(RegistrationModel model)
-        {
-            var status = new Status();
-            var userExists = await userManager.FindByEmailAsync(model.Email);
-            if (userExists != null)
-            {
-                status.StatusCode = 0;
-                status.Message = "User already exists";
-                return status;
-            }
-
-            Person user = new Person
-            {
-                SecurityStamp = Guid.NewGuid().ToString(),
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                Email = model.Email,
-                UserName = model.Username,
-                EmailConfirmed = true
-            };
-            var result = await userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded)
-            {
-                status.StatusCode = 0;
-                status.Message = "User creation failed";
-                return status;
-            }
-
-            //roles
-            if (!await roleManager.RoleExistsAsync(model.Role))
-                await roleManager.CreateAsync(new IdentityRole(model.Role));
-
-            if (await roleManager.RoleExistsAsync(model.Role))
-            {
-                await userManager.AddToRoleAsync(user, model.Role);
-            }
-
-            status.StatusCode = 1;
-            status.Message = "Message has been created";
-            return status;
-        }
-        */
     }
-    
+
 }

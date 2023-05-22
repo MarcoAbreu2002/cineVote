@@ -22,11 +22,11 @@ namespace cineVote.Models.Domain
         [Column("EndDate")]
         public DateTime EndDate { get; set; }
 
-        [ForeignKey("Category")]
+        [ForeignKey("CategoryId")]
         [Column("Category")]
         public int CategoryId { get; set; }
 
-        [ForeignKey("Admin")]
+        [ForeignKey("AdminId")]
         [Column("AdminId")]
         public int AdminId { get; set; }
 

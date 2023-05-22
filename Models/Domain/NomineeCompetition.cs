@@ -10,14 +10,14 @@ namespace cineVote.Models.Domain
         [Key]
         public int NomineeCompetitionKey {get;set;}
 
-        [ForeignKey("Nominee")]
+        [ForeignKey("NomineeId")]
         [Column("NomineeId")]
         public int NomineeId { get; set; }
 
         [Column("Nominee")]
         public Nominee? Nominee { get; set; }
 
-        [ForeignKey("Competition")]
+        [ForeignKey("CompetitionId")]
         [Column("CompetitionId")]
         public int CompetitionId { get; set; }
 

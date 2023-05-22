@@ -1,8 +1,9 @@
 ﻿using cineVote.Models.Domain;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
-public class AppDbContext : DbContext
+public class AppDbContext : IdentityDbContext<Person>
 {
     public string ConnectionString { get; set; }
     public DbSet<Admin> Admins { get; set; }
@@ -32,12 +33,23 @@ public class AppDbContext : DbContext
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
-    foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
     {
-        relationship.DeleteBehavior = DeleteBehavior.Restrict;
+        base.OnModelCreating(modelBuilder);
+
+        // Configure the primary key for IdentityUserLogin<TKey> entity
+        modelBuilder.Entity<IdentityUserLogin<string>>(entity =>
+        {
+            entity.HasKey(login => new { login.LoginProvider, login.ProviderKey });
+        });
+
+        // Add any other model configurations or entity mappings here
+
+        foreach (var relationship in modelBuilder.Model.GetEntityTypes().SelectMany(e => e.GetForeignKeys()))
+        {
+            relationship.DeleteBehavior = DeleteBehavior.Restrict;
+        }
     }
-}
+
 
 
 

@@ -10,22 +10,22 @@ namespace cineVote.Models.Domain
         [Column("Vote_id")]
         public int VoteId { get; set; }
 
-        [ForeignKey("User")]
+        [ForeignKey("UserId")]
         [Column("UserId")]
         public int UserId { get; set; }
 
         [Column("User")]
         public User User { get; set; }
 
-        [ForeignKey("Subscription")]
+        [ForeignKey("SubscriptionId")]
         [Column("SubscriptionId")]
         public int SubscriptionId { get; set; }
 
-        [ForeignKey("Category")]
+        [ForeignKey("CategoryId")]
         [Column("CategoryId")]
         public int CategoryId { get; set; }
 
-        [ForeignKey("Nominee")]
+        [ForeignKey("NomineeId")]
         [Column("NomineeId")]
         public int NomineeId { get; set; }
 

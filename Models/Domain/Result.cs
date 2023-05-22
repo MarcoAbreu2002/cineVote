@@ -15,21 +15,21 @@ namespace cineVote.Models.Domain
         [Column("Competition")]
         public ICollection<Competition>? Competition { get; set; }
 
-        [ForeignKey("Nominee")]
+        [ForeignKey("NomineeId")]
         [Column("NomineeId")]
         public int NomineeId { get; set; }
 
         [Column("Nominee")]
         public Nominee? Nominee { get; set; }
 
-        [ForeignKey("Category")]
+        [ForeignKey("CategoryId")]
         [Column("CategoryId")]
         public int CategoryId { get; set; }
 
         [Column("Category")]
         public Category? Category { get; set; }
 
-        [ForeignKey("Subscription")]
+        [ForeignKey("SubscriptionId")]
         [Column("SubscriptionId")]
         public int SubscriptionId { get; set; }
 

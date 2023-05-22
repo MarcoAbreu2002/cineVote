@@ -7,7 +7,7 @@ namespace cineVote.Models.Domain
     [Table("tblAdmin")]
     public class Admin : Person
     {
-        [ForeignKey("Competition")]
+        [ForeignKey("Competition_Id")]
         [Column("Competition_Id")]
         public int Competition_Id { get; set; }
 

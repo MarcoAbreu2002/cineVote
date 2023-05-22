@@ -7,7 +7,7 @@ namespace cineVote.Models.Domain
     [Table("tblUser")]
     public class User : Person
     {
-        [ForeignKey("Subscription")]
+        [ForeignKey("SubscriptionId")]
         [Column("SubscriptionId")]
         public int SubscriptionId { get; set; }
 

@@ -13,7 +13,7 @@ namespace cineVote.Models.Domain
         [Column("Subscription_name")]
         public string? Name { get; set; }
 
-        [ForeignKey("Competition")]
+        [ForeignKey("CompetitionId")]
         [Column("Competition_Id")]
         public int CompetitionId { get; set; }
 
