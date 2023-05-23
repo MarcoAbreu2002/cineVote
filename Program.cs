@@ -28,7 +28,10 @@ namespace cineVote
                 .AddDefaultTokenProviders();
 
 
-            builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/UserAuthenticationController/Login");
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/UserAuthentication/Login";
+            });
 
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
 
@@ -47,9 +50,8 @@ namespace cineVote
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",

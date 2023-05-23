@@ -119,9 +119,9 @@ namespace cineVote.Repositories.Implementation
             return status;
         }
 
-        public Task LogoutAsync()
+        public async Task LogoutAsync()
         {
-            throw new NotImplementedException();
+            await _signInManager.SignOutAsync();
         }
     }
 

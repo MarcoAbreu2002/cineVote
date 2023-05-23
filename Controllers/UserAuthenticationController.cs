@@ -1,10 +1,7 @@
 ﻿using cineVote.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
-using cineVote.Models.Domain;
-using Microsoft.AspNetCore.Identity;
-using cineVote.Repositories.Implementation;
-using Microsoft.EntityFrameworkCore;
 using cineVote.Repositories.Abstract;
+using Microsoft.AspNetCore.Authorization;
 
 namespace cineVote.Controllers
 {
@@ -60,13 +57,20 @@ namespace cineVote.Controllers
             var result = await _authService.LoginAsync(loginModel);
             if (result.StatusCode == 1)
             {
-                return RedirectToAction("Display", "Dashboard");
+                return RedirectToAction("Index", "Dashboard");
             }
             else
             {
                 TempData["msg"] = result.Message;
                 return RedirectToAction(nameof(Login));
             }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await this._authService.LogoutAsync();
+            return RedirectToAction("Login", "UserAuthentication");
         }
 
     }
