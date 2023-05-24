@@ -34,6 +34,7 @@ namespace cineVote
             });
 
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
+            builder.Services.AddScoped<ICompetitionManager, CompetitionManager>();
 
             var app = builder.Build();
 

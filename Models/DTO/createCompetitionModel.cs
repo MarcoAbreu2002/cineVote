@@ -16,15 +16,15 @@ namespace cineVote.Models.DTO
 
         [Display(Name = "Category of the Competition")]
         [Required(ErrorMessage = "Category is required")]
-        public string? category { get; set; }
+        public int category { get; set; }
 
         [Display(Name = "Start Date of the Competition")]
         [Required(ErrorMessage = "startDate is required")]
-        public string? startDate { get; set; }
+        public DateTime startDate { get; set; }
 
         [Display(Name = "End Date of the Competition")]
         [Required(ErrorMessage = "endDate is required")]
-        public string endDate { get; set; }
+        public DateTime endDate { get; set; }
         public Category CategoryModel { get; internal set; }
 
 

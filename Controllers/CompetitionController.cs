@@ -1,4 +1,5 @@
 ﻿using cineVote.Models.DTO;
+using cineVote.Repositories.Abstract;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 
@@ -8,12 +9,12 @@ namespace cineVote.Controllers
     {
         private readonly AppDbContext? _context;
 
-        private readonly string _connectionString =
-            "Data Source=engenhariasoftware.database.windows.net;Initial Catalog=cinevote;Persist Security Info=True;User ID=engenharisoftwareadmin;Password=pDu8jRkmh3kQAfx";
+        private readonly ICompetitionManager _CompetitionManager;
 
-        public CompetitionController(AppDbContext? context)
+        public CompetitionController(AppDbContext? context, ICompetitionManager competitionManager)
         {
             _context = context;
+            _CompetitionManager = competitionManager;
         }
         public IActionResult Index()
         {
@@ -21,11 +22,11 @@ namespace cineVote.Controllers
             return View(/*objCompetitionList*/);
         }
 
-        
+
         public IActionResult createCompetition()
         {
             var model = new createCompetitionModel();
-            //model.categoryList = _context.tblCategory.ToList();
+            model.categoryList = _context.Categories.ToList();
             return View(model);
         }
 
@@ -34,26 +35,10 @@ namespace cineVote.Controllers
         [HttpPost]
         public IActionResult createCompetition(createCompetitionModel createCompetitionModel)
         {
-            using (var connection = new SqlConnection(_connectionString))
-            {
-                connection.Open();
-                var sql =
-                    "INSERT INTO tblCompetition (Name, IsPublic, Category, StartDate, EndDate, Competition_Id) VALUES (@Name, @IsPublic, @Category, @StartDate, @EndDate,@Competition_Id)";
-                var command = new SqlCommand(sql, connection);
-                command.Parameters.AddWithValue("@Name", createCompetitionModel.Name);
-                command.Parameters.AddWithValue("@IsPublic", createCompetitionModel.isPublic);
-                command.Parameters.AddWithValue("@Category", createCompetitionModel.category);
-                command.Parameters.AddWithValue("@StartDate", createCompetitionModel.startDate);
-                command.Parameters.AddWithValue("@EndDate", createCompetitionModel.endDate);
-                command.Parameters.AddWithValue("@Competition_Id", Guid.NewGuid());
-                command.ExecuteNonQuery();
-            }
-            return RedirectToAction("Index", "Home");
-
-
-        return View(createCompetitionModel);
-            // var response = new RegistrationModeSl();
-            // return View(response);
+            if (ModelState.IsValid) { return View(createCompetitionModel); }
+            var result = this._CompetitionManager.createCompetition(createCompetitionModel);
+            //TempData["msg"] = result.Message;
+            return RedirectToAction(nameof(createCompetition));
         }
     }
 }

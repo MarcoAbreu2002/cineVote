@@ -28,7 +28,7 @@ namespace cineVote.Models.Domain
 
         [ForeignKey("AdminId")]
         [Column("AdminId")]
-        public int AdminId { get; set; }
+        public string AdminId { get; set; }
 
         [Column("CategoryEntity")]
         public ICollection<Category>? CategoryEntity { get; set; }
