@@ -1,7 +1,40 @@
-﻿
+﻿@model IEnumerable<cineVote.Models.Domain.Competition>
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Competitions";
 }
 
-<h1>Competitions</h1>
+<div class="tbl-container">
+    <h2>Testing display of data from DB</h2>
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Competition Name
+                </th>
+                <th>
+                    Competition Category
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td width="50%">
+                        @item.Name
+                    </td>
+                    <td width="50%">
+                        @if (item.CategoryEntity != null)
+                        {
 
+                        }
+                        else
+                        {
+                            <span>No category</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

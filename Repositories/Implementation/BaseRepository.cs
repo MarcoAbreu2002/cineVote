@@ -1,7 +1,4 @@
 ﻿using cineVote.Repositories.Abstract;
-using cineVote.Models.Domain;
-using cineVote.Repositories.Abstract;
-using cineVote.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq.Expressions;
 

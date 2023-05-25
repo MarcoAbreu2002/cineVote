@@ -1,9 +1,9 @@
-using cineVote.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using cineVote.Models.Domain;
-using cineVote.Repositories.Abstract;
 using cineVote.Repositories.Implementation;
+using cineVote.Repositories.Abstract;
+
 
 namespace cineVote
 {
@@ -13,21 +13,30 @@ namespace cineVote
         {
             var builder = WebApplication.CreateBuilder(args);
 
+
             //DbContext configuration
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
 
-            builder.Services.AddIdentity<Person, IdentityRole>().AddEntityFrameworkStores<AppDbContext>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<Person, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
 
 
-            builder.Services.ConfigureApplicationCookie(options => options.LoginPath = "/UserAuthenticationController/Login");   
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/UserAuthentication/Login";
+            });
 
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
+            builder.Services.AddScoped<ICompetitionManager, CompetitionManager>();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -43,9 +52,8 @@ namespace cineVote
 
             app.UseRouting();
 
-            app.UseAuthorization();
-
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapControllerRoute(
                 name: "default",

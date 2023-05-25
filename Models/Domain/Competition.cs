@@ -1,20 +1,42 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace cineVote.Models.Domain
 {
-    public class Competition
+    [Table("tblCompetition")]
+    public class Competition 
     {
         [Key]
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public string imageURL { get; set; }
+        [Column("Competition_Id")]
+        public int Competition_Id { get; set; }
+
+        [Column("Name")]
+        public string? Name { get; set; }
+
+        [Column("IsPublic")]
+        public bool IsPublic { get; set; }
+
+        [Column("StartDate")]
         public DateTime StartDate { get; set; }
+
+        [Column("EndDate")]
         public DateTime EndDate { get; set; }
 
-        //Relatioships
+        [ForeignKey("CategoryId")]
+        [Column("Category")]
+        public int CategoryId { get; set; }
 
-        public List<Nominee> Nomines { get; set; }
+        [ForeignKey("AdminId")]
+        [Column("AdminId")]
+        public string AdminId { get; set; }
 
+        [Column("CategoryEntity")]
+        public ICollection<Category>? CategoryEntity { get; set; }
+
+        [Column("NomineeCompetitions")]
+        public ICollection<NomineeCompetition>? NomineeCompetitions { get; set; }
+
+        [Column("Results")]
+        public Result? Results { get; set; }
     }
 }

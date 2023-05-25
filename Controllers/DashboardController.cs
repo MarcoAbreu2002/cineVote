@@ -6,7 +6,7 @@ namespace cineVote.Controllers
     [Authorize]
     public class DashboardController : Controller
     {
-        public IActionResult Display()
+        public IActionResult Index()
         {
             return View();
         }

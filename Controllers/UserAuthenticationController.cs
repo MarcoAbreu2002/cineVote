@@ -2,61 +2,31 @@
 using Microsoft.AspNetCore.Mvc;
 using cineVote.Repositories.Abstract;
 using Microsoft.AspNetCore.Authorization;
-using cineVote.Models.Domain;
-using Microsoft.AspNetCore.Identity;
-using cineVote.Data;
 
 namespace cineVote.Controllers
 {
     public class UserAuthenticationController : Controller
     {
-        private readonly UserManager<Person>? _userManager;
-        private readonly SignInManager<Person>? _signInManager;
         private readonly AppDbContext? _context;
+        private readonly IUserAuthService _authService;
 
-
-        public UserAuthenticationController(UserManager<Person>? userManager, SignInManager<Person>? signInManager, AppDbContext? context)
+        public UserAuthenticationController(AppDbContext? context, IUserAuthService authService)
         {
-            _userManager = userManager;
-            _signInManager = signInManager;
+            this._authService = authService;
             _context = context;
-        }   
+
+        }
 
         public IActionResult Index()
         {
             return Login();
         }
+
         public IActionResult Login()
         {
             var response = new LoginModel();
             return View(response);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> Login(LoginModel loginModel)
-        {
-            if (!ModelState.IsValid) return View(loginModel);
-            var user = await _userManager.FindByEmailAsync(loginModel.EmailAddress);
-
-            if (user == null) 
-            {
-                var passCheck = await _userManager.CheckPasswordAsync(user,loginModel.Password);
-                if (passCheck != null)
-                {
-                    var result = await _signInManager.PasswordSignInAsync(user, loginModel.Password, false,false);
-                    if (result.Succeeded)
-                    {
-                        return RedirectToAction("Index", "Home");
-                    }
-                }
-                TempData["Error"] = "Wrong credentials";
-                return View(loginModel);
-            }
-            TempData["Error"] = "Wrong credentials. Please try again";
-            return View(loginModel);
-
-        }
-
 
         public IActionResult Registration()
         {
@@ -64,9 +34,44 @@ namespace cineVote.Controllers
             return View(response);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> Registration(RegistrationModel registrationModel)
+        {
+            if (ModelState.IsValid) { return View(registrationModel); }
+            registrationModel.Role = "user";
+            var result = await this._authService.RegisterAsync(registrationModel);
+            TempData["msg"] = result.Message;
+            return RedirectToAction(nameof(Registration));
+        }
 
 
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginModel loginModel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(loginModel);
+            }
 
+            // Check if the login credentials are valid
+            var result = await _authService.LoginAsync(loginModel);
+            if (result.StatusCode == 1)
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+            else
+            {
+                TempData["msg"] = result.Message;
+                return RedirectToAction(nameof(Login));
+            }
+        }
+
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            await this._authService.LogoutAsync();
+            return RedirectToAction("Login", "UserAuthentication");
+        }
 
     }
 }
