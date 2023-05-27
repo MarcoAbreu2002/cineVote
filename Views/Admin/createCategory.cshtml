@@ -1,0 +1,31 @@
+@model cineVote.Models.DTO.CreateCategoryModel;
+
+<div class="row" style="display: flex; justify-content: center; align-items: center;">
+    <h1 style="display: flex; justify-content: center; align-items: center;">Create a new Category</h1>
+    <hr>
+    <div class="col-6">
+
+        <div class="card" style="color:black;">
+            <div class="card-header">
+                <h5>Fill the form</h5>
+            </div>
+            <div class="card-body" style="color:black;">
+                <form asp-controller="Admin" asp-action="CreateCategory" method="post">
+                    <div class="mb-3">
+                        <label class="form-label">Name of the Category:</label>
+                        <input asp-for="CategoryName" type="text" class="form-control" />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description of the Category:</label>
+                        <textarea asp-for="CategoryDescription" class="form-control"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary">Create</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer">
+            </div>
+        </div>
+    </div>
+</div>

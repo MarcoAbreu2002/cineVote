@@ -16,20 +16,20 @@ namespace cineVote.Models.Domain
         [Column("CategoryDescription")]
         public string Description { get; set; }
 
-        [Column("Nominee")]
+        [NotMapped]
         public ICollection<Vote>? Votes { get; set; }
 
+        [NotMapped]
         [ForeignKey("CompetitionId")]
-        [Column("CompetitionId")]
         public int CompetitionId { get; set; }
 
-        [Column("Competition")]
+        [NotMapped]
         public Competition? Competition { get; set; }
 
-        [Column("CategoryNominees")]
+        [NotMapped]
         public ICollection<CategoryNominee>? CategoryNominees { get; set; }
 
-        [Column("Result")]
+        [NotMapped]
         public Result? Result { get; set; }
     }
 }

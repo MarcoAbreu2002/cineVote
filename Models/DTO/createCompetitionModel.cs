@@ -31,11 +31,9 @@ namespace cineVote.Models.DTO
         [NotMapped]
         public List<Category> ? categoryList { get; set; }
 
-        /*
-        [Display(Name ="List of nominiees")]
-        [Required(ErrorMessage = "List of Nominees is required")]
-        public List<Nominee> nominees { get; set; }
-
-        */
+        
+        [NotMapped]
+        public List<Dictionary<string, object>> nominees { get; set; }
+        
     }
 }

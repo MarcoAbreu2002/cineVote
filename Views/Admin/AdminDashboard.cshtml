@@ -1,0 +1,52 @@
+@{
+    ViewData["Title"] = "AdminPage";
+}
+<body>
+    <div class="container mt-5 mb-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card bg-white">
+                    <div class="card-header">
+                        <h4 class="text-center" style="color: black;">Admin Dashboard</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title" style="color: black;">Create Competition</h5>
+                                        <p class="card-text" style="color: black;">Click the button below to create a new competition.</p>
+                                       <a asp-controller="Competition" asp-action="createCompetition" class="btn btn-primary">Create Competition</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title" style="color: black;">Create Category</h5>
+                                        <p class="card-text" style="color: black;">Click the button below to create a new category.</p>
+                                        <a asp-controller="Admin" asp-action="createCategory" class="btn btn-primary">Create Category</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center">
+                                    <div class="card-body">
+                                        <h5 class="card-title" style="color: black;">Create Nominee</h5>
+                                        <p class="card-text" style="color: black;">Click the button below to create a new nominee.</p>
+                                        <a asp-controller="Admin" asp-action="Registration" class="btn btn-primary">Create Nominee</a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer text-muted text-center">
+                        <p><strong>Subscribed Competitions:</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

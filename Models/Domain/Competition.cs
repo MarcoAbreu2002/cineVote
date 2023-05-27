@@ -31,10 +31,10 @@ namespace cineVote.Models.Domain
         public string AdminId { get; set; }
 
         [Column("CategoryEntity")]
-        public ICollection<Category>? CategoryEntity { get; set; }
+        public ICollection<Category> CategoryEntity { get; set; }
 
         [Column("NomineeCompetitions")]
-        public ICollection<NomineeCompetition>? NomineeCompetitions { get; set; }
+        public ICollection<NomineeCompetition> NomineeCompetitions { get; set; }
 
         [Column("Results")]
         public Result? Results { get; set; }

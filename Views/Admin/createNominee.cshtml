@@ -1,0 +1,140 @@
+@model cineVote.Models.DTO.createNomineeModel
+
+<style>
+    .selected-movie-container {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px;
+        margin: 4px;
+        background-color: #f2f2f2;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+
+    .selected-movie-container span {
+        margin-right: 8px;
+    }
+
+    .selected-movie-container button {
+        margin-left: 8px;
+        padding: 2px 6px;
+        border-radius: 50%;
+    }
+</style>
+
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-10">
+            <div class="card" style="color: #333;">
+                <div class="card-header">
+                    <h1 class="text-center">Create a new Nominee</h1>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Select Movies:</label>
+                        <div id="selectedMoviesContainer" class="d-flex flex-wrap"></div>
+                        <input id="selectedMovieIds" name="SelectedMovieIds" type="hidden" />
+                    </div>
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-primary" onclick="addNomineesToCompetition()">Add Nominees
+                            To Competition</button>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <div class="row">
+                        @foreach (var movie in Model.Movies)
+                        {
+                            var movieId = movie["Id"].ToString();
+                            var movieTitle = movie["Title"].ToString();
+                            var movieImagePath = movie["PosterPath"].ToString();
+                            var movieOverview = movie["Overview"].ToString();
+                            var releaseDate = movie["ReleaseDate"].ToString();
+                            var baseUrl = "https://image.tmdb.org/t/p/";
+                            var fileSize = "w500";
+                            var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+                            <div class="col-md-6 mb-4">
+                                <div class="card">
+                                    <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@movieTitle</h5>
+                                        <p class="card-text">Release Date: @releaseDate</p>
+                                        <p class="card-text">@movieOverview</p>
+                                        <button type="button" class="btn btn-success" onclick="addToNomineeList('@movieId', '@movieTitle', '@movieOverview', '@releaseDate')">Add to Nominee List</button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var selectedMovieIds = [];
+
+function addToNomineeList(movieId, movieTitle, movieOverview, releaseDate) {
+    if (!selectedMovieIds.some(movie => movie.id === movieId)) {
+        selectedMovieIds.push({ id: movieId, title: movieTitle, overview: movieOverview, releaseDate: releaseDate });
+        addSelectedMovieOption(movieId, movieTitle, movieOverview, releaseDate);
+    } else {
+        alert("Movie already added to the Nominee List.");
+    }
+}
+
+
+    function addSelectedMovieOption(movieId, movieTitle, movieOverview, releaseDate) {
+        var container = document.getElementById("selectedMoviesContainer");
+        var movieContainer = document.createElement("div");
+        movieContainer.className = "selected-movie-container";
+        movieContainer.innerHTML = `
+        <div>
+            <span class="movie-title">${movieTitle}</span>
+        </div>
+        <button type="button" class="btn btn-sm btn-danger" onclick="removeFromNomineeList('${movieId}', '${movieTitle}')">
+            X
+        </button>
+    `;
+        container.appendChild(movieContainer);
+        document.getElementById("selectedMovieIds").value = JSON.stringify(selectedMovieIds);
+    }
+
+
+function removeFromNomineeList(movieId, movieTitle) {
+    var index = selectedMovieIds.findIndex(movie => movie.id === movieId);
+    if (index !== -1) {
+        selectedMovieIds.splice(index, 1);
+        var movieContainers = document.getElementsByClassName("selected-movie-container");
+        for (var i = 0; i < movieContainers.length; i++) {
+            var container = movieContainers[i];
+            if (container.querySelector(".movie-title").textContent.trim() === movieTitle) {
+                container.remove();
+                break;
+            }
+        }
+        document.getElementById("selectedMovieIds").value = JSON.stringify(selectedMovieIds);
+    }
+}
+
+
+    function addNomineesToCompetition() {
+        if (selectedMovieIds.length === 0) {
+            alert("Please select at least one nominee.");
+            return;
+        }
+
+        // Access the selected movie details from the selectedMovieIds array
+        var selectedMovies = selectedMovieIds.map(movie => ({
+            id: movie.id,
+            title: movie.title,
+            overview: movie.overview,
+            releaseDate: movie.releaseDate
+        }));
+
+        // Example: Submit the form or make an AJAX request to add the nominees
+        console.log("Adding nominees to the competition: " + JSON.stringify(selectedMovies));
+    }
+
+</script>

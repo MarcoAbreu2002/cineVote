@@ -1,44 +1,48 @@
 ﻿using cineVote.Models.DTO;
 using cineVote.Repositories.Abstract;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 
 namespace cineVote.Controllers
 {
     public class CompetitionController : Controller
     {
         private readonly AppDbContext? _context;
+        private readonly ICompetitionManager _competitionManager;
+        private readonly ITMDBApiService _ITMDBApiService;
 
-        private readonly ICompetitionManager _CompetitionManager;
-
-        public CompetitionController(AppDbContext? context, ICompetitionManager competitionManager)
+        public CompetitionController(AppDbContext? context, ICompetitionManager competitionManager, ITMDBApiService ITMDBApiService)
         {
             _context = context;
-            _CompetitionManager = competitionManager;
+            _competitionManager = competitionManager;
+            _ITMDBApiService = ITMDBApiService;
         }
+
         public IActionResult Index()
         {
-            //IEnumerable<Competition> objCompetitionList = _context.tblCompetition.Include(c => c.CategoryEntity).ToList();
-            return View(/*objCompetitionList*/);
+            return View();
         }
 
-
-        public IActionResult createCompetition()
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> CreateCompetition()
         {
             var model = new createCompetitionModel();
             model.categoryList = _context.Categories.ToList();
+            model.nominees = await _ITMDBApiService.GetPopularMovies();
             return View(model);
         }
 
-
-
         [HttpPost]
-        public IActionResult createCompetition(createCompetitionModel createCompetitionModel)
+        public IActionResult CreateCompetition(createCompetitionModel createCompetitionModel)
         {
-            if (ModelState.IsValid) { return View(createCompetitionModel); }
-            var result = this._CompetitionManager.createCompetition(createCompetitionModel);
-            //TempData["msg"] = result.Message;
-            return RedirectToAction(nameof(createCompetition));
+            if (ModelState.IsValid)
+            {
+                var result = _competitionManager.createCompetition(createCompetitionModel);
+                //TempData["msg"] = result.Message;
+                return RedirectToAction(nameof(CreateCompetition));
+            }
+            
+            return View(createCompetitionModel);
         }
     }
 }

@@ -14,5 +14,9 @@ html {
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    color: white;
+    background: rgb(23,4,46);
+    background: linear-gradient(90deg, rgba(23,4,46,1) 9%, rgba(83,18,111,1) 52%, rgba(23,4,46,1) 91%);
 }
+

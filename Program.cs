@@ -33,8 +33,14 @@ namespace cineVote
                 options.LoginPath = "/UserAuthentication/Login";
             });
 
+            
+            builder.Services.AddHttpClient();
+
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
             builder.Services.AddScoped<ICompetitionManager, CompetitionManager>();
+            builder.Services.AddScoped<IAdminTasks, AdminTasks>();
+            builder.Services.AddScoped<ITMDBApiService, TMDBApiService>();
+            
 
             var app = builder.Build();
 
