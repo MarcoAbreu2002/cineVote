@@ -1,0 +1,70 @@
+﻿@model IEnumerable<cineVote.Models.Domain.Competition>
+@{
+    ViewData["Title"] = "Competitions";
+}
+
+<style>
+    table, th, td {
+        color: white;
+    }
+</style>
+<div class="tbl-container">
+    <h2>Available Competitions</h2>
+    <table class="table table-bordered table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>
+                    Competition Name
+                </th>
+                <th>
+                    Competition Category
+                </th>
+                <th>
+                    Start Date
+                </th>
+                <th>
+                    Competition ID
+                </th>
+                <th>
+                    End Date
+                </th>
+                <th>
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @item.Name
+                    </td>
+                    <td>
+                        @if (item.CategoryId != null)
+                        {
+                            <span>@item.CategoryId</span>
+                        }
+                        else
+                        {
+                            <span>No category</span>
+                        }
+                    </td>
+                    <td>
+                        @item.StartDate
+                    </td>
+                    <td>
+                        @item.Competition_Id
+                    </td>
+                    <td>
+                        @item.EndDate
+                    </td>
+                    <td>
+                        <a class="btn btn-success" href="/Competition/Edit?competitionId=@item.Competition_Id"><i class="bi bi-pen"></i> Edit</a> |
+                        <a class="btn btn-danger" onclick="return window.confirm('Are you sure?')" href="/Competition/Delete?competitionId=@item.Competition_Id"><i class="bi bi-trash"></i> Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

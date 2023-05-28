@@ -1,7 +1,6 @@
 @model cineVote.Models.DTO.createCompetitionModel;
-
 <style>
-	.selected-movie-container {
+	.selected-category-container {
 		display: inline-flex;
 		align-items: center;
 		padding: 8px;
@@ -11,111 +10,136 @@
 		font-size: 14px;
 	}
 
-	.selected-movie-container span {
+	.selected-category-container span {
 		margin-right: 8px;
 	}
 
-	.selected-movie-container button {
+	.selected-category-container button {
 		margin-left: 8px;
 		padding: 2px 6px;
 		border-radius: 50%;
 	}
+
+	.form-container {
+		width: 100%;
+		/* Set the desired width for the form container */
+		max-width: 1200px;
+		/* Set a maximum width if needed */
+		margin: 0 auto;
+		/* Center the form horizontally */
+	}
 </style>
 
-<div class="row" style="display: flex;justify-content: center; align-items: center;">
-	<h1 style="display: flex;justify-content: center; align-items: center;">Create a new Competition</h1>
-	<hr>
-	<div class="col-6">
+<div class="form-container">
+	<div class="row" style="display: flex;justify-content: center; align-items: center;">
+		<h1 style="display: flex;justify-content: center; align-items: center;">Create a new Competition</h1>
+		<hr>
+		<div class="col-6">
 
-		<div class="card" style="color:black;">
-			<div class="card-header">
-				<h5>Fill the form</h5>
-			</div>
-			<div class="card-body" style="color:black;">
-				<form asp-controller="Competition" asp-action="createCompetition" method="post">
-					<div class="mb-3">
-						<label class="form-label">Name of the Competition:</label>
-						<input asp-for="Name" type="text" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Make the competition public:</label>
-						<div class="btn-group" data-toggle="buttons">
-							<label class="btn btn-outline-primary">
-								<input type="radio" asp-for="isPublic" value="true"> Yes
-							</label>
-							<label class="btn btn-outline-primary">
-								<input type="radio" asp-for="isPublic" value="false"> No
-							</label>
-						</div>
-					</div>
+			<div class="card" style="color:black;">
+				<div class="card-header">
+					<h5>Fill the form</h5>
+				</div>
+				<div class="card-body" style="color:black;">
+					<form asp-controller="Competition" asp-action="createCompetition" method="post">
 
-					<div class="mb-3">
-						<label class="form-label">Category of the competition:</label>
-						<select asp-for="category" class="form-control">
-							@foreach (var item in Model.categoryList)
-							{
-								<option value="@item.CategoryId">@item.Name</option>
-							}
-						</select>
-						<span asp-validation-for="category" class="text-danger"></span>
-					</div>
-					<div class="mb-3">
-						<label class="form-label">Starting of the competition:</label>
-						<input asp-for="startDate" type="date" class="form-control" />
-					</div>
-					<div class="mb-3">
-						<label class="form-label">End of the competition:</label>
-						<input asp-for="endDate" type="date" class="form-control" />
-					</div>
-
-					<div class="card-body">
 						<div class="mb-3">
-							<label class="form-label">Select Movies:</label>
-							<div id="selectedMoviesContainer" class="d-flex flex-wrap"></div>
-							<input id="selectedMovieIds" name="SelectedMovieIds" type="hidden" />
+							<label class="form-label">Name of the Competition:</label>
+							<input asp-for="Name" type="text" class="form-control" />
 						</div>
-					</div>
-					<div class="card-footer">
-						<div class="row">
-							@foreach (var movie in Model.nominees)
-							{
-								var movieId = movie["Id"].ToString();
-								var movieTitle = movie["Title"].ToString();
-								var movieImagePath = movie["PosterPath"].ToString();
-								var movieOverview = movie["Overview"].ToString();
-								var releaseDate = movie["ReleaseDate"].ToString();
-								var baseUrl = "https://image.tmdb.org/t/p/";
-								var fileSize = "w500";
-								var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
-								<div class="col-md-6 mb-4">
-									<div class="card">
-										<img src="@imageUrl" class="card-img-top" alt="Movie Poster">
-										<div class="card-body">
-											<h5 class="card-title">@movieTitle</h5>
-											<p class="card-text">Release Date: @releaseDate</p>
-											<p class="card-text">@movieOverview</p>
+
+						<div class="mb-3">
+							<label class="form-label">Categories of the competition:</label>
+							<div class="category-list">
+								@if (Model.categoryList != null)
+								{
+									@foreach (var item in Model.categoryList)
+									{
+										<div class="category-option">
+											<div class="category-name">@item.Name</div>
 											<button type="button" class="btn btn-success"
-												onclick="addToNomineeList('@movieId', '@movieTitle', '@movieOverview', '@releaseDate')">Add
-												to Nominee List</button>
-
+												onclick="addCatergoryToList('@item.CategoryId','@item.Name')">Add</button>
 										</div>
-									</div>
-								</div>
-							}
+									}
+								}
+								else
+								{
+									<p>No categories found.</p>
+								}
+
+							</div>
+
 						</div>
-					</div>
+						<div class="mb-3">
+							<label class="form-label">Starting of the competition:</label>
+							<input asp-for="startDate" type="date" class="form-control" />
+						</div>
 
-					<div class="mb-3">
-						<button type="button" class="btn btn-primary" onclick="addNomineesToCompetition()">Add Nominees
-							To Competition</button>
-					</div>
+						<div class="mb-3">
+							<label class="form-label">End of the competition:</label>
+							<input asp-for="endDate" type="date" class="form-control" />
+						</div>
 
-					<div class="mb-3">
-						<button type="submit" class="btn btn-primary">Create</button>
-					</div>
-				</form>
-			</div>
-			<div class="card-footer">
+						<div class="card-body">
+							<div class="mb-3">
+								<label class="form-label">Selected Movies:</label>
+								<div id="selectedMoviesContainer" class="d-flex flex-wrap"></div>
+								<input asp-for="NomineeDBId" id="NomineeDBId" name="NomineeDBId" type="hidden" />
+							</div>
+						</div>
+						<div class="card-body">
+							<div class="mb-3">
+								<label class="form-label">Selected Categories:</label>
+								<div id="selectedCategoriesContainer" class="d-flex flex-wrap"></div>
+								<input asp-for="category" id="category" name="category" type="hidden" />
+							</div>
+						</div>
+
+						<div class="card-footer">
+							<div class="row">
+								@if (Model.nominees != null)
+								{
+									@foreach (var movie in Model.nominees)
+									{
+										var movieId = movie["Id"].ToString();
+										var movieTitle = movie["Title"].ToString();
+										var movieImagePath = movie["PosterPath"].ToString();
+										var movieOverview = movie["Overview"].ToString();
+										var releaseDate = movie["ReleaseDate"].ToString();
+										var baseUrl = "https://image.tmdb.org/t/p/";
+										var fileSize = "w500";
+										var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+										<div class="col-md-6 mb-4">
+											<div class="card">
+												<img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+												<div class="card-body">
+													<h5 class="card-title">@movieTitle</h5>
+													<p class="card-text">Release Date: @releaseDate</p>
+													<p class="card-text">@movieOverview</p>
+													<button type="button" class="btn btn-success"
+														onclick="addToNomineeList('@movieId', '@movieTitle', '@movieOverview', '@releaseDate')">Add
+														to Nominee List</button>
+												</div>
+											</div>
+										</div>
+									}
+								}
+								else
+								{
+									<p>No nominees found.</p>
+								}
+
+
+							</div>
+						</div>
+
+						<div class="mb-3">
+							<button type="submit" class="btn btn-primary">Create</button>
+						</div>
+					</form>
+				</div>
+				<div class="card-footer">
+				</div>
 			</div>
 		</div>
 	</div>
@@ -123,36 +147,71 @@
 
 <script>
 	var selectedMovieIds = [];
+	var selectedCategories = [];
 
 	function addToNomineeList(movieId, movieTitle, movieOverview, releaseDate) {
-		if (!selectedMovieIds.some(movie => movie.id === movieId)) {
-			selectedMovieIds.push({ id: movieId, title: movieTitle, overview: movieOverview, releaseDate: releaseDate });
+		console.log("ID: " + movieId);
+		if (!selectedMovieIds.includes(movieId)) {
+			selectedMovieIds.push(movieId);
 			addSelectedMovieOption(movieId, movieTitle, movieOverview, releaseDate);
 		} else {
 			alert("Movie already added to the Nominee List.");
 		}
 	}
 
+	function addCatergoryToList(categoryId, categoryName) {
+		if (!selectedCategories.includes(categoryId)) {
+			selectedCategories.push(categoryId);
+			addSelectedCategoryOption(categoryId, categoryName);
+		} else {
+			alert("Category has already been added!");
+		}
+	}
 
 	function addSelectedMovieOption(movieId, movieTitle, movieOverview, releaseDate) {
 		var container = document.getElementById("selectedMoviesContainer");
 		var movieContainer = document.createElement("div");
 		movieContainer.className = "selected-movie-container";
 		movieContainer.innerHTML = `
-		<div>
-			<span class="movie-title">${movieTitle}</span>
-		</div>
-		<button type="button" class="btn btn-sm btn-danger" onclick="removeFromNomineeList('${movieId}', '${movieTitle}')">
-			X
-		</button>
-	`;
+	<div>
+	  <span class="movie-title">${movieTitle}</span>
+	</div>
+	<button type="button" class="btn btn-sm btn-danger" onclick="removeFromNomineeList('${movieId}', '${movieTitle}')">
+	  X
+	</button>
+  `;
 		container.appendChild(movieContainer);
-		document.getElementById("selectedMovieIds").value = JSON.stringify(selectedMovieIds);
+
+		// Update the asp-for attribute with the selectedMovieIds array
+		var nomineeField = document.getElementById("NomineeDBId");
+		nomineeField.setAttribute("asp-for", "NomineeDBId");
+		nomineeField.value = JSON.stringify(selectedMovieIds);
+	}
+
+
+	function addSelectedCategoryOption(categoryId, categoryName) {
+		var container = document.getElementById("selectedCategoriesContainer");
+		var categoryContainer = document.createElement("div");
+		categoryContainer.className = "selected-category-container";
+		categoryContainer.innerHTML = `
+	<div>
+	  <span class="category-name">${categoryName}</span>
+	</div>
+	<button type="button" class="btn btn-sm btn-danger" onclick="removeFromCategoryList('${categoryId}', '${categoryName}')">
+	  X
+	</button>
+  `;
+		container.appendChild(categoryContainer);
+
+		// Update the asp-for attribute with the selectedCategories array
+		var categoryField = document.getElementById("category");
+		categoryField.setAttribute("asp-for", "category");
+		categoryField.value = JSON.stringify(selectedCategories);
 	}
 
 
 	function removeFromNomineeList(movieId, movieTitle) {
-		var index = selectedMovieIds.findIndex(movie => movie.id === movieId);
+		var index = selectedMovieIds.indexOf(movieId);
 		if (index !== -1) {
 			selectedMovieIds.splice(index, 1);
 			var movieContainers = document.getElementsByClassName("selected-movie-container");
@@ -163,7 +222,26 @@
 					break;
 				}
 			}
-			document.getElementById("selectedMovieIds").value = JSON.stringify(selectedMovieIds);
+			document.getElementById("NomineeDBId").value = JSON.stringify(selectedMovieIds);
 		}
 	}
+
+
+	function removeFromCategoryList(categoryId, categoryName) {
+		var index = selectedCategories.indexOf(categoryId);
+		if (index !== -1) {
+			selectedCategories.splice(index, 1);
+			var categoryContainers = document.getElementsByClassName("selected-category-container");
+			for (var i = 0; i < categoryContainers.length; i++) {
+				var container = categoryContainers[i];
+				if (container.querySelector(".category-name").textContent.trim() === categoryName) {
+					container.remove();
+					break;
+				}
+			}
+			document.getElementById("category").value = JSON.stringify(selectedCategories);
+		}
+	}
+
 </script>
+

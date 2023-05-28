@@ -1,4 +1,5 @@
-﻿using cineVote.Models.DTO;
+﻿using cineVote.Models.Domain;
+using cineVote.Models.DTO;
 using cineVote.Repositories.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,11 +18,19 @@ namespace cineVote.Controllers
             _competitionManager = competitionManager;
             _ITMDBApiService = ITMDBApiService;
         }
-
-        public IActionResult Index()
+        public IActionResult DisplayCompetition()
         {
-            return View();
+            List<Competition> competitions = _context.Competitions.ToList();
+
+            return View(competitions);
         }
+
+        public IActionResult Delete(int competitionId)
+        {
+            var result = _competitionManager.removeCompetition(competitionId);
+            return RedirectToAction("DisplayCompetition");
+        }
+
 
         [Authorize(Roles = "admin")]
         public async Task<IActionResult> CreateCompetition()
@@ -35,14 +44,14 @@ namespace cineVote.Controllers
         [HttpPost]
         public IActionResult CreateCompetition(createCompetitionModel createCompetitionModel)
         {
-            if (ModelState.IsValid)
-            {
-                var result = _competitionManager.createCompetition(createCompetitionModel);
-                //TempData["msg"] = result.Message;
-                return RedirectToAction(nameof(CreateCompetition));
-            }
-            
-            return View(createCompetitionModel);
+            //if (ModelState.IsValid)
+            // {
+            var result = _competitionManager.createCompetition(createCompetitionModel);
+            //TempData["msg"] = result.Message;
+            return RedirectToAction(nameof(CreateCompetition));
+            // }
+
+            //return View(createCompetitionModel);
         }
     }
 }

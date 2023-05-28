@@ -5,7 +5,8 @@ namespace cineVote.Repositories.Abstract
     public interface ICompetitionManager
     {
         Task<Status> createCompetition(createCompetitionModel createCompetitionModel);
-        Task<Status> removeCompetition(createCompetitionModel createCompetitionModel);
+        bool removeCompetition(int competitionId);
+        Competition FindById(int id);
         Task<Competition> getCompetition();
     }
 }

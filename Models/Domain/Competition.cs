@@ -34,7 +34,7 @@ namespace cineVote.Models.Domain
         public ICollection<Category> CategoryEntity { get; set; }
 
         [Column("NomineeCompetitions")]
-        public ICollection<NomineeCompetition> NomineeCompetitions { get; set; }
+        public ICollection<Nominee> Nominees { get; set; }
 
         [Column("Results")]
         public Result? Results { get; set; }

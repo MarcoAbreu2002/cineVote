@@ -14,10 +14,6 @@ namespace cineVote.Models.DTO
         [Required(ErrorMessage = "Status is required")]
         public Boolean isPublic{ get; set; }
 
-        [Display(Name = "Category of the Competition")]
-        [Required(ErrorMessage = "Category is required")]
-        public int category { get; set; }
-
         [Display(Name = "Start Date of the Competition")]
         [Required(ErrorMessage = "startDate is required")]
         public DateTime startDate { get; set; }
@@ -25,7 +21,15 @@ namespace cineVote.Models.DTO
         [Display(Name = "End Date of the Competition")]
         [Required(ErrorMessage = "endDate is required")]
         public DateTime endDate { get; set; }
-        public Category CategoryModel { get; internal set; }
+
+
+
+        [Display(Name = "Category of the Competition")]
+        [Required(ErrorMessage = "Category is required")]
+        public string category { get; set; }
+
+        public string NomineeDBId {get;set;}
+
 
 
         [NotMapped]

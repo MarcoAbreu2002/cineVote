@@ -5,16 +5,15 @@ using cineVote.Models.DTO;
 using Microsoft.Extensions.Options;
 using cineVote.Repositories.Abstract;
 using System.Security.Claims;
+using Newtonsoft.Json;
 
 namespace cineVote.Repositories.Implementation
 {
     public class CompetitionManager : ICompetitionManager
     {
-
         private readonly AppDbContext _db;
         private readonly UserManager<Person> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
-
 
         public CompetitionManager(AppDbContext db, IHttpContextAccessor httpContextAccessor, UserManager<Person> userManager)
         {
@@ -23,25 +22,26 @@ namespace cineVote.Repositories.Implementation
             _userManager = userManager;
         }
 
-
         public Task<Status> createCompetition(createCompetitionModel createCompetitionModel)
         {
             var status = new Status();
+            int[] nomineeDBIdArray = JsonConvert.DeserializeObject<int[]>(createCompetitionModel.NomineeDBId);
+            int[] categoryArray = JsonConvert.DeserializeObject<int[]>(createCompetitionModel.category);
+
             Competition competition = new Competition()
             {
                 Name = createCompetitionModel.Name,
                 IsPublic = createCompetitionModel.isPublic,
                 StartDate = createCompetitionModel.startDate,
                 EndDate = createCompetitionModel.endDate,
-                CategoryId = createCompetitionModel.category,
                 AdminId = getAdminId()
             };
 
             _db.Add(competition);
-            _db.SaveChanges();  
+            _db.SaveChanges();
 
             status.StatusCode = 1;
-            status.Message = "Account created succefully";
+            status.Message = "Account created successfully";
             return Task.FromResult(status);
         }
 
@@ -50,11 +50,26 @@ namespace cineVote.Repositories.Implementation
             throw new NotImplementedException();
         }
 
-        public Task<Status> removeCompetition(int competitionId)
+        public bool removeCompetition(int competitionId)
         {
-            throw new NotImplementedException();
+            try{
+                var data = this.FindById(competitionId);
+                if(data ==null)
+                    return false;
+                _db.Competitions.Remove(data);
+                _db.SaveChanges();
+                return true;
+            }
+            catch(Exception ex)
+            {
+                return false;
+            }
         }
 
+        public Competition FindById(int id)
+        {
+            return _db.Competitions.Find(id);
+        }
 
         private string getAdminId()
         {
@@ -62,13 +77,8 @@ namespace cineVote.Repositories.Implementation
             string userId = _userManager.GetUserId(principal);
             return userId;
         }
-
+        
         Task<Competition> ICompetitionManager.getCompetition()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<Status> ICompetitionManager.removeCompetition(createCompetitionModel createCompetitionModel)
         {
             throw new NotImplementedException();
         }
