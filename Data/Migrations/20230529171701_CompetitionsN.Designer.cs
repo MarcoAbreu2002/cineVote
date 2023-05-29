@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230529171701_CompetitionsN")]
+    partial class CompetitionsN
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -47,7 +49,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("Competition_Id");
 
-                    b.ToTable("tblCategory", (string)null);
+                    b.ToTable("tblCategory");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.CategoryNominee", b =>
@@ -72,7 +74,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("NomineeId");
 
-                    b.ToTable("tblCategoryNominee", (string)null);
+                    b.ToTable("tblCategoryNominee");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Competition", b =>
@@ -118,7 +120,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("ResultsResultId");
 
-                    b.ToTable("tblCompetition", (string)null);
+                    b.ToTable("tblCompetition");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Nominee", b =>
@@ -153,7 +155,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("Competition_Id");
 
-                    b.ToTable("tblNominee", (string)null);
+                    b.ToTable("tblNominee");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.NomineeCompetition", b =>
@@ -181,7 +183,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("NomineeId");
 
-                    b.ToTable("tblNomineeCompetition", (string)null);
+                    b.ToTable("tblNomineeCompetition");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Notification", b =>
@@ -203,7 +205,7 @@ namespace cineVote.Migrations
 
                     b.HasKey("NotificationId");
 
-                    b.ToTable("tblNotification", (string)null);
+                    b.ToTable("tblNotification");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Person", b =>
@@ -335,7 +337,7 @@ namespace cineVote.Migrations
                     b.HasIndex("SubscriptionId")
                         .IsUnique();
 
-                    b.ToTable("tblResult", (string)null);
+                    b.ToTable("tblResult");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Role", b =>
@@ -363,7 +365,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("tblRole", (string)null);
+                    b.ToTable("tblRole");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Subscription", b =>
@@ -371,16 +373,13 @@ namespace cineVote.Migrations
                     b.Property<int>("SubscriptionId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasColumnName("SubscriptionId");
+                        .HasColumnName("Subscription_id");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("SubscriptionId"), 1L, 1);
 
-                    b.Property<int>("Competition_Id")
+                    b.Property<int>("CompetitionId")
                         .HasColumnType("int")
                         .HasColumnName("Competition_Id");
-
-                    b.Property<int?>("Competition_Id1")
-                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)")
@@ -388,9 +387,9 @@ namespace cineVote.Migrations
 
                     b.HasKey("SubscriptionId");
 
-                    b.HasIndex("Competition_Id1");
+                    b.HasIndex("CompetitionId");
 
-                    b.ToTable("tblSubscription", (string)null);
+                    b.ToTable("tblSubscription");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.SubscriptionNotifications", b =>
@@ -415,7 +414,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("SubscriptionId");
 
-                    b.ToTable("tblSubscriptionNotifications", (string)null);
+                    b.ToTable("tblSubscriptionNotifications");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Vote", b =>
@@ -457,7 +456,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("UserId1");
 
-                    b.ToTable("tblVotes", (string)null);
+                    b.ToTable("tblVotes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -605,7 +604,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("RolesRoleId");
 
-                    b.ToTable("ParticipantRole", (string)null);
+                    b.ToTable("ParticipantRole");
                 });
 
             modelBuilder.Entity("SubscriptionUser", b =>
@@ -620,7 +619,7 @@ namespace cineVote.Migrations
 
                     b.HasIndex("subscritionsSubscriptionId");
 
-                    b.ToTable("SubscriptionUser", (string)null);
+                    b.ToTable("SubscriptionUser");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Admin", b =>
@@ -631,7 +630,7 @@ namespace cineVote.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Competition_Id");
 
-                    b.ToTable("tblAdmin", (string)null);
+                    b.ToTable("tblAdmin");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Movie", b =>
@@ -658,7 +657,7 @@ namespace cineVote.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Title");
 
-                    b.ToTable("tblMovie", (string)null);
+                    b.ToTable("tblMovie");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Participant", b =>
@@ -681,7 +680,7 @@ namespace cineVote.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("Nationality");
 
-                    b.ToTable("tblParticipant", (string)null);
+                    b.ToTable("tblParticipant");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.User", b =>
@@ -692,13 +691,13 @@ namespace cineVote.Migrations
                         .HasColumnType("int")
                         .HasColumnName("SubscriptionId");
 
-                    b.ToTable("tblUser", (string)null);
+                    b.ToTable("tblUser");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Category", b =>
                 {
                     b.HasOne("cineVote.Models.Domain.Competition", null)
-                        .WithMany("Categories")
+                        .WithMany("CategoryEntity")
                         .HasForeignKey("Competition_Id")
                         .OnDelete(DeleteBehavior.Restrict);
                 });
@@ -806,8 +805,9 @@ namespace cineVote.Migrations
                 {
                     b.HasOne("cineVote.Models.Domain.Competition", "Competition")
                         .WithMany()
-                        .HasForeignKey("Competition_Id1")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasForeignKey("CompetitionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Competition");
                 });
@@ -985,7 +985,7 @@ namespace cineVote.Migrations
 
             modelBuilder.Entity("cineVote.Models.Domain.Competition", b =>
                 {
-                    b.Navigation("Categories");
+                    b.Navigation("CategoryEntity");
 
                     b.Navigation("Nominees");
                 });

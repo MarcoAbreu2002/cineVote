@@ -6,7 +6,7 @@ namespace cineVote.Repositories.Abstract
     {
         Task<Status> getProfile(int userId);
         Task<User> FindByUsernameAsync(string username);
-
+        Task<Status>  Subscribe (string username, int competitionId);
         bool EditProfile(User user);
     }
 }

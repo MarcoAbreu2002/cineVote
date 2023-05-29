@@ -10,6 +10,10 @@ namespace cineVote.Models.Domain
         [Column("NomineeId")]
         public int NomineeId { get; set; }
 
+        [Column("TMDBId")]
+
+        public int TMDBId {get;set;}
+
         [Column("ProfilePictureURL")]
         public string? ProfilePictureURL { get; set; }
 

@@ -40,6 +40,29 @@ public class TMDBApiService : ITMDBApiService
         }
     }
 
+    public async Task<List<Dictionary<String, object>>> GetMovieById(int movieDbId)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri("https://api.themoviedb.org/3/movie/{movieDbId}?language=en-US"),
+            Headers =
+                {
+                    { "accept", "application/json" },
+                    { "Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Y2IwMjNjMmY4ZjNiODUwNTBkZjVhMjMxYzExZDZlNSIsInN1YiI6IjY0NzIwNDAzOWFlNjEzMDBhODA2Y2RkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.umLcRjDrFarEpbLBkYgyMKkHcRGXoJZsgjlh1kszVJA" },
+                },
+        };
+
+        using (var response = await client.SendAsync(request))
+        {
+            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
+            var movies = ParseMovieResponse(body);
+            return movies;
+        }
+    }
+
     private List<Dictionary<string, object>> ParseMovieResponse(string response)
     {
         var movieData = JObject.Parse(response);

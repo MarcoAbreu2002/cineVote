@@ -30,6 +30,22 @@ namespace cineVote.Controllers
             return View(record);
         }
 
+
+        [HttpPost]
+        public ActionResult Subscribe(string username, int competitionId)
+        {
+            if (!ModelState.IsValid)
+            {
+                return RedirectToAction("Profile", username);
+            }
+
+            var result = _userService.Subscribe(username, competitionId);
+
+
+            return RedirectToAction("DisplayCompetition", "Competition");
+        }
+
+
         [HttpPost]
         public IActionResult EditProfile(User user)
         {
@@ -45,6 +61,8 @@ namespace cineVote.Controllers
             TempData["msg"] = "Error has occured on server side";
             return View(user);
         }
+
+
 
 
     }

@@ -7,7 +7,6 @@
                 @if (Model != null)
                 {
                     <div class="col-md-3 border-right">
-
                         <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                             <h1 class="font-weight-bold">@Model.Name</h1>
                         </div>
@@ -32,10 +31,20 @@
                                     <label class="labels">Nominees:</label>
                                     <span>@Model.Nominees</span>
                                 </div>
+                                <div class="col-md-6">
+                                    <br />
+                                    <label class="labels">Categories:</label>
+
+                                </div>
+
                                 <div class="mt-5">
-                                    <a class="btn btn-primary profile-button"
-                                        href="/User/Subscribe?username=@User.Identity.Name"><i
-                                            class="bi bi-pen"></i>Subscribe</a>
+                                    <form action="/User/Subscribe" method="post">
+                                        <input type="hidden" name="username" value="@User.Identity.Name" />
+                                        <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
+                                        <button class="btn btn-primary profile-button" type="submit"><i
+                                                class="bi bi-pen"></i>Subscribe</button>
+                                    </form>
+
                                 </div>
                             </div>
                         </div>

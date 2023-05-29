@@ -28,18 +28,6 @@ namespace cineVote.Repositories.Implementation
             int[] nomineeDBIdArray = JsonConvert.DeserializeObject<int[]>(createCompetitionModel.NomineeDBId);
             int[] categoryArray = JsonConvert.DeserializeObject<int[]>(createCompetitionModel.category);
 
-            Nominee nominee = null;
-
-            foreach (int nomineeId in nomineeDBIdArray)
-            {
-                nominee = new Nominee()
-                {
-                    NomineeId = nomineeId,
-                };
-            }
-
-            _db.Nominees.Add(nominee);
-
             Competition competition = new Competition()
             {
                 Name = createCompetitionModel.Name,
@@ -47,18 +35,41 @@ namespace cineVote.Repositories.Implementation
                 StartDate = createCompetitionModel.startDate,
                 EndDate = createCompetitionModel.endDate,
                 AdminId = getAdminId(),
+                Categories = new List<Category>() // Initialize the Categories collection
             };
+
+            foreach (int categoryId in categoryArray)
+            {
+                
+                Category category = _db.Categories.Find(categoryId); // Retrieve the existing category from the database
+                if (category != null)
+                {
+                    competition.Categories.Add(category); // Add the category to the Categories collection
+                }
+
+            }
 
             _db.Competitions.Add(competition);
 
-            NomineeCompetition nomineeCompetition = new NomineeCompetition()
-            {
-                CompetitionId = competition.Competition_Id,
-                NomineeId = nominee?.NomineeId ?? 0
-            };
+            _db.SaveChanges();
 
-            _db.NomineeCompetitions.Add(nomineeCompetition);
-            
+            foreach (int nomineeId in nomineeDBIdArray)
+            {
+                Nominee nominee = new Nominee()
+                {
+                    TMDBId = nomineeId,
+                };
+                _db.Nominees.Add(nominee);
+                _db.SaveChanges();
+
+                NomineeCompetition nomineeCompetition = new NomineeCompetition()
+                {
+                    Competition_Id = competition.Competition_Id,
+                    NomineeId = nominee.NomineeId
+                };
+
+                _db.NomineeCompetitions.Add(nomineeCompetition);
+            }
 
             _db.SaveChanges();
 

@@ -53,6 +53,33 @@ namespace cineVote.Repositories.Implementation
                 return false;
             }
         }
+        public Competition FindById(int id)
+        {
+            return _db.Competitions.Find(id);
+        }
+        public Task<Status> Subscribe(string username, int competitionId)
+        {
+            var status = new Status();
+            var userId = getUserId();
+            User user =  _db.Users.Find(userId);
+            var competition = FindById(competitionId);
+            Subscription subscription = new Subscription()
+            {
+                Name = competition.Name,
+                Competition_Id = competitionId,
+                user_Id = user.Id,
+                User = user
+            };
+            user.SubscriptionId = subscription.SubscriptionId;
+            _db.Users.Update(user);
+            _db.Subscriptions.Add(subscription);
+            _db.SaveChanges();
+
+
+            status.StatusCode = 1;
+            status.Message = "Account created successfully";
+            return Task.FromResult(status);
+        }
 
 
     }

@@ -23,7 +23,7 @@ namespace cineVote.Models.Domain
         public DateTime EndDate { get; set; }
 
         [ForeignKey("CategoryId")]
-        [Column("Category")]
+        [Column("CategoryId")]
         public int CategoryId { get; set; }
 
         [ForeignKey("AdminId")]
@@ -31,7 +31,7 @@ namespace cineVote.Models.Domain
         public string AdminId { get; set; }
 
         [Column("CategoryEntity")]
-        public ICollection<Category> CategoryEntity { get; set; }
+        public ICollection<Category> Categories { get; set; }
 
         [Column("NomineeCompetitions")]
         public List<Nominee> Nominees { get; set; }
