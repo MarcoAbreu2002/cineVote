@@ -28,16 +28,38 @@ namespace cineVote.Repositories.Implementation
             int[] nomineeDBIdArray = JsonConvert.DeserializeObject<int[]>(createCompetitionModel.NomineeDBId);
             int[] categoryArray = JsonConvert.DeserializeObject<int[]>(createCompetitionModel.category);
 
+            Nominee nominee = null;
+
+            foreach (int nomineeId in nomineeDBIdArray)
+            {
+                nominee = new Nominee()
+                {
+                    NomineeId = nomineeId,
+                };
+            }
+
+            _db.Nominees.Add(nominee);
+
             Competition competition = new Competition()
             {
                 Name = createCompetitionModel.Name,
                 IsPublic = createCompetitionModel.isPublic,
                 StartDate = createCompetitionModel.startDate,
                 EndDate = createCompetitionModel.endDate,
-                AdminId = getAdminId()
+                AdminId = getAdminId(),
             };
 
-            _db.Add(competition);
+            _db.Competitions.Add(competition);
+
+            NomineeCompetition nomineeCompetition = new NomineeCompetition()
+            {
+                CompetitionId = competition.Competition_Id,
+                NomineeId = nominee?.NomineeId ?? 0
+            };
+
+            _db.NomineeCompetitions.Add(nomineeCompetition);
+            
+
             _db.SaveChanges();
 
             status.StatusCode = 1;
@@ -52,15 +74,30 @@ namespace cineVote.Repositories.Implementation
 
         public bool removeCompetition(int competitionId)
         {
-            try{
+            try
+            {
                 var data = this.FindById(competitionId);
-                if(data ==null)
+                if (data == null)
                     return false;
                 _db.Competitions.Remove(data);
                 _db.SaveChanges();
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public bool Edit(Competition competition)
+        {
+            try
+            {
+                _db.Competitions.Update(competition);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
             {
                 return false;
             }
@@ -77,7 +114,7 @@ namespace cineVote.Repositories.Implementation
             string userId = _userManager.GetUserId(principal);
             return userId;
         }
-        
+
         Task<Competition> ICompetitionManager.getCompetition()
         {
             throw new NotImplementedException();

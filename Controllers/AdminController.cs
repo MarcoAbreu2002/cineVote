@@ -13,9 +13,9 @@ namespace cineVote.Controllers
     public class AdminController : Controller
     {
         private readonly AppDbContext? _context;
-        private readonly IAdminTasks _adminTasks;
+        private readonly IAdminService _adminTasks;
 
-        public AdminController(AppDbContext? context, IAdminTasks adminTasks)
+        public AdminController(AppDbContext? context, IAdminService adminTasks)
         {
             _context = context;
             _adminTasks = adminTasks;

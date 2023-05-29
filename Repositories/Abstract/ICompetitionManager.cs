@@ -7,6 +7,7 @@ namespace cineVote.Repositories.Abstract
         Task<Status> createCompetition(createCompetitionModel createCompetitionModel);
         bool removeCompetition(int competitionId);
         Competition FindById(int id);
+        bool Edit(Competition competition);
         Task<Competition> getCompetition();
     }
 }

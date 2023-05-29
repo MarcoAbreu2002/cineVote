@@ -4,10 +4,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace cineVote.Models.Domain
 {
     [Table("tblCompetition")]
-    public class Competition 
+    public class Competition
     {
         [Key]
-        [Column("Competition_Id")]
+        [Column("Competition_Id")] // Use the exact column name from the database
         public int Competition_Id { get; set; }
 
         [Column("Name")]
@@ -34,7 +34,7 @@ namespace cineVote.Models.Domain
         public ICollection<Category> CategoryEntity { get; set; }
 
         [Column("NomineeCompetitions")]
-        public ICollection<Nominee> Nominees { get; set; }
+        public List<Nominee> Nominees { get; set; }
 
         [Column("Results")]
         public Result? Results { get; set; }

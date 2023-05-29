@@ -1,1 +1,28 @@
+@model cineVote.Models.Domain.Competition
+@{
+}
+
+<div class="tbl-container">
+    <h2>Edit Competitions</h2>
+    <form asp-action="EditCompetition" method="post">
+        <input type="hidden" asp-for="Competition_Id">
+        <input type="hidden" asp-for="IsPublic">
+        <input type="hidden" asp-for="StartDate">
+        <input type="hidden" asp-for="EndDate">
+        <input type="hidden" asp-for="CategoryId">
+        <input type="hidden" asp-for="AdminId">
+        <input type="hidden" asp-for="CategoryEntity">
+        <input type="hidden" asp-for="Nominees">
+        <input type="hidden" asp-for="Results">
+        <div class="form-group">
+            <label asp-for="Name">Name *</label>
+            <input type="text" class="form-control" asp-for="Name">
+        </div>
+
+        <div class="form-group pt-3">
+            <button type="submit" class="btn btn-dark"><i class="bi bi-save"></i> Save</button>
+            <a href="/Competition/DisplayCompetition" class="btn btn-primary"> <i class="bi bi-list"></i>List</a>
+        </div>
+    </form>
+</div>
 

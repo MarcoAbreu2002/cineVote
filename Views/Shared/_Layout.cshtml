@@ -34,8 +34,7 @@
                         @if (User.IsInRole("user"))
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="User"
-                                    asp-action="Profile">Profile</a>
+                                <a class="nav-link text-dark" href="/User/Profile?username=@User.Identity.Name">Profile</a>
                             </li>
                         }
                         @if (!string.IsNullOrEmpty(User.Identity.Name))

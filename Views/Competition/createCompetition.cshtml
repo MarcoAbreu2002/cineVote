@@ -72,12 +72,14 @@
 						</div>
 						<div class="mb-3">
 							<label class="form-label">Starting of the competition:</label>
-							<input asp-for="startDate" type="date" class="form-control" />
+							<input asp-for="startDate" type="datetime-local" class="form-control"
+								value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
 						</div>
 
 						<div class="mb-3">
 							<label class="form-label">End of the competition:</label>
-							<input asp-for="endDate" type="date" class="form-control" />
+							<input asp-for="endDate" type="datetime-local" class="form-control"
+								value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
 						</div>
 
 						<div class="card-body">

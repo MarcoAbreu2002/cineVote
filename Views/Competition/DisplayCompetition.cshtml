@@ -60,8 +60,15 @@
                         @item.EndDate
                     </td>
                     <td>
-                        <a class="btn btn-success" href="/Competition/Edit?competitionId=@item.Competition_Id"><i class="bi bi-pen"></i> Edit</a> |
-                        <a class="btn btn-danger" onclick="return window.confirm('Are you sure?')" href="/Competition/Delete?competitionId=@item.Competition_Id"><i class="bi bi-trash"></i> Delete</a>
+                        @if(User.IsInRole("admin"))
+                        {
+                            <a class="btn btn-success" href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i class="bi bi-pen"></i> Edit</a> 
+                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure?')" href="/Competition/Delete?competitionId=@item.Competition_Id"><i class="bi bi-trash"></i> Delete</a>
+                        }
+                        else
+                        {
+                            <a class="btn btn-success" href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"><i class="bi bi-pen"></i> See More</a> 
+                        }
                     </td>
                 </tr>
             }

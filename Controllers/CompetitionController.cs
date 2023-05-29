@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cineVote.Controllers
 {
+    [Authorize]
     public class CompetitionController : Controller
     {
         private readonly AppDbContext? _context;
@@ -29,6 +30,35 @@ namespace cineVote.Controllers
         {
             var result = _competitionManager.removeCompetition(competitionId);
             return RedirectToAction("DisplayCompetition");
+        }
+
+        public IActionResult SingleCompetition(int competitionId)
+        {
+            var result = _competitionManager.FindById(competitionId);
+            return View(result);
+        }
+
+
+        public IActionResult EditCompetition(int competitionId)
+        {
+            var record = _competitionManager.FindById(competitionId);
+            return View(record);
+        }
+
+        [HttpPost]
+        public IActionResult EditCompetition(Competition model)
+        {
+           // if (!ModelState.IsValid)
+           //{
+             //   return View(model);
+           // }
+            var result = _competitionManager.Edit(model);
+            if (result)
+            {
+                return RedirectToAction("DisplayCompetition");
+            }
+            TempData["msg"] = "Error has occured on server side";
+            return View(model);
         }
 
 

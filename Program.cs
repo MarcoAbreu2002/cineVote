@@ -38,7 +38,8 @@ namespace cineVote
 
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
             builder.Services.AddScoped<ICompetitionManager, CompetitionManager>();
-            builder.Services.AddScoped<IAdminTasks, AdminTasks>();
+            builder.Services.AddScoped<IAdminService, AdminService>();
+            builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITMDBApiService, TMDBApiService>();
             
 
