@@ -20,30 +20,6 @@ body {
     background: linear-gradient(90deg, rgba(23,4,46,1) 9%, rgba(83,18,111,1) 52%, rgba(23,4,46,1) 91%);
 }
 
-.teste-perfil{
-    margin-top: 8rem;
-}
-
-.perfil-img {
-    background-image: url(https://es-2023.w3spaces.com/Imagem_ES.png?bypass-cache=97893292);
-    background-repeat: no-repeat;
-    background-size: cover;
-}
-
-.perfil-but{
-    margin-top: 10%;
-
-}
-
-.competitions-list {
-    list-style-type: none;
-    padding: 0;
-}
-
-.competition {
-    margin-bottom: 20px;
-    background-color: #f0f0f0;
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #D0CBD7;
+.margem-cima{
+    margin-top:9%;
 }

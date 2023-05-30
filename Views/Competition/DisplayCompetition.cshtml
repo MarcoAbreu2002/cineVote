@@ -3,48 +3,61 @@
     ViewData["Title"] = "Competitions";
 }
 
-<h1 class="text-center">Ongoing Competitions</h1>
-<div class="text-dark mt-3">
-    <ul class="competitions-list">
-        <li class="competition">
-            <div class="fs-3 fw-bold">Nome da competição</div>
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="fs-5">Categorias</div>
-                <button class="btn btn-primary btn-lg btn-block" style="background-color:rgb(64,17,118) ">Participate</button>
-            </div>
-            <div class="text-dark">Starting Date: 16/7/2000</div>
-        </li>
-        <li class="competition">
-            <div class="fs-3 fw-bold">Nome da competição</div>
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="fs-5">Categorias</div>
-                <button class="btn btn-primary btn-lg btn-block" style="background-color:rgb(64,17,118) ">Participate</button>
-            </div>
-            <div class="text-dark">Starting Date: 16/7/2000</div>
-        </li>
-        <li class="competition">
-            <div class="fs-3 fw-bold">Nome da competição</div>
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="fs-5">Categorias</div>
-                <button class="btn btn-primary btn-lg btn-block" style="background-color:rgb(64,17,118) ">Participate</button>
-            </div>
-            <div class="text-dark">Starting Date: 16/7/2000</div>
-        </li>
-        <li class="competition">
-            <div class="fs-3 fw-bold">Nome da competição</div>
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="fs-5">Categorias</div>
-                <button class="btn btn-primary btn-lg btn-block" style="background-color:rgb(64,17,118) ">Participate</button>
-            </div>
-            <div class="text-dark">Starting Date: 16/7/2000</div>
-        </li>
-        <li class="competition">
-            <div class="fs-3 fw-bold">Nome da competição</div>
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="fs-5">Categorias</div>
-                <button class="btn btn-primary btn-lg btn-block" style="background-color:rgb(64,17,118) ">Participate</button>
-            </div>
-            <div class="text-dark">Starting Date: 16/7/2000</div>
-        </li>
-    </ul>
+<style>
+    table, th, td {
+        color: white;
+    }
+</style>
+
+<div class="row bg-light margem-cima rounded">
+<div class="tbl-container text-black">
+    <div class="text-black text-center mt-3 fs-3 fw-bold ">Available Competitions</div>
+    <table class="table table-bordered table-striped mt-3" style="width:100%">
+        <thead>
+            <tr>
+                <th class="text-dark text-center">
+                    Competition Name
+                </th>
+                    <th class="text-black text-center">
+                    Start Date
+                </th>
+                    <th class="text-black text-center">
+                    End Date
+                </th>
+                    <th class="text-black text-center">
+                    Actions
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                        <td class="text-black">
+                        @item.Name
+                    </td>
+                        <td class="text-black text-center">
+                        @item.StartDate
+                    </td>
+                        <td class="text-black text-center">
+                        @item.EndDate
+                    </td>
+                        <td class="text-black">
+                        @if(User.IsInRole("admin"))
+                        {
+                            <a class="btn btn-success" href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i class="bi bi-pen"></i> Edit</a> 
+                            <a class="btn btn-danger" onclick="return window.confirm('Are you sure?')" href="/Competition/Delete?competitionId=@item.Competition_Id"><i class="bi bi-trash"></i> Delete</a>
+                        }
+                        else
+                        {
+                            <div class="d-flex justify-content-center">
+                                    <a class="btn btn-primary btn-md align-content-center" href="/Competition/SingleCompetition?competitionId=@item.Competition_Id" style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See More</a>
+                            </div>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
 </div>
