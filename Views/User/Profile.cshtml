@@ -10,7 +10,8 @@
             <div class="row text-secondary bg-light border ms-auto">
                 <div class="col-md-3 border-right">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px" src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                        <img class="rounded-circle mt-5" width="150px"
+                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
                         <span class="font-weight-bold">@Model.UserName</span>
                     </div>
                 </div>
@@ -40,7 +41,9 @@
                                 </div>
                             </div>
                             <div class="mt-5">
-                                <a class="btn btn-primary profile-button" href="/User/EditProfile?username=@Model.UserName"><i class="bi bi-pen"></i> Edit Profile</a> 
+                                <a class="btn btn-primary profile-button"
+                                    href="/User/EditProfile?username=@Model.UserName"><i class="bi bi-pen"></i> Edit
+                                    Profile</a>
                             </div>
                         </div>
                     </div>
@@ -48,6 +51,22 @@
                 <div class="col-md-4 bg-light border">
                     <div class="p-3 py-5 text-right">
                         <p><strong style="font-size:20px;">Subscribed Competitions:</strong></p>
+                        <ul>
+                            @foreach (var subscription in Model.subscritions)
+                            {
+                                if (subscription != null)
+                                {
+                                    <li>
+                                        <span>@subscription.Name</span>
+                                        <a class="btn btn-primary btn-sm" href="/User/Subscription?subscription=@subscription.SubscriptionId">See More</a>
+                                    </li>
+                                }
+                                else
+                                {
+                                    <li>No subscriptions yet!</li>
+                                }
+                            }
+                        </ul>
                     </div>
                 </div>
             </div>

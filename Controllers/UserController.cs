@@ -21,8 +21,24 @@ namespace cineVote.Controllers
         public async Task<IActionResult> ProfileAsync(string username)
         {
             var record = await _userService.FindByUsernameAsync(username);
+            var subscriptions = _context.Subscriptions.ToList();
+
+            // Filter the subscriptions list based on a condition
+            var filteredSubscriptions = subscriptions.Where(s => s.userName == username).ToList();
+
+            record.subscritions = filteredSubscriptions;
+
             return View(record);
         }
+
+        public async Task<IActionResult> Subscription(int subscription)
+        {
+            var subscriptionToShow = _context.Subscriptions.Find(subscription);
+            var Competition = _context.Competitions.Find(subscriptionToShow.Competition_Id);
+
+            return View(Competition);
+        }
+
 
         public async Task<IActionResult> EditProfile(string username)
         {

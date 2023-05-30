@@ -23,13 +23,13 @@ namespace cineVote.Models.Domain
         [Column("User")]
         public User? User { get; set; }
 
-        [ForeignKey("user_Id")]
-        [Column("user_Id")]
-        public string user_Id { get; set; }
+        [ForeignKey("userName")]
+        [Column("userName")]
+        public string userName { get; set; }
 
         [ForeignKey("VoteId")]
         [Column("VoteId")]
-        public int VoteId { get; set; }
+        public int? VoteId { get; set; }
 
         [Column("SubscriptionNotifications")]
         public ICollection<SubscriptionNotifications>? SubscriptionNotifications { get; set; }

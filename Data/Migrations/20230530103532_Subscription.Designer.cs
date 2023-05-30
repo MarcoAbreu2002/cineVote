@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230530103532_Subscription")]
+    partial class Subscription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -119,30 +121,6 @@ namespace cineVote.Migrations
                     b.HasIndex("ResultsResultId");
 
                     b.ToTable("tblCompetition");
-                });
-
-            modelBuilder.Entity("cineVote.Models.Domain.CompetitionCategory", b =>
-                {
-                    b.Property<int>("CompetitionCategoryId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("CompetitionCategoryId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("CompetitionCategoryId"), 1L, 1);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompetitionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("CompetitionCategoryId");
-
-                    b.HasIndex("CategoryId");
-
-                    b.HasIndex("CompetitionId");
-
-                    b.ToTable("tblCompetitionCategory");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Nominee", b =>
@@ -762,25 +740,6 @@ namespace cineVote.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Results");
-                });
-
-            modelBuilder.Entity("cineVote.Models.Domain.CompetitionCategory", b =>
-                {
-                    b.HasOne("cineVote.Models.Domain.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("cineVote.Models.Domain.Competition", "Competition")
-                        .WithMany()
-                        .HasForeignKey("CompetitionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("Competition");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Nominee", b =>

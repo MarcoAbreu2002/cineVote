@@ -10,6 +10,7 @@ public class AppDbContext : IdentityDbContext<Person>
     public DbSet<CategoryNominee> CategoryNominees { get; set; }
     public DbSet<Movie> Movies { get; set; }
     public DbSet<NomineeCompetition> NomineeCompetitions { get; set; }
+    public DbSet<CompetitionCategory> CompetitionCategories {get;set;}
     public DbSet<Notification> Notifications { get; set; }
     public DbSet<Participant> Participants { get; set; }
     public DbSet<Result> Results { get; set; }

@@ -67,7 +67,7 @@ namespace cineVote.Repositories.Implementation
             {
                 Name = competition.Name,
                 Competition_Id = competitionId,
-                user_Id = user.Id,
+                userName = user.UserName,
                 User = user
             };
             user.SubscriptionId = subscription.SubscriptionId;

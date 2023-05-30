@@ -40,13 +40,12 @@ namespace cineVote.Repositories.Implementation
 
             foreach (int categoryId in categoryArray)
             {
-                
-                Category category = _db.Categories.Find(categoryId); // Retrieve the existing category from the database
-                if (category != null)
+                CompetitionCategory competitionCategory = new CompetitionCategory()
                 {
-                    competition.Categories.Add(category); // Add the category to the Categories collection
-                }
-
+                    CategoryId = categoryId,
+                    CompetitionId = competition.Competition_Id
+                    
+                };
             }
 
             _db.Competitions.Add(competition);

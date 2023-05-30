@@ -31,12 +31,24 @@ namespace cineVote.Controllers
             var result = _competitionManager.removeCompetition(competitionId);
             return RedirectToAction("DisplayCompetition");
         }
-
         public IActionResult SingleCompetition(int competitionId)
         {
             var result = _competitionManager.FindById(competitionId);
+
+            var nomineesCompetition = _context.NomineeCompetitions.ToList();
+
+            // Filter the nomineesCompetition list based on a condition
+            var filterNomineesCompetition = nomineesCompetition.Where(s => s.Competition_Id == competitionId).ToList();
+
+            var nomineeIds = filterNomineesCompetition.Select(n => n.NomineeId).ToList();
+
+            var nominees = _context.Nominees.Where(n => nomineeIds.Contains(n.NomineeId)).ToList();
+
+            result.Nominees = nominees;
+
             return View(result);
         }
+
 
 
         public IActionResult EditCompetition(int competitionId)
@@ -48,10 +60,10 @@ namespace cineVote.Controllers
         [HttpPost]
         public IActionResult EditCompetition(Competition model)
         {
-           // if (!ModelState.IsValid)
-           //{
-             //   return View(model);
-           // }
+            // if (!ModelState.IsValid)
+            //{
+            //   return View(model);
+            // }
             var result = _competitionManager.Edit(model);
             if (result)
             {
