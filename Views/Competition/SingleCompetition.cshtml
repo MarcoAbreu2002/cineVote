@@ -1,0 +1,50 @@
+@model cineVote.Models.Domain.Competition
+
+<body>
+    @if (Model != null)
+    {
+        <div class="P-mt">
+            <div class="row text-secondary bg-light rounded">
+                <div class="d-flex flex-column align-items-center text-center py-1 mt-2 border-bottom border-3">
+                    <h1 class="fw-b">@Model.Name</h1>
+                </div>
+                <div class=" border-right">
+                    <div class="p-3 py-5">
+                        <div class="mt-1">
+                            <div class="text-right fs-2">
+                                Categories:
+                                <span class="fs-4">@Model.Category</span>
+                            </div>
+                        </div>
+                        <div class="mb-5">
+                            <br />
+                            <label class="labels fs-2">Nominees: </label>
+                            <span class="fs-4">@Model.Nominees</span>
+                        </div>
+
+                        <div class="mt-4">
+                            <label class="labels fs-5">Start Date:</label>
+                            <span>@Model.StartDate</span>
+                        </div>
+                        <div class="mt-1">
+                            <br />
+                            <label class="labels fs-5">End Date:</label>
+                            <span>@Model.EndDate</span>
+                        </div>
+                        <div class="border-bottom border-3 mt-5"></div>
+                        <div class="mt-4 d-flex justify-content-center ">
+                            <a class="btn btn-primary btn-lg btn-block" style="background-color:rgb(64,17,118)"
+                               href="teste">
+                                <i class="bi bi-pen"></i>Subscribe
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <h1>No Competition available</h1>
+    }
+</body>
