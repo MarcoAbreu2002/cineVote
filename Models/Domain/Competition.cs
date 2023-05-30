@@ -38,5 +38,9 @@ namespace cineVote.Models.Domain
 
         [Column("Results")]
         public Result? Results { get; set; }
+
+
+        [NotMapped]
+        public List<Dictionary<string, object>> Movies { get; set; }
     }
 }

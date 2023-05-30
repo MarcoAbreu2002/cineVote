@@ -10,13 +10,18 @@ namespace cineVote.Models.Domain
         [Column("CompetitionCategoryId")]
         public int CompetitionCategoryId { get; set; }
 
-        [ForeignKey("Competition")]
-        public int CompetitionId { get; set; }
+        [ForeignKey("Competition_Id")]
+        [Column("Competition_Id")]
+        public int Competition_Id { get; set; }
 
-        [ForeignKey("Category")]
+        [ForeignKey("CategoryId")]
+        [Column("CategoryId")]
         public int CategoryId { get; set; }
 
-        public Competition Competition { get; set; }
-        public Category Category { get; set; }
+        [Column("Competition")]
+        public Competition? Competition { get; set; }
+
+        [Column("Category")]
+        public Category? Category { get; set; }
     }
 }

@@ -31,23 +31,36 @@ namespace cineVote.Controllers
             var result = _competitionManager.removeCompetition(competitionId);
             return RedirectToAction("DisplayCompetition");
         }
-        public IActionResult SingleCompetition(int competitionId)
+
+        public async Task<IActionResult> SingleCompetition(int competitionId)
         {
             var result = _competitionManager.FindById(competitionId);
 
+            var competitionCategories = _context.CompetitionCategories
+                .Where(cc => cc.Competition_Id == competitionId)
+                .Select(cc => cc.Category)
+                .ToList();
+
             var nomineesCompetition = _context.NomineeCompetitions.ToList();
-
-            // Filter the nomineesCompetition list based on a condition
-            var filterNomineesCompetition = nomineesCompetition.Where(s => s.Competition_Id == competitionId).ToList();
-
+            var filterNomineesCompetition = nomineesCompetition
+                .Where(s => s.Competition_Id == competitionId)
+                .ToList();
             var nomineeIds = filterNomineesCompetition.Select(n => n.NomineeId).ToList();
 
-            var nominees = _context.Nominees.Where(n => nomineeIds.Contains(n.NomineeId)).ToList();
+            var nominees = _context.Nominees
+                .Where(n => nomineeIds.Contains(n.NomineeId))
+                .ToList();
 
+            var nomineeIdTMDB = nominees.Select(n => n.TMDBId).ToList();
             result.Nominees = nominees;
+            result.Categories = competitionCategories;
+
+            result.Movies = await _ITMDBApiService.GetMovieById(nomineeIdTMDB);
 
             return View(result);
         }
+
+
 
 
 

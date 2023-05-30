@@ -17,7 +17,7 @@ namespace cineVote.Models.Domain
         [Column("NomineeId")]
         public int NomineeId { get; set; }
 
-        [Column("CategoryId")]
+        [Column("Category")]
         public Category Category { get; set; }
 
         [Column("Nominee")]

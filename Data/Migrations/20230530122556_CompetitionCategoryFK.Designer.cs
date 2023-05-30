@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230530122556_CompetitionCategoryFK")]
+    partial class CompetitionCategoryFK
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -138,7 +140,7 @@ namespace cineVote.Migrations
                         .HasColumnType("int")
                         .HasColumnName("Competition_Id");
 
-                    b.Property<int?>("Competition_Id1")
+                    b.Property<int>("Competition_Id1")
                         .HasColumnType("int");
 
                     b.HasKey("CompetitionCategoryId");
@@ -780,7 +782,8 @@ namespace cineVote.Migrations
                     b.HasOne("cineVote.Models.Domain.Competition", "Competition")
                         .WithMany()
                         .HasForeignKey("Competition_Id1")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Category");
 

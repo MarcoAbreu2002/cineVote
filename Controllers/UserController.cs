@@ -12,10 +12,13 @@ namespace cineVote.Controllers
         private readonly AppDbContext? _context;
         private readonly IUserService _userService;
 
-        public UserController(AppDbContext? context, IUserService userService)
+        private readonly ITMDBApiService _ITMDBApiService;
+
+        public UserController(AppDbContext? context, IUserService userService, ITMDBApiService ITMDBApiService)
         {
             _context = context;
             _userService = userService;
+            _ITMDBApiService = ITMDBApiService;
         }
 
         public async Task<IActionResult> ProfileAsync(string username)
@@ -34,9 +37,32 @@ namespace cineVote.Controllers
         public async Task<IActionResult> Subscription(int subscription)
         {
             var subscriptionToShow = _context.Subscriptions.Find(subscription);
-            var Competition = _context.Competitions.Find(subscriptionToShow.Competition_Id);
 
-            return View(Competition);
+            var result = _context.Competitions.Find(subscriptionToShow.Competition_Id);
+
+            var competitionCategories = _context.CompetitionCategories
+                           .Where(cc => cc.Competition_Id == result.Competition_Id)
+                           .Select(cc => cc.Category)
+                           .ToList();
+
+            var nomineesCompetition = _context.NomineeCompetitions.ToList();
+            var filterNomineesCompetition = nomineesCompetition
+                .Where(s => s.Competition_Id == result.Competition_Id)
+                .ToList();
+            var nomineeIds = filterNomineesCompetition.Select(n => n.NomineeId).ToList();
+
+            var nominees = _context.Nominees
+                .Where(n => nomineeIds.Contains(n.NomineeId))
+                .ToList();
+
+            var nomineeIdTMDB = nominees.Select(n => n.TMDBId).ToList();
+            result.Nominees = nominees;
+            result.Categories = competitionCategories;
+
+            result.Movies = await _ITMDBApiService.GetMovieById(nomineeIdTMDB);
+
+
+            return View(result);
         }
 
 

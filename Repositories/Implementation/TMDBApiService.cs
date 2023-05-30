@@ -35,43 +35,55 @@ public class TMDBApiService : ITMDBApiService
             response.EnsureSuccessStatusCode();
             var body = await response.Content.ReadAsStringAsync();
             // Parse the response and extract the movies
-            var movies = ParseMovieResponse(body);
+            var movies = ParseMovieResponse(body,true);
             return movies;
         }
     }
 
-    public async Task<List<Dictionary<String, object>>> GetMovieById(int movieDbId)
+    public async Task<List<Dictionary<string, object>>> GetMovieById(List<int> nomineeIds)
     {
-        var client = new HttpClient();
-        var request = new HttpRequestMessage
-        {
-            Method = HttpMethod.Get,
-            RequestUri = new Uri("https://api.themoviedb.org/3/movie/{movieDbId}?language=en-US"),
-            Headers =
-                {
-                    { "accept", "application/json" },
-                    { "Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Y2IwMjNjMmY4ZjNiODUwNTBkZjVhMjMxYzExZDZlNSIsInN1YiI6IjY0NzIwNDAzOWFlNjEzMDBhODA2Y2RkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.umLcRjDrFarEpbLBkYgyMKkHcRGXoJZsgjlh1kszVJA" },
-                },
-        };
-
-        using (var response = await client.SendAsync(request))
-        {
-            response.EnsureSuccessStatusCode();
-            var body = await response.Content.ReadAsStringAsync();
-            var movies = ParseMovieResponse(body);
-            return movies;
-        }
-    }
-
-    private List<Dictionary<string, object>> ParseMovieResponse(string response)
-    {
-        var movieData = JObject.Parse(response);
-        var results = movieData["results"];
-
         var movies = new List<Dictionary<string, object>>();
-        foreach (var result in results)
+        var client = new HttpClient();
+        var apiKey = "YOUR_API_KEY"; // Replace with your actual API key
+
+        foreach (var nomineeId in nomineeIds)
         {
-            var movie = new Dictionary<string, object>
+            var requestUri = $"https://api.themoviedb.org/3/movie/{nomineeId}?language=en-USpage=1";
+            var request = new HttpRequestMessage
+            {
+                Method = HttpMethod.Get,
+                RequestUri = new Uri(requestUri),
+                Headers =
+            {
+                { "accept", "application/json" },
+                { "Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Y2IwMjNjMmY4ZjNiODUwNTBkZjVhMjMxYzExZDZlNSIsInN1YiI6IjY0NzIwNDAzOWFlNjEzMDBhODA2Y2RkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.umLcRjDrFarEpbLBkYgyMKkHcRGXoJZsgjlh1kszVJA" },
+            },
+            };
+
+            using (var response = await client.SendAsync(request))
+            {
+                response.EnsureSuccessStatusCode();
+                var body = await response.Content.ReadAsStringAsync();
+                var movie = ParseMovieResponse(body,false);
+                movies.AddRange(movie);
+            }
+        }
+
+        return movies;
+    }
+
+    private List<Dictionary<string, object>> ParseMovieResponse(string response, bool isMultipleMovies)
+    {
+        var movies = new List<Dictionary<string, object>>();
+
+        if (isMultipleMovies)
+        {
+            var movieData = JObject.Parse(response);
+            var results = movieData["results"];
+
+            foreach (var result in results)
+            {
+                var movie = new Dictionary<string, object>
             {
                 { "Id", result.Value<int>("id") },
                 { "Title", result.Value<string>("title") },
@@ -80,10 +92,28 @@ public class TMDBApiService : ITMDBApiService
                 { "ReleaseDate", result.Value<string>("release_date") },
                 // Add more properties as needed
             };
+                movies.Add(movie);
+            }
+        }
+        else
+        {
+            var movieData = JObject.Parse(response);
+
+            var movie = new Dictionary<string, object>
+        {
+            { "Id", movieData.Value<int>("id") },
+            { "Title", movieData.Value<string>("title") },
+            { "Overview", movieData.Value<string>("overview") },
+            { "PosterPath", movieData.Value<string>("poster_path") },
+            { "ReleaseDate", movieData.Value<string>("release_date") },
+            // Add more properties as needed
+        };
+
             movies.Add(movie);
         }
 
         return movies;
     }
+
 
 }

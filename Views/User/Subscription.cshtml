@@ -1,1 +1,69 @@
-<h1>subscriptions</h1>
+<body>
+    <div class="P-mt">
+        <div class="container rounded bg-white mt-5 mb-5 hstack gap-3">
+            <div class="row text-secondary bg-light border ms-auto">
+                @if (Model != null)
+                {
+                    <div class="col-md-12">
+                        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                            <h1 class="font-weight-bold">@Model.Name</h1>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="p-3 py-5">
+                            <div class="row mt-2">
+                                <div class="col-md-6">
+                                    <label class="labels">Start Date:</label>
+                                    <span>@Model.StartDate</span>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="labels">End Date:</label>
+                                    <span>@Model.EndDate</span>
+                                </div>
+                            </div>
+                            <div class="row mt-4">
+                                <div class="col-md-12">
+                                    <label class="labels">Categories:</label>
+                                    @foreach (var category in Model.Categories)
+                                    {
+                                        <div class="category-container">
+                                            <h5 class="category-title">@category.Name</h5>
+                                            <div class="row mt-3">
+                                                @foreach (var movie in Model.Movies)
+                                                {
+                                                    var movieId = movie["Id"].ToString();
+                                                    var movieTitle = movie["Title"].ToString();
+                                                    var movieImagePath = movie["PosterPath"].ToString();
+                                                    var movieOverview = movie["Overview"].ToString();
+                                                    var releaseDate = movie["ReleaseDate"].ToString();
+                                                    var baseUrl = "https://image.tmdb.org/t/p/";
+                                                    var fileSize = "w500";
+                                                    var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+
+                                                    <div class="col-md-4 mb-4">
+                                                        <div class="card">
+                                                            <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">@movieTitle</h5>
+                                                                <p class="card-text">Release Date: @releaseDate</p>
+                                                                <button type="button" class="btn btn-success vote-button">Vote</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <h1>No Competition</h1>
+                }
+            </div>
+        </div>
+    </div>
+</body>

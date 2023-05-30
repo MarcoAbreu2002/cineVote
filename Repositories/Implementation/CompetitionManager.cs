@@ -38,18 +38,20 @@ namespace cineVote.Repositories.Implementation
                 Categories = new List<Category>() // Initialize the Categories collection
             };
 
+            _db.Competitions.Add(competition);
+
+            _db.SaveChanges();
+
             foreach (int categoryId in categoryArray)
             {
                 CompetitionCategory competitionCategory = new CompetitionCategory()
                 {
                     CategoryId = categoryId,
-                    CompetitionId = competition.Competition_Id
-                    
+                    Competition_Id = competition.Competition_Id
+
                 };
+                _db.CompetitionCategories.Add(competitionCategory);
             }
-
-            _db.Competitions.Add(competition);
-
             _db.SaveChanges();
 
             foreach (int nomineeId in nomineeDBIdArray)
