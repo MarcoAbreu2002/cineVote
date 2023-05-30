@@ -34,3 +34,16 @@ body {
     margin-top: 10%;
 
 }
+
+.competitions-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.competition {
+    margin-bottom: 20px;
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #D0CBD7;
+}
