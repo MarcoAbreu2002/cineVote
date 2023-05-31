@@ -32,40 +32,53 @@ namespace cineVote.Controllers
             return RedirectToAction("DisplayCompetition");
         }
 
-        /*
+
         public async Task<IActionResult> Results(int competitionId)
         {
-            var result = _competitionManager.FindById(competitionId);
+            var competition = _competitionManager.FindById(competitionId);
 
-            var subscritions = _context.Subscriptions       //subscriptions to the competition
-                .Where(cc => cc.Competition_Id == competitionId)
-                .Select(cc => cc.SubscriptionId);
-
-
-            var competitionCategories = _context.CompetitionCategories //Categories on the competition
-                .Where(cc => cc.Competition_Id == competitionId)
-                .Select(cc => cc.CategoryId)
+            // Find all subscriptions with the same competition_id as Competition
+            var subscriptions = _context.Subscriptions
+                .Where(s => s.Competition_Id == competitionId)
+                .Select(s => s.SubscriptionId)
                 .ToList();
 
-            var nomineesCompetition = _context.NomineeCompetitions //Nominee on the competition
-                .Where(cc => cc.Competition_Id == competitionId)
-                .Select(cc => cc.NomineeId)
+            // Find all VoteSubscriptions that have the same subscription_id as Subscription
+            var voteSubscriptions = _context.voteSubscriptions
+                .Where(vs => subscriptions.Contains(vs.SubscriptionId))
+                .Select(vs => vs.VoteId)
                 .ToList();
 
-            foreach (var subscription in subscritions)
-            {
-                var votes = _context.Votes
-                   .Where(cc => subscritions.Contains(cc.SubscriptionId));
-                
-                foreach (var vote in votes)
+            // Find all Votes that have their vote_id in VoteSubscription
+            var votes = _context.Votes
+                .Where(v => voteSubscriptions.Contains(v.VoteId))
+                .ToList();
+
+            var voteCounts = votes
+                .GroupBy(v => new { v.CategoryId, v.NomineeId })
+                .Select(group => new
                 {
-                    
-                }
-            }
+                    CategoryId = group.Key.CategoryId,
+                    NomineeId = group.Key.NomineeId,
+                    Count = group.Count()
+                })
+                .ToList();
+
+            // Find the nominee with the most votes in each category
+            var topNominees = voteCounts
+                .GroupBy(vc => vc.CategoryId)
+                .Select(group => new
+                {
+                    CategoryId = group.Key,
+                    TopNomineeId = group.OrderByDescending(vc => vc.Count).FirstOrDefault()?.NomineeId
+                })
+                .ToList();
 
 
 
-        }*/
+            return View();
+        }
+
 
         public async Task<IActionResult> SingleCompetition(int competitionId)
         {

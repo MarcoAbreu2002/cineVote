@@ -14,7 +14,7 @@
                             <div class="row mt-2">
                                 <div class="col-md-6">
                                     <label class="labels">Start Date:</label>
-                                    <span>@Model.StartDate</span>
+                                    <span id="start-date">@Model.StartDate</span>
                                 </div>
                                 <div class="col-md-6">
                                     <label class="labels">End Date:</label>
@@ -24,11 +24,10 @@
                             <div class="row mt-4">
                                 <div class="col-md-12">
                                     <label class="labels">Categories:</label>
-                                    <form action="/User/Vote" method="post">
+                                    <form action="/User/Vote" method="post" id="vote-form">
                                         <input type="hidden" name="username" value="@User.Identity.Name" />
                                         <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
-                                        <input type="hidden" name="subscriptionId"
-                                            value="@Context.Request.Query["subscription"]" />
+                                        <input type="hidden" name="subscriptionId" value="@Context.Request.Query["subscription"]" />
                                         @foreach (var category in Model.Categories)
                                         {
                                             <div class="category-container">
@@ -55,7 +54,7 @@
                                                                         <div class="card-body">
                                                                             <h5 class="card-title">@movieTitle</h5>
                                                                             <p class="card-text">Release Date: @releaseDate</p>
-                                                                            <input type="radio" name="category-@category.CategoryId"
+                                                                            <input type="radio" class="vote-input" name="category-@category.CategoryId"
                                                                                 value="@item.NomineeId"> Vote to @movieTitle
                                                                             <input type="hidden" name="username"
                                                                                 value="@User.Identity.Name" />
@@ -65,7 +64,6 @@
                                                                                 value="@category.CategoryId" />
                                                                             <input type="hidden" name="subscriptionId"
                                                                                 value="@Context.Request.Query["subscription"]" />
-
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -90,4 +88,7 @@
             </div>
         </div>
     </div>
+
+
+
 </body>

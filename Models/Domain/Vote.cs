@@ -31,13 +31,13 @@ namespace cineVote.Models.Domain
         public int NomineeId { get; set; }
 
         [Column("Category")]
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
 
         [Column("Nominee")]
-        public Nominee Nominee { get; set; }
+        public Nominee? Nominee { get; set; }
 
         [Column("Subscription")]
-        public Subscription Subscription { get; set; }
+        public Subscription? Subscription { get; set; }
 
     }
 }
