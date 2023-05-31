@@ -2,6 +2,7 @@ using cineVote.Models.Domain;
 using cineVote.Models.DTO;
 using cineVote.Repositories.Abstract;
 using Microsoft.AspNetCore.Identity;
+using System;
 
 namespace cineVote.Repositories.Implementation
 {
@@ -10,13 +11,15 @@ namespace cineVote.Repositories.Implementation
         private readonly AppDbContext _db;
         private readonly UserManager<Person> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly List<IObserver> _observers = new List<IObserver>();
 
 
-        public UserService(AppDbContext db, UserManager<Person> userManager, IHttpContextAccessor httpContextAccessor)
+        public UserService(AppDbContext db, UserManager<Person> userManager, IHttpContextAccessor httpContextAccessor, List<IObserver> observers)
         {
             _db = db;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _observers = observers;
         }
 
         public Task<Status> getProfile(int userId)
@@ -57,7 +60,7 @@ namespace cineVote.Repositories.Implementation
         {
             return _db.Competitions.Find(id);
         }
-        public Task<Status> Subscribe(string username, int competitionId)
+        public Task<Status> Subscribe(string username, int competitionId, IObserver observer)
         {
             var status = new Status();
             var userId = getUserId();
@@ -73,6 +76,8 @@ namespace cineVote.Repositories.Implementation
             user.SubscriptionId = subscription.SubscriptionId;
             _db.Users.Update(user);
             _db.Subscriptions.Add(subscription);
+            _observers.Add(observer);
+            NotifyObservers(subscription);
             _db.SaveChanges();
 
 
@@ -81,6 +86,30 @@ namespace cineVote.Repositories.Implementation
             return Task.FromResult(status);
         }
 
+        public bool Unsubscribe(int subscriptionId, IObserver observer)
+        {
+            try
+            {
+                var data = _db.Subscriptions.Find(subscriptionId);
+                if (data == null)
+                    return false;
+                _db.Subscriptions.Remove(data);
+                _observers.Remove(observer);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public void NotifyObservers(Subscription subscription)
+        {
+            foreach (var observer in _observers)
+            {
+                observer.Update(subscription);
+            }
+        }
 
     }
 }
