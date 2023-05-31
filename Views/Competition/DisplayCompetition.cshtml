@@ -7,6 +7,11 @@
     table, th, td {
         color: white;
     }
+
+    .margem-direita{
+        margin-right:6%;
+    }
+
 </style>
 
 <div class="row bg-light margem-cima rounded">
@@ -45,8 +50,10 @@
                         <td class="text-black">
                             @if (User.IsInRole("admin"))
                             {
-                                <a class="btn btn-success" href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i class="bi bi-pen"></i> Edit</a>
-                                <a class="btn btn-danger" onclick="return window.confirm('Are you sure?')" href="/Competition/Delete?competitionId=@item.Competition_Id"><i class="bi bi-trash"></i> Delete</a>
+                                <div class="d-flex justify-content-center">
+                                    <a class="btn btn-success align-content-center margem-direita" href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i class="bi bi-pen"></i> Edit</a>
+                                    <a class="btn btn-danger align-content-center" onclick="return window.confirm('Are you sure?')" href="/Competition/Delete?competitionId=@item.Competition_Id"><i class="bi bi-trash"></i> Delete</a>
+                                </div>
                             }
                             else
                             {
