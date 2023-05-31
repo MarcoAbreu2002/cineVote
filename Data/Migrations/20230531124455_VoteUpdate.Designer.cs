@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230531124455_VoteUpdate")]
+    partial class VoteUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -482,7 +484,7 @@ namespace cineVote.Migrations
                         .HasColumnType("int")
                         .HasColumnName("SubscriptionId");
 
-                    b.Property<int?>("SubscriptionId1")
+                    b.Property<int>("SubscriptionId1")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -930,7 +932,8 @@ namespace cineVote.Migrations
                     b.HasOne("cineVote.Models.Domain.Subscription", "Subscription")
                         .WithMany()
                         .HasForeignKey("SubscriptionId1")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("cineVote.Models.Domain.User", "User")
                         .WithMany("votes")
