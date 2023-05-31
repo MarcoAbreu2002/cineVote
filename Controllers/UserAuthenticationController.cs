@@ -57,7 +57,7 @@ namespace cineVote.Controllers
             var result = await _authService.LoginAsync(loginModel);
             if (result.StatusCode == 1)
             {
-                return RedirectToAction("Index", "Dashboard");
+                return RedirectToAction("DisplayCompetition", "Competition");
             }
             else
             {
