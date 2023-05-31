@@ -88,6 +88,12 @@ namespace cineVote.Controllers
         {
             var competition = _competitionManager.FindById(competitionId);
 
+            if (competition == null)
+            {
+                // Handle the case when the competition is not found
+                return NotFound();
+            }
+
             int firstPlace = 0;
             int secondPlace = 0;
             int thirdPlace = 0;
@@ -107,16 +113,35 @@ namespace cineVote.Controllers
                 .Where(cn => cn.CategoryNomineeKey == firstPlace || cn.CategoryNomineeKey == secondPlace || cn.CategoryNomineeKey == thirdPlace)
                 .ToList();
 
+            List<Category> categories = new List<Category>();
+            List<Nominee> nominees = new List<Nominee>();
+
             foreach (var categoryNominee in categoryNominees)
             {
                 var category = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryNominee.CategoryId);
                 var nominee = _context.Nominees.FirstOrDefault(n => n.NomineeId == categoryNominee.NomineeId);
 
-                
+                if (category != null)
+                {
+                    categories.Add(category);
+                }
+
+                if (nominee != null)
+                {
+                    nominees.Add(nominee);
+                }
+            }
+            competition.Categories = categories;
+            competition.Nominees = nominees;
+            var nomineeIds = nominees.Select(n => n.TMDBId).ToList();
+            if (nomineeIds != null && nomineeIds.Count > 0)
+            {
+                competition.Movies = await _ITMDBApiService.GetMovieById(nomineeIds);
             }
 
-            return View();
+            return View(competition);
         }
+
 
 
 
