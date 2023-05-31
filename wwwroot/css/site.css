@@ -23,3 +23,13 @@ body {
 .margem-cima {
     margin-top: 9%;
 }
+
+.perfil-img {
+    background-image: url(https://es-2023.w3spaces.com/Imagem_ES.png?bypass-cache=97893292);
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.perfil-but {
+    margin-top: 10%;
+}
