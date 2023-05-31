@@ -10,6 +10,6 @@ namespace cineVote.Repositories.Abstract
         bool Edit(Competition competition);
         Task<Competition> getCompetition();
 
-        Task<Status> generateResults(dynamic topNominees);
+        Task<Status> generateResults(dynamic topNominees, int numberOfParticipants, int competition_id);
     }
 }

@@ -22,14 +22,57 @@ namespace cineVote.Repositories.Implementation
             _userManager = userManager;
         }
 
-        public Task<Status> generateResults(dynamic topNominees)
+        public Task<Status> generateResults(dynamic topNominees, int numberOfParticipants, int competition_id)
         {
             var status = new Status();
+            int FirstPlaceId = 0;
+            int SecondPlaceId = 0;
+            int ThirdPlaceId = 0;
 
+            for (int i = 0; i < Math.Min(topNominees.Count, 3); i++)
+            {
+                var categoryId = topNominees[i].CategoryId;
+                var topNomineeId = topNominees[i].TopNomineeId;
+
+                CategoryNominee categoryNominee = new CategoryNominee()
+                {
+                    CategoryId = categoryId,
+                    NomineeId = topNomineeId
+                };
+                _db.CategoryNominees.Add(categoryNominee);
+                _db.SaveChanges();
+
+                // Assign the IDs to FirstPlaceId, SecondPlaceId, and ThirdPlaceId
+                if (i == 0)
+                {
+                    FirstPlaceId = categoryNominee.CategoryNomineeKey;
+                }
+                else if (i == 1)
+                {
+                    SecondPlaceId = categoryNominee.CategoryNomineeKey;
+                }
+                else if (i == 2)
+                {
+                    ThirdPlaceId = categoryNominee.CategoryNomineeKey;
+                }
+            }
+
+            Result results = new Result()
+            {
+                TotalParticipants = numberOfParticipants,
+                FirstPlaceId = FirstPlaceId,
+                SecondPlaceId = SecondPlaceId,
+                ThirdPlaceId = ThirdPlaceId,
+                Competition_Id = competition_id
+            };
+
+            _db.Results.Add(results);
+            _db.SaveChanges();
             status.StatusCode = 1;
-            status.Message = "Account created successfully";
+            status.Message = "Results generated successfully";
             return Task.FromResult(status);
         }
+
 
         public Task<Status> createCompetition(createCompetitionModel createCompetitionModel)
         {

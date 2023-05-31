@@ -33,52 +33,92 @@ namespace cineVote.Controllers
         }
 
 
-public async Task<IActionResult> Results(int competitionId)
-{
-    var competition = _competitionManager.FindById(competitionId);
-
-    // Find all subscriptions with the same competition_id as Competition
-    var subscriptions = _context.Subscriptions
-        .Where(s => s.Competition_Id == competitionId)
-        .Select(s => s.SubscriptionId)
-        .ToList();
-
-    // Find all VoteSubscriptions that have the same subscription_id as Subscription
-    var voteSubscriptions = _context.voteSubscriptions
-        .Where(vs => subscriptions.Contains(vs.SubscriptionId))
-        .Select(vs => vs.VoteId)
-        .ToList();
-
-    // Find all Votes that have their vote_id in VoteSubscription
-    var votes = _context.Votes
-        .Where(v => voteSubscriptions.Contains(v.VoteId))
-        .ToList();
-
-    var voteCounts = votes
-        .GroupBy(v => new { v.CategoryId, v.NomineeId })
-        .Select(group => new
+        public async Task<IActionResult> Results(int competitionId)
         {
-            CategoryId = group.Key.CategoryId,
-            NomineeId = group.Key.NomineeId,
-            Count = group.Count()
-        })
-        .ToList();
+            var competition = _competitionManager.FindById(competitionId);
 
-    // Find the nominee with the most votes in each category
-    var topNominees = voteCounts
-        .GroupBy(vc => vc.CategoryId)
-        .Select(group => new
+            // Find all subscriptions with the same competition_id as Competition
+            var subscriptions = _context.Subscriptions
+                .Where(s => s.Competition_Id == competitionId)
+                .Select(s => s.SubscriptionId)
+                .ToList();
+
+            // Find all VoteSubscriptions that have the same subscription_id as Subscription
+            var voteSubscriptions = _context.voteSubscriptions
+                .Where(vs => subscriptions.Contains(vs.SubscriptionId))
+                .Select(vs => vs.VoteId)
+                .ToList();
+
+            // Find all Votes that have their vote_id in VoteSubscription
+            var votes = _context.Votes
+                .Where(v => voteSubscriptions.Contains(v.VoteId))
+                .ToList();
+
+            var voteCounts = votes
+                .GroupBy(v => new { v.CategoryId, v.NomineeId })
+                .Select(group => new
+                {
+                    CategoryId = group.Key.CategoryId,
+                    NomineeId = group.Key.NomineeId,
+                    Count = group.Count()
+                })
+                .ToList();
+
+            // Find the nominee with the most votes in each category
+            var topNominees = voteCounts
+                .GroupBy(vc => vc.CategoryId)
+                .Select(group => new
+                {
+                    CategoryId = group.Key,
+                    TopNomineeId = group.OrderByDescending(vc => vc.Count).FirstOrDefault()?.NomineeId
+                })
+                .ToList();
+
+            var totalVoteCount = votes.Count;
+            var totalCategories = topNominees.Count;
+            int numberOfParticipants = totalVoteCount / totalCategories;
+
+            var result = _competitionManager.generateResults(topNominees, numberOfParticipants, competitionId);
+
+            return View();
+        }
+
+
+        public async Task<IActionResult> ShowResultsCompetition(int competitionId)
         {
-            CategoryId = group.Key,
-            TopNomineeId = group.OrderByDescending(vc => vc.Count).FirstOrDefault()?.NomineeId,
-            VoteCount = group.Sum(vc => vc.Count) // Add the sum of vote counts per category
-        })
-        .ToList();
+            var competition = _competitionManager.FindById(competitionId);
 
-    var result = _competitionManager.generateResults(topNominees);
+            int firstPlace = 0;
+            int secondPlace = 0;
+            int thirdPlace = 0;
 
-    return View();
-}
+            var results = _context.Results
+                .Where(cc => cc.Competition_Id == competitionId)
+                .ToList();
+
+            foreach (var result in results)
+            {
+                firstPlace = result.FirstPlaceId;
+                secondPlace = result.SecondPlaceId;
+                thirdPlace = result.ThirdPlaceId;
+            }
+
+            var categoryNominees = _context.CategoryNominees
+                .Where(cn => cn.CategoryNomineeKey == firstPlace || cn.CategoryNomineeKey == secondPlace || cn.CategoryNomineeKey == thirdPlace)
+                .ToList();
+
+            foreach (var categoryNominee in categoryNominees)
+            {
+                var category = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryNominee.CategoryId);
+                var nominee = _context.Nominees.FirstOrDefault(n => n.NomineeId == categoryNominee.NomineeId);
+
+                
+            }
+
+            return View();
+        }
+
+
 
 
 
@@ -112,8 +152,6 @@ public async Task<IActionResult> Results(int competitionId)
 
 
 
-
-
         public IActionResult EditCompetition(int competitionId)
         {
             var record = _competitionManager.FindById(competitionId);
@@ -123,10 +161,6 @@ public async Task<IActionResult> Results(int competitionId)
         [HttpPost]
         public IActionResult EditCompetition(Competition model)
         {
-            // if (!ModelState.IsValid)
-            //{
-            //   return View(model);
-            // }
             var result = _competitionManager.Edit(model);
             if (result)
             {
@@ -149,14 +183,8 @@ public async Task<IActionResult> Results(int competitionId)
         [HttpPost]
         public IActionResult CreateCompetition(createCompetitionModel createCompetitionModel)
         {
-            //if (ModelState.IsValid)
-            // {
             var result = _competitionManager.createCompetition(createCompetitionModel);
-            //TempData["msg"] = result.Message;
             return RedirectToAction(nameof(CreateCompetition));
-            // }
-
-            //return View(createCompetitionModel);
         }
     }
 }
