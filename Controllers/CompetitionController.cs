@@ -86,7 +86,7 @@ namespace cineVote.Controllers
 
             var result = _competitionManager.generateResults(topNominees, numberOfParticipants, competitionId);
 
-            return View();
+            return RedirectToAction("DisplayCompetition", "Competition");
         }
 
 
