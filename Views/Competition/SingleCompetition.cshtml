@@ -1,73 +1,75 @@
 <body>
-    <div class="P-mt">
-        <div class="container rounded bg-white mt-5 mb-5 hstack gap-3">
-            <div class="row text-secondary bg-light border ms-auto">
-                @if (Model != null)
-                {
-                    <div class="col-md-12">
-                        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                            <h1 class="font-weight-bold">@Model.Name</h1>
-                        </div>
+    <div class="container rounded bg-white mt-5 mb-5 gap-3">
+        <div class="rounded row text-secondary bg-light ms-auto">
+            @if (Model != null)
+            {
+                <div class="col-md-12">
+                    <div class="d-flex flex-column align-items-center text-center p-3 py-4 border-bottom border-3">
+                        <h1 class="font-weight-bold">@Model.Name</h1>
                     </div>
-                    <div class="col-md-12">
-                        <div class="p-3 py-5">
-                            <div class="row mt-2">
-                                <div class="col-md-6">
-                                    <label class="labels">Start Date:</label>
-                                    <span>@Model.StartDate</span>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="labels">End Date:</label>
-                                    <span>@Model.EndDate</span>
-                                </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="p-3 py-4">
+                        <div class="row">
+                            <div class="col-md-6 fs-5">
+                                <label class="labels">Start Date:</label>
+                                <span>@Model.StartDate</span>
                             </div>
-                            <div class="row mt-4">
-                                <div class="col-md-12">
-                                    <label class="labels">Categories:</label>
-                                    @foreach (var category in Model.Categories)
-                                    {
-                                        <div class="category-container">
-                                            <h5 class="category-title">@category.Name</h5>
-                                            <div class="row mt-3">
-                                                @foreach (var movie in Model.Movies)
-                                                {
-                                                    var movieId = movie["Id"].ToString();
-                                                    var movieTitle = movie["Title"].ToString();
-                                                    var movieImagePath = movie["PosterPath"].ToString();
-                                                    var movieOverview = movie["Overview"].ToString();
-                                                    var releaseDate = movie["ReleaseDate"].ToString();
-                                                    var baseUrl = "https://image.tmdb.org/t/p/";
-                                                    var fileSize = "w300";
-                                                    var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+                            <div class="col-md-6 text-end fs-5">
+                                <label class="labels">End Date:</label>
+                                <span>@Model.EndDate</span>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-md-12">
+                                <div class="text-center">
+                                    <label class="labels fs-2 fw-bold">Categories</label>
+                                </div>
+                                @foreach (var category in Model.Categories)
+                                {
+                                    <div class="category-container">
+                                        <h5 class="category-title">@category.Name</h5>
+                                        <div class="row mt-3">
+                                            @foreach (var movie in Model.Movies)
+                                            {
+                                                var movieId = movie["Id"].ToString();
+                                                var movieTitle = movie["Title"].ToString();
+                                                var movieImagePath = movie["PosterPath"].ToString();
+                                                var movieOverview = movie["Overview"].ToString();
+                                                var releaseDate = movie["ReleaseDate"].ToString();
+                                                var baseUrl = "https://image.tmdb.org/t/p/";
+                                                var fileSize = "w300";
+                                                var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
 
-                                                    <div class="col-md-4 mb-4">
-                                                        <div class="card">
-                                                            <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
-                                                            <div class="card-body">
-                                                                <h5 class="card-title">@movieTitle</h5>
-                                                                <p class="card-text">Release Date: @releaseDate</p>
-                                                            </div>
+                                                <div class="col-md-4 mb-4">
+                                                    <div class="card">
+                                                        <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+                                                        <div class="card-body">
+                                                            <h5 class="card-title">@movieTitle</h5>
+                                                            <p class="card-text">Release Date: @releaseDate</p>
                                                         </div>
                                                     </div>
-                                                }
-                                            </div>
+                                                </div>
+                                            }
                                         </div>
-                                    }
-                                </div>
+                                    </div>
+                                }
                             </div>
                         </div>
                     </div>
-                }
-                else
-                {
-                    <h1>No Competition</h1>
-                }
-            </div>
+                </div>
+                <form action="/User/Subscribe" method="post">
+                    <input type="hidden" name="username" value="@User.Identity.Name" />
+                    <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
+                    <div class="d-flex justify-content-center mb-5">
+                        <button class="btn btn-primary profile-button" type="submit" style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i>Subscribe</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <h1>No Competition</h1>
+            }
         </div>
-        <form action="/User/Subscribe" method="post">
-            <input type="hidden" name="username" value="@User.Identity.Name" />
-            <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
-            <button class="btn btn-primary profile-button" type="submit"><i class="bi bi-pen"></i>Subscribe</button>
-        </form>
     </div>
 </body>
