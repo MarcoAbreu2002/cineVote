@@ -29,8 +29,6 @@ namespace cineVote.Models.Domain
         [Column("NomineeCompetitions")]
         public ICollection<NomineeCompetition>? NomineeCompetitions { get; set; }
 
-        [Column("Results")]
-        public List<Result>? Results { get; set; }
 
     }
 }

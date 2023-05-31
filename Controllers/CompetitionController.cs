@@ -64,15 +64,21 @@ namespace cineVote.Controllers
                 })
                 .ToList();
 
-            // Find the nominee with the most votes in each category
-            var topNominees = voteCounts
+            // Group voteCounts by CategoryId
+            var groupedVoteCounts = voteCounts
                 .GroupBy(vc => vc.CategoryId)
-                .Select(group => new
-                {
-                    CategoryId = group.Key,
-                    TopNomineeId = group.OrderByDescending(vc => vc.Count).FirstOrDefault()?.NomineeId
-                })
-                .ToList();
+                .ToDictionary(group => group.Key, group => group.ToList());
+
+            // Find the nominee with the most votes in each category
+            var topNominees = groupedVoteCounts
+    .Select(categoryVotes => new
+    {
+        CategoryId = categoryVotes.Key,
+        Nominees = categoryVotes.Value.OrderByDescending(vc => vc.Count).ToList()
+    })
+    .ToList();
+
+
 
             var totalVoteCount = votes.Count;
             var totalCategories = topNominees.Count;
@@ -82,6 +88,7 @@ namespace cineVote.Controllers
 
             return View();
         }
+
 
 
         public async Task<IActionResult> ShowResultsCompetition(int competitionId)
@@ -94,46 +101,51 @@ namespace cineVote.Controllers
                 return NotFound();
             }
 
-            int firstPlace = 0;
-            int secondPlace = 0;
-            int thirdPlace = 0;
-
             var results = _context.Results
                 .Where(cc => cc.Competition_Id == competitionId)
-                .ToList();
-
-            foreach (var result in results)
-            {
-                firstPlace = result.FirstPlaceId;
-                secondPlace = result.SecondPlaceId;
-                thirdPlace = result.ThirdPlaceId;
-            }
-
-            var categoryNominees = _context.CategoryNominees
-                .Where(cn => cn.CategoryNomineeKey == firstPlace || cn.CategoryNomineeKey == secondPlace || cn.CategoryNomineeKey == thirdPlace)
                 .ToList();
 
             List<Category> categories = new List<Category>();
             List<Nominee> nominees = new List<Nominee>();
 
-            foreach (var categoryNominee in categoryNominees)
+            foreach (var result in results)
             {
-                var category = _context.Categories.FirstOrDefault(c => c.CategoryId == categoryNominee.CategoryId);
-                var nominee = _context.Nominees.FirstOrDefault(n => n.NomineeId == categoryNominee.NomineeId);
+                var firstPlace = result.FirstPlaceId;
+                var secondPlace = result.SecondPlaceId;
+                var thirdPlace = result.ThirdPlaceId;
+
+                var category = _context.Categories
+                    .FirstOrDefault(cc => cc.CategoryId == result.CategoryId);
 
                 if (category != null)
                 {
                     categories.Add(category);
                 }
 
-                if (nominee != null)
-                {
-                    nominees.Add(nominee);
-                }
+                var firstPlaceNominee = _context.Nominees
+                    .FirstOrDefault(n => n.NomineeId == firstPlace);
+
+                var secondPlaceNominee = _context.Nominees
+                    .FirstOrDefault(n => n.NomineeId == secondPlace);
+
+                var thirdPlaceNominee = _context.Nominees
+                    .FirstOrDefault(n => n.NomineeId == thirdPlace);
+
+                    nominees.Add(firstPlaceNominee);
+
+                    nominees.Add(secondPlaceNominee);
+
+                    nominees.Add(thirdPlaceNominee);
             }
+
             competition.Categories = categories;
             competition.Nominees = nominees;
-            var nomineeIds = nominees.Select(n => n.TMDBId).ToList();
+
+            var nomineeIds = nominees
+                .Where(n => n != null) // Check if TMDBId is not null
+                .Select(n => n.TMDBId)
+                .ToList();
+
             if (nomineeIds != null && nomineeIds.Count > 0)
             {
                 competition.Movies = await _ITMDBApiService.GetMovieById(nomineeIds);
@@ -141,6 +153,9 @@ namespace cineVote.Controllers
 
             return View(competition);
         }
+
+
+
 
 
 

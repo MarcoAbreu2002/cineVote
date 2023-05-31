@@ -18,11 +18,11 @@ namespace cineVote.Models.Domain
 
         [ForeignKey("SecondPlaceId")]
         [Column("SecondPlaceId")]
-        public int SecondPlaceId { get; set; }
+        public int? SecondPlaceId { get; set; } // Nullable int
 
         [ForeignKey("ThirdPlaceId")]
         [Column("ThirdPlaceId")]
-        public int ThirdPlaceId { get; set; }
+        public int? ThirdPlaceId { get; set; } // Nullable int
 
         [ForeignKey("CategoryId")]
         [Column("CategoryId")]
@@ -39,12 +39,12 @@ namespace cineVote.Models.Domain
         public int TotalParticipants { get; set; }
 
         [Column("FirstPlace")]
-        public CategoryNominee? FirstPlace { get; set; }
+        public Nominee? FirstPlace { get; set; }
 
         [Column("SecondPlace")]
-        public CategoryNominee? SecondPlace { get; set; }
+        public Nominee? SecondPlace { get; set; } // Nullable Nominee
 
         [Column("ThirdPlace")]
-        public CategoryNominee? ThirdPlace { get; set; }
+        public Nominee? ThirdPlace { get; set; } // Nullable Nominee
     }
 }

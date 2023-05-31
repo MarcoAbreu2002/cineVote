@@ -52,7 +52,7 @@ namespace cineVote.Controllers
                 }
             }
 
-            return RedirectToAction("User", "Profile");
+            return RedirectToAction("Profile", "User");
         }
 
         public async Task<IActionResult> Subscription(int subscription)

@@ -25,53 +25,64 @@ namespace cineVote.Repositories.Implementation
         public Task<Status> generateResults(dynamic topNominees, int numberOfParticipants, int competition_id)
         {
             var status = new Status();
-            int FirstPlaceId = 0;
-            int SecondPlaceId = 0;
-            int ThirdPlaceId = 0;
 
-            for (int i = 0; i < Math.Min(topNominees.Count, 3); i++)
+            foreach (var topNominee in topNominees)
             {
-                var categoryId = topNominees[i].CategoryId;
-                var topNomineeId = topNominees[i].TopNomineeId;
+                var categoryId = topNominee.CategoryId;
+                var nominees = topNominee.Nominees;
 
-                CategoryNominee categoryNominee = new CategoryNominee()
+                int? FirstPlaceId = null;
+                int? SecondPlaceId = null;
+                int? ThirdPlaceId = null;
+
+                for (int i = 0; i < Math.Min(nominees.Count, 3); i++)
                 {
-                    CategoryId = categoryId,
-                    NomineeId = topNomineeId
+                    var nomineeId = nominees[i].NomineeId;
+
+                    CategoryNominee categoryNominee = new CategoryNominee()
+                    {
+                        CategoryId = categoryId,
+                        NomineeId = nomineeId
+                    };
+                    _db.CategoryNominees.Add(categoryNominee);
+                    _db.SaveChanges();
+
+                    // Assign the IDs to FirstPlaceId, SecondPlaceId, and ThirdPlaceId
+                    if (i == 0)
+                    {
+                        FirstPlaceId = nomineeId;
+                    }
+                    else if (i == 1)
+                    {
+                        SecondPlaceId = nomineeId;
+                    }
+                    else if (i == 2)
+                    {
+                        ThirdPlaceId = nomineeId;
+                    }
+                }
+
+                Result results = new Result()
+                {
+                    TotalParticipants = numberOfParticipants,
+                    FirstPlaceId = (int)FirstPlaceId,
+                    SecondPlaceId = SecondPlaceId, // Assign the nullable value directly
+                    ThirdPlaceId = ThirdPlaceId, // Assign the nullable value directly
+                    Competition_Id = competition_id,
+                    CategoryId = categoryId
                 };
-                _db.CategoryNominees.Add(categoryNominee);
-                _db.SaveChanges();
 
-                // Assign the IDs to FirstPlaceId, SecondPlaceId, and ThirdPlaceId
-                if (i == 0)
-                {
-                    FirstPlaceId = categoryNominee.CategoryNomineeKey;
-                }
-                else if (i == 1)
-                {
-                    SecondPlaceId = categoryNominee.CategoryNomineeKey;
-                }
-                else if (i == 2)
-                {
-                    ThirdPlaceId = categoryNominee.CategoryNomineeKey;
-                }
+                _db.Results.Add(results);
+                _db.SaveChanges();
             }
 
-            Result results = new Result()
-            {
-                TotalParticipants = numberOfParticipants,
-                FirstPlaceId = FirstPlaceId,
-                SecondPlaceId = SecondPlaceId,
-                ThirdPlaceId = ThirdPlaceId,
-                Competition_Id = competition_id
-            };
-
-            _db.Results.Add(results);
-            _db.SaveChanges();
             status.StatusCode = 1;
             status.Message = "Results generated successfully";
             return Task.FromResult(status);
         }
+
+
+
 
 
         public Task<Status> createCompetition(createCompetitionModel createCompetitionModel)

@@ -8,11 +8,9 @@ public class AppDbContext : IdentityDbContext<Person>
     public string ConnectionString { get; set; }
     public DbSet<Admin> Admins { get; set; }
     public DbSet<CategoryNominee> CategoryNominees { get; set; }
-    public DbSet<Movie> Movies { get; set; }
     public DbSet<NomineeCompetition> NomineeCompetitions { get; set; }
     public DbSet<CompetitionCategory> CompetitionCategories {get;set;}
     public DbSet<Notification> Notifications { get; set; }
-    public DbSet<Participant> Participants { get; set; }
     public DbSet<Result> Results { get; set; }
     public DbSet<Subscription> Subscriptions { get; set; }
     public DbSet<SubscriptionNotifications> SubscriptionNotifications { get; set; }
