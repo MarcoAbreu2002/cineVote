@@ -23,42 +23,47 @@
 	.form-container {
 		width: 100%;
 		/* Set the desired width for the form container */
-		max-width: 1200px;
+		max-width: 1400px;
 		/* Set a maximum width if needed */
 		margin: 0 auto;
 		/* Center the form horizontally */
+	}
+
+	.margem-left{
+		margin-left: 1rem;
+		margin-top: 1rem;
 	}
 </style>
 
 <div class="form-container">
 	<div class="row" style="display: flex;justify-content: center; align-items: center;">
-		<h1 style="display: flex;justify-content: center; align-items: center;">Create a new Competition</h1>
-		<hr>
-		<div class="col-6">
+		<div class="col-10">
 
 			<div class="card" style="color:black;">
 				<div class="card-header">
-					<h5>Fill the form</h5>
+					<div class="text-center fs-3 fw-bold">Create a new Competition</div>
 				</div>
 				<div class="card-body" style="color:black;">
 					<form asp-controller="Competition" asp-action="createCompetition" method="post">
 
 						<div class="mb-3">
-							<label class="form-label">Name of the Competition:</label>
+							<label class="form-label fs-6 fw-bold">Name of the Competition:</label>
 							<input asp-for="Name" type="text" class="form-control" />
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label">Categories of the competition:</label>
-							<div class="category-list">
+							<label class="form-label fs-6 fw-bold">Categories of the competition:</label>
+							<div class="category-list d-flex row">
 								@if (Model.categoryList != null)
 								{
 									@foreach (var item in Model.categoryList)
 									{
-										<div class="category-option">
-											<div class="category-name">@item.Name</div>
-											<button type="button" class="btn btn-success"
-												onclick="addCatergoryToList('@item.CategoryId','@item.Name')">Add</button>
+										<div class="col-3">
+											<div class="category-option margem-left d-grid gap-2">
+												<button type="button" class="btn text-white d-inline " style="background-color:rgb(67,37,101)"
+												onclick="addCatergoryToList('@item.CategoryId','@item.Name')" >@item.Name</button>
+
+										</div>
 										</div>
 									}
 								}
@@ -68,63 +73,69 @@
 								}
 
 							</div>
+							
+							<div class="mb-2 mt-3">
+								<label class="form-label fs-6 fw-bold">Selected Categories:</label>
+								<div id="selectedCategoriesContainer" class="d-flex flex-wrap"></div>
+								<input asp-for="category" id="category" name="category" type="hidden" />
+							</div>
+						
 
 						</div>
 						<div class="mb-3">
-							<label class="form-label">Starting of the competition:</label>
+							<label class="form-label fs-6 fw-bold">Starting of the competition:</label>
 							<input asp-for="startDate" type="datetime-local" class="form-control"
 								value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
 						</div>
 
 						<div class="mb-3">
-							<label class="form-label">End of the competition:</label>
+							<label class="form-label fs-6 fw-bold">End of the competition:</label>
 							<input asp-for="endDate" type="datetime-local" class="form-control"
 								value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
 						</div>
 
-						<div class="card-body">
+					
 							<div class="mb-3">
-								<label class="form-label">Selected Movies:</label>
+								<label class="form-label fs-6 fw-bold">Selected Movies:</label>
 								<div id="selectedMoviesContainer" class="d-flex flex-wrap"></div>
 								<input asp-for="NomineeDBId" id="NomineeDBId" name="NomineeDBId" type="hidden" />
 							</div>
-						</div>
-						<div class="card-body">
-							<div class="mb-3">
-								<label class="form-label">Selected Categories:</label>
-								<div id="selectedCategoriesContainer" class="d-flex flex-wrap"></div>
-								<input asp-for="category" id="category" name="category" type="hidden" />
-							</div>
-						</div>
 
 						<div class="card-footer">
 							<div class="row">
 								@if (Model.nominees != null)
 								{
-									@foreach (var movie in Model.nominees)
-									{
-										var movieId = movie["Id"].ToString();
-										var movieTitle = movie["Title"].ToString();
-										var movieImagePath = movie["PosterPath"].ToString();
-										var movieOverview = movie["Overview"].ToString();
-										var releaseDate = movie["ReleaseDate"].ToString();
-										var baseUrl = "https://image.tmdb.org/t/p/";
-										var fileSize = "w500";
-										var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
-										<div class="col-md-6 mb-4">
-											<div class="card">
-												<img src="@imageUrl" class="card-img-top" alt="Movie Poster">
-												<div class="card-body">
-													<h5 class="card-title">@movieTitle</h5>
-													<p class="card-text">Release Date: @releaseDate</p>
-													<p class="card-text">@movieOverview</p>
-													<button type="button" class="btn btn-success"
-														onclick="addToNomineeList('@movieId', '@movieTitle', '@movieOverview', '@releaseDate')">Add
-														to Nominee List</button>
+									<div class="row">
+										@foreach (var movie in Model.nominees)
+										{
+											var movieId = movie["Id"].ToString();
+											var movieTitle = movie["Title"].ToString();
+											var movieImagePath = movie["PosterPath"].ToString();
+											var movieOverview = movie["Overview"].ToString();
+											var releaseDate = movie["ReleaseDate"].ToString();
+											var baseUrl = "https://image.tmdb.org/t/p/";
+											var fileSize = "w500";
+											var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+
+											<div class="col-md-4 mb-4">
+												<div class="card">
+													<img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+													<div class="card-body">
+														<h5 class="card-title fs-5">@movieTitle</h5>
+														<p class="card-text">Release Date: @releaseDate</p>
+														
+													</div>
+													<div class="card-footer d-flex justify-content-center">
+														<button type="button" class="btn btn-success btn-add-nominee"
+																onclick="addToNomineeList('@movieId', '@movieTitle', '@movieOverview', '@releaseDate')">
+															Add
+															to Nominee List
+														</button>
+													</div>
 												</div>
 											</div>
-										</div>
-									}
+										}
+									</div>
 								}
 								else
 								{
@@ -135,8 +146,8 @@
 							</div>
 						</div>
 
-						<div class="mb-3">
-							<button type="submit" class="btn btn-primary">Create</button>
+						<div class="mb-3 d-flex justify-content-center">
+							<button type="submit" class="btn text-white" style="background-color:rgb(67,37,101)">Create</button>
 						</div>
 					</form>
 				</div>
@@ -175,10 +186,11 @@
 		var movieContainer = document.createElement("div");
 		movieContainer.className = "selected-movie-container";
 		movieContainer.innerHTML = `
+				<div class="category-container d-flex align-items-center rounded text-white m-1" style="background-color:rgb(67,37,101)">
 	<div>
-	  <span class="movie-title">${movieTitle}</span>
+		  <span class="movie-title fs-6 m-2">${movieTitle}</span>
 	</div>
-	<button type="button" class="btn btn-sm btn-danger" onclick="removeFromNomineeList('${movieId}', '${movieTitle}')">
+	<button type="button" class="btn btn-sm btn-danger m-2" onclick="removeFromNomineeList('${movieId}', '${movieTitle}')">
 	  X
 	</button>
   `;
@@ -196,12 +208,14 @@
 		var categoryContainer = document.createElement("div");
 		categoryContainer.className = "selected-category-container";
 		categoryContainer.innerHTML = `
-	<div>
-	  <span class="category-name">${categoryName}</span>
+				<div class="category-container d-flex align-items-center rounded text-white" style="background-color:rgb(67,37,101)">
+	  <div>
+		<span class="category-name fs-6 m-2">${categoryName}</span>
+	  </div>
+	  <button type="button" class="btn btn-sm btn-danger m-2" onclick="removeFromCategoryList('${categoryId}', '${categoryName}')">
+		X
+	  </button>
 	</div>
-	<button type="button" class="btn btn-sm btn-danger" onclick="removeFromCategoryList('${categoryId}', '${categoryName}')">
-	  X
-	</button>
   `;
 		container.appendChild(categoryContainer);
 
