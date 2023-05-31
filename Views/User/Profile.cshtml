@@ -4,53 +4,57 @@
     ViewData["Title"] = "Profile";
 }
 
+<style>
+    .margem-top {
+        margin-top: 14%
+    }
+</style>
+
+
 <body>
-    <div class="P-mt">
-        <div class="container rounded bg-white mt-5 mb-5 hstack gap-3">
-            <div class="row text-secondary bg-light border ms-auto">
-                <div class="col-md-3 border-right">
+    <div class="margem-top">
+        <div class="container rounded mt-5 mb-5 border">
+            <div class="row text-secondary rounded bg-light ">
+                <div class="col-md-3">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                         <img class="rounded-circle mt-5" width="150px"
                             src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                        <span class="font-weight-bold">@Model.UserName</span>
+                        <span class="font-weight-bold fw-bold fs-5">@Model.UserName</span>
                     </div>
                 </div>
                 <div class="col-md-5 border-right">
                     <div class="p-3 py-5">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right">Profile</h4>
+                            <h4 class="text-right fs-2">Profile</h4>
                         </div>
                         <div class="row mt-2">
                             <div class="col-md-6">
-                                <label class="labels">Name:</label>
+                                <label class="labels fw-bold fs-5 mt-3">Name:</label>
                                 <span>@Model.FirstName</span>
                             </div>
-                            <div class="col-md-6">
-                                <br />
-                                <label class="labels">Surname:</label>
+                            <div class="col-md-12 mt-3">
+                                <label class="labels fw-bold fs-5">Surname:</label>
                                 <span>@Model.LastName</span>
                             </div>
-                            <div class="row mt-2">
-                                <div class="col-md-12 mt-2">
-                                    <label class="labels">Username:</label>
+                                <div class="col-md-12 mt-3">
+                                <label class="labels fw-bold fs-5">Username:</label>
                                     <span>@Model.UserName</span>
                                 </div>
-                                <div class="col-md-12 mt-2">
-                                    <label class="labels">Email:</label>
+                                <div class="col-md-12 mt-3">
+                                <label class="labels fw-bold fs-5">Email:</label>
                                     <span>@Model.EmailAddress</span>
                                 </div>
-                            </div>
                             <div class="mt-5">
                                 <a class="btn btn-primary profile-button"
-                                    href="/User/EditProfile?username=@Model.UserName"><i class="bi bi-pen"></i> Edit
-                                    Profile</a>
+                                   href="/User/EditProfile?username=@Model.UserName" style="background-color:rgb(67,37,101)">
+                                    <i class="bi bi-pen"></i> Edit Profile</a>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 bg-light border">
                     <div class="p-3 py-5 text-right">
-                        <p><strong style="font-size:20px;">Subscribed Competitions:</strong></p>
+                        <p class="fw-bold fs-4">Subscribed Competitions:</strong></p>
                         <ul>
                             @foreach (var subscription in Model.subscritions)
                             {
@@ -58,12 +62,13 @@
                                 {
                                     <li>
                                         <span>@subscription.Name</span>
-                                        <a class="btn btn-primary btn-sm" href="/User/Subscription?subscription=@subscription.SubscriptionId">See More</a>
+                                        <div class="mt-2">
+                                    <a class="btn btn-primary btn-sm" href="/User/Subscription" style="background-color:rgb(67,37,101)">See More</a>
+                                        </div>
                                     </li>
                                 }
-                                else
-                                {
-                                    <li>No subscriptions yet!</li>
+                                else{
+                                <li>No subscriptions yet!</li>
                                 }
                             }
                         </ul>

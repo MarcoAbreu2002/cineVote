@@ -2,8 +2,18 @@
 @{
 }
 
-<div class="tbl-container">
-    <h2>Edit Competitions</h2>
+<style>
+    .margem-direita{
+        margin-right: 4%
+    }
+
+    .margem-top{
+        margin-top: 12%;
+    }
+</style>
+
+<div class="row bg-light rounded text-black margem-top">
+    <div class="fs-3 fw-bold text-center mt-3">Edit Competitions</div>
     <form asp-action="EditCompetition" method="post">
         <input type="hidden" asp-for="Competition_Id">
         <input type="hidden" asp-for="IsPublic">
@@ -14,15 +24,21 @@
         <input type="hidden" asp-for="Categories">
         <input type="hidden" asp-for="Nominees">
         <input type="hidden" asp-for="Results">
-        <div class="form-group">
-            <label asp-for="Name">Name *</label>
-            <input type="text" class="form-control" asp-for="Name">
+        <div class="form-group mt-3 border-top border-3">
+            <label asp-for="Name" class="mt-2 fs-6 fw-bold">Name *</label>
+            <input type="text" class="form-control mt-2" asp-for="Name">
+            <label asp-for="StartDate" class="mt-2 fs-6 fw-bold">Start Date *</Label>
+            <input type="Date" class="form-control mt-2" asp-for="StartDate">
+            <label asp-for="EndDate" class="mt-2 fs-6 fw-bold">End Date *</Label>
+            <input type="Date" class="form-control mt-2" asp-for="EndDate">
         </div>
 
-        <div class="form-group pt-3">
-            <button type="submit" class="btn btn-dark"><i class="bi bi-save"></i> Save</button>
-            <a href="/Competition/DisplayCompetition" class="btn btn-primary"> <i class="bi bi-list"></i>List</a>
+        <div class="form-group pt-3 mb-3 d-flex justify-content-center">
+            <button type="submit" class="btn margem-direita text-white" style="background-color:rgb(67,37,101)"><i class="bi bi-save"></i> Save</button>
+            <a href="/Competition/DisplayCompetition" class="btn btn-primary" style="background-color:rgb(67,37,101)"> <i class="bi bi-list"></i>List</a>
         </div>
     </form>
 </div>
+
+
 
