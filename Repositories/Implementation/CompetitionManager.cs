@@ -22,6 +22,15 @@ namespace cineVote.Repositories.Implementation
             _userManager = userManager;
         }
 
+        public Task<Status> generateResults(dynamic topNominees)
+        {
+            var status = new Status();
+
+            status.StatusCode = 1;
+            status.Message = "Account created successfully";
+            return Task.FromResult(status);
+        }
+
         public Task<Status> createCompetition(createCompetitionModel createCompetitionModel)
         {
             var status = new Status();
@@ -126,6 +135,7 @@ namespace cineVote.Repositories.Implementation
             string userId = _userManager.GetUserId(principal);
             return userId;
         }
+
 
         Task<Competition> ICompetitionManager.getCompetition()
         {

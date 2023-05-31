@@ -12,30 +12,39 @@ namespace cineVote.Models.Domain
         [Column("ResultID")]
         public int ResultId { get; set; }
 
-        [Column("Competition")]
-        public ICollection<Competition>? Competition { get; set; }
+        [ForeignKey("FirstPlaceId")]
+        [Column("FirstPlaceId")]
+        public int FirstPlaceId { get; set; }
 
-        [ForeignKey("NomineeId")]
-        [Column("NomineeId")]
-        public int NomineeId { get; set; }
+        [ForeignKey("SecondPlaceId")]
+        [Column("SecondPlaceId")]
+        public int SecondPlaceId { get; set; }
 
-        [Column("Nominee")]
-        public Nominee? Nominee { get; set; }
+        [ForeignKey("ThirdPlaceId")]
+        [Column("ThirdPlaceId")]
+        public int ThirdPlaceId { get; set; }
 
         [ForeignKey("CategoryId")]
         [Column("CategoryId")]
         public int CategoryId { get; set; }
 
-        [Column("Category")]
-        public Category? Category { get; set; }
+        [ForeignKey("Competition_Id")]
+        [Column("Competition_Id")]
+        public int Competition_Id { get; set; }
 
-        [ForeignKey("SubscriptionId")]
-        [Column("SubscriptionId")]
-        public int SubscriptionId { get; set; }
+        [Column("Competition")]
+        public Competition? Competition { get; set; }
 
-        [Column("Subscription")]
-        public Subscription? Subscription { get; set; }
+        [Column("TotalParticipants")]
+        public int TotalParticipants { get; set; }
 
-       
+        [Column("FirstPlace")]
+        public CategoryNominee? FirstPlace { get; set; }
+
+        [Column("SecondPlace")]
+        public CategoryNominee? SecondPlace { get; set; }
+
+        [Column("ThirdPlace")]
+        public CategoryNominee? ThirdPlace { get; set; }
     }
 }

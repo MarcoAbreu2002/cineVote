@@ -48,11 +48,11 @@ namespace cineVote.Controllers
                 {
                     int categoryId = int.Parse(formData.Key.Replace("category-", ""));
                     int nomineeId = int.Parse(formData.Value);
-                    var result = _userService.Vote(username,competitionId,categoryId,nomineeId,subscriptionId);
+                    var result = _userService.Vote(username, competitionId, categoryId, nomineeId, subscriptionId);
                 }
             }
 
-            return  RedirectToAction("User", "Profile");
+            return RedirectToAction("User", "Profile");
         }
 
         public async Task<IActionResult> Subscription(int subscription)
@@ -99,14 +99,29 @@ namespace cineVote.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return RedirectToAction("Profile", username);
+                return RedirectToAction("Profile", new { username = username });
             }
 
-            var result = _userService.Subscribe(username, competitionId);
+            var status = _userService.Subscribe(username, competitionId).Result;
 
+            if (status.StatusCode == 1)
+            {
+                return RedirectToAction("Profile", new { username = username });
+
+            }
+            else if (status.StatusCode == 0)
+            {
+                TempData["msg"] = status.Message;
+            }
+            else
+            {
+                TempData["msg"] = "An error occurred during subscription.";
+            }
 
             return RedirectToAction("DisplayCompetition", "Competition");
+
         }
+
 
 
         [HttpPost]

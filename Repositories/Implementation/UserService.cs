@@ -82,29 +82,50 @@ namespace cineVote.Repositories.Implementation
         {
             return _db.Competitions.Find(id);
         }
-        public Task<Status> Subscribe(string username, int competitionId)
+        public async Task<Status> Subscribe(string username, int competitionId)
         {
             var status = new Status();
             var userId = getUserId();
             User user = _db.Users.Find(userId);
             var competition = FindById(competitionId);
-            Subscription subscription = new Subscription()
+
+            try
             {
-                Name = competition.Name,
-                Competition_Id = competitionId,
-                userName = user.UserName,
-                User = user
-            };
-            user.SubscriptionId = subscription.SubscriptionId;
-            _db.Users.Update(user);
-            _db.Subscriptions.Add(subscription);
-            _db.SaveChanges();
+                var checkSubscription = _db.Subscriptions
+                    .FirstOrDefault(cc => cc.userName == username && cc.Competition_Id == competitionId);
 
+                if (checkSubscription == null)
+                {
+                    Subscription subscription = new Subscription()
+                    {
+                        Name = competition.Name,
+                        Competition_Id = competitionId,
+                        userName = user.UserName,
+                        User = user
+                    };
+                    user.SubscriptionId = subscription.SubscriptionId;
+                    _db.Users.Update(user);
+                    _db.Subscriptions.Add(subscription);
+                    await _db.SaveChangesAsync();
+                    status.StatusCode = 1;
+                    status.Message = "Subscription made successfully";
+                }
+                else
+                {
+                    status.StatusCode = 0;
+                    status.Message = "You are already subscribed to this competition";
+                }
+            }
+            catch (Exception ex)
+            {
+                status.StatusCode = -1;
+                status.Message = "An error occurred during subscription";
+                Console.WriteLine(ex.Message);
+            }
 
-            status.StatusCode = 1;
-            status.Message = "Account created successfully";
-            return Task.FromResult(status);
+            return status;
         }
+
 
 
     }

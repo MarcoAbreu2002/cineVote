@@ -36,10 +36,6 @@ namespace cineVote.Models.Domain
         [Column("NomineeCompetitions")]
         public List<Nominee> Nominees { get; set; }
 
-        [Column("Results")]
-        public Result? Results { get; set; }
-
-
         [NotMapped]
         public List<Dictionary<string, object>> Movies { get; set; }
     }

@@ -9,5 +9,7 @@ namespace cineVote.Repositories.Abstract
         Competition FindById(int id);
         bool Edit(Competition competition);
         Task<Competition> getCompetition();
+
+        Task<Status> generateResults(dynamic topNominees);
     }
 }
