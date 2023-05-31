@@ -74,19 +74,26 @@ namespace cineVote.Controllers
 
 
         [HttpPost]
-        public ActionResult Subscribe(string username, int competitionId)
+        public ActionResult Subscribe(string username, int competitionId, IObserver observer)
         {
             if (!ModelState.IsValid)
             {
                 return RedirectToAction("Profile", username);
             }
 
-            var result = _userService.Subscribe(username, competitionId);
+            var result = _userService.Subscribe(username, competitionId, observer);
 
 
             return RedirectToAction("DisplayCompetition", "Competition");
         }
 
+        [HttpPost]
+        public IActionResult ProcessNotification (string message, int  competitionId) 
+        {
+            //Aqui é necessário criar alguma página html ou isso para aparecer
+            return RedirectToAction("Competition", competitionId);
+            
+        }
 
         [HttpPost]
         public IActionResult EditProfile(User user)

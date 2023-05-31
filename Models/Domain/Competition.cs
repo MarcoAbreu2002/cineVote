@@ -12,7 +12,6 @@ namespace cineVote.Models.Domain
         public string imageURL { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public bool IsOpen { get; set; }
 
         //Relatioships
 
