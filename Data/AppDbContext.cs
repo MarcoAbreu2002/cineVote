@@ -22,6 +22,7 @@ public class AppDbContext : IdentityDbContext<Person>
     public DbSet<User> Users { get; set; }
     public DbSet<Nominee> Nominees { get; set; }
     public DbSet<Vote> Votes { get; set; }
+    public DbSet<VoteSubscription> voteSubscriptions {get;set;}
 
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)

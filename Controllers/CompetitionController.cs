@@ -32,6 +32,41 @@ namespace cineVote.Controllers
             return RedirectToAction("DisplayCompetition");
         }
 
+        /*
+        public async Task<IActionResult> Results(int competitionId)
+        {
+            var result = _competitionManager.FindById(competitionId);
+
+            var subscritions = _context.Subscriptions       //subscriptions to the competition
+                .Where(cc => cc.Competition_Id == competitionId)
+                .Select(cc => cc.SubscriptionId);
+
+
+            var competitionCategories = _context.CompetitionCategories //Categories on the competition
+                .Where(cc => cc.Competition_Id == competitionId)
+                .Select(cc => cc.CategoryId)
+                .ToList();
+
+            var nomineesCompetition = _context.NomineeCompetitions //Nominee on the competition
+                .Where(cc => cc.Competition_Id == competitionId)
+                .Select(cc => cc.NomineeId)
+                .ToList();
+
+            foreach (var subscription in subscritions)
+            {
+                var votes = _context.Votes
+                   .Where(cc => subscritions.Contains(cc.SubscriptionId));
+                
+                foreach (var vote in votes)
+                {
+                    
+                }
+            }
+
+
+
+        }*/
+
         public async Task<IActionResult> SingleCompetition(int competitionId)
         {
             var result = _competitionManager.FindById(competitionId);

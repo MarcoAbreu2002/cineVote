@@ -34,6 +34,27 @@ namespace cineVote.Controllers
             return View(record);
         }
 
+        public async Task<IActionResult> Vote()
+        {
+            string username = Request.Form["username"][0];
+
+            int competitionId = int.Parse(Request.Form["competitionId"][0]);
+
+            int subscriptionId = int.Parse(Request.Form["subscriptionId"][0]);
+
+            foreach (var formData in Request.Form)
+            {
+                if (formData.Key.StartsWith("category-"))
+                {
+                    int categoryId = int.Parse(formData.Key.Replace("category-", ""));
+                    int nomineeId = int.Parse(formData.Value);
+                    var result = _userService.Vote(username,competitionId,categoryId,nomineeId,subscriptionId);
+                }
+            }
+
+            return View();
+        }
+
         public async Task<IActionResult> Subscription(int subscription)
         {
             var subscriptionToShow = _context.Subscriptions.Find(subscription);

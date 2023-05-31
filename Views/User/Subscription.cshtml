@@ -24,36 +24,60 @@
                             <div class="row mt-4">
                                 <div class="col-md-12">
                                     <label class="labels">Categories:</label>
-                                    @foreach (var category in Model.Categories)
-                                    {
-                                        <div class="category-container">
-                                            <h5 class="category-title">@category.Name</h5>
-                                            <div class="row mt-3">
-                                                @foreach (var movie in Model.Movies)
-                                                {
-                                                    var movieId = movie["Id"].ToString();
-                                                    var movieTitle = movie["Title"].ToString();
-                                                    var movieImagePath = movie["PosterPath"].ToString();
-                                                    var movieOverview = movie["Overview"].ToString();
-                                                    var releaseDate = movie["ReleaseDate"].ToString();
-                                                    var baseUrl = "https://image.tmdb.org/t/p/";
-                                                    var fileSize = "w500";
-                                                    var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+                                    <form action="/User/Vote" method="post">
+                                        <input type="hidden" name="username" value="@User.Identity.Name" />
+                                        <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
+                                        <input type="hidden" name="subscriptionId"
+                                            value="@Context.Request.Query["subscription"]" />
+                                        @foreach (var category in Model.Categories)
+                                        {
+                                            <div class="category-container">
+                                                <h5 class="category-title">@category.Name</h5>
+                                                <div class="row mt-3">
+                                                    @foreach (var movie in Model.Movies)
+                                                    {
+                                                        @foreach (var item in Model.Nominees)
+                                                        {
+                                                            int id = movie["Id"];
+                                                            var movieId = movie["Id"].ToString();
+                                                            var movieTitle = movie["Title"].ToString();
+                                                            var movieImagePath = movie["PosterPath"].ToString();
+                                                            var movieOverview = movie["Overview"].ToString();
+                                                            var releaseDate = movie["ReleaseDate"].ToString();
+                                                            var baseUrl = "https://image.tmdb.org/t/p/";
+                                                            var fileSize = "w500";
+                                                            var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+                                                            @if (id == item.TMDBId)
+                                                            {
+                                                                <div class="col-md-4 mb-4">
+                                                                    <div class="card">
+                                                                        <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+                                                                        <div class="card-body">
+                                                                            <h5 class="card-title">@movieTitle</h5>
+                                                                            <p class="card-text">Release Date: @releaseDate</p>
+                                                                            <input type="radio" name="category-@category.CategoryId"
+                                                                                value="@item.NomineeId"> Vote to @movieTitle
+                                                                            <input type="hidden" name="username"
+                                                                                value="@User.Identity.Name" />
+                                                                            <input type="hidden" name="competitionId"
+                                                                                value="@Model.Competition_Id" />
+                                                                            <input type="hidden" name="categoryId"
+                                                                                value="@category.CategoryId" />
+                                                                            <input type="hidden" name="subscriptionId"
+                                                                                value="@Context.Request.Query["subscription"]" />
 
-                                                    <div class="col-md-4 mb-4">
-                                                        <div class="card">
-                                                            <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
-                                                            <div class="card-body">
-                                                                <h5 class="card-title">@movieTitle</h5>
-                                                                <p class="card-text">Release Date: @releaseDate</p>
-                                                                <button type="button" class="btn btn-success vote-button">Vote</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            }
+                                                        }
+                                                    }
+                                                </div>
                                             </div>
-                                        </div>
-                                    }
+                                        }
+                                        <button class="btn btn-primary profile-button" type="submit"><i
+                                                class="bi bi-pen"></i>Submit</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

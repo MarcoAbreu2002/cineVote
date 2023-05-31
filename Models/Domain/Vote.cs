@@ -7,12 +7,13 @@ namespace cineVote.Models.Domain
     public class Vote
     {
         [Key]
-        [Column("Vote_id")]
+        [Column("VoteId")]
         public int VoteId { get; set; }
 
-        [ForeignKey("UserId")]
-        [Column("UserId")]
-        public int UserId { get; set; }
+        
+        [ForeignKey("userName")]
+        [Column("userName")]
+        public string userName { get; set; }
 
         [Column("User")]
         public User User { get; set; }

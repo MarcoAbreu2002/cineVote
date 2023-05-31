@@ -31,6 +31,31 @@ namespace cineVote.Repositories.Implementation
             return user ?? throw new InvalidOperationException("User not found.");
         }
 
+        public Task<Status> Vote(string username, int competitionId, int categoryId, int nomineeId, int subscriptionId)
+        {
+            var status = new Status();
+            var userId = getUserId();
+            User user = _db.Users.Find(userId);
+            Vote vote = new Vote()
+            {
+                userName = username,
+                CategoryId = categoryId,
+                NomineeId = nomineeId,
+                SubscriptionId = subscriptionId,
+                User = user
+            };
+            _db.Votes.Add(vote);
+            _db.SaveChanges();
+            VoteSubscription voteSubscription = new VoteSubscription()
+            {
+                VoteId = vote.VoteId,
+                SubscriptionId = subscriptionId
+            };
+            _db.voteSubscriptions.Add(voteSubscription);
+            _db.SaveChanges();
+            return Task.FromResult(status);
+        }
+
 
         private string getUserId()
         {
@@ -61,7 +86,7 @@ namespace cineVote.Repositories.Implementation
         {
             var status = new Status();
             var userId = getUserId();
-            User user =  _db.Users.Find(userId);
+            User user = _db.Users.Find(userId);
             var competition = FindById(competitionId);
             Subscription subscription = new Subscription()
             {

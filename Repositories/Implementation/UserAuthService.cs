@@ -31,11 +31,12 @@ namespace cineVote.Repositories.Implementation
                 status.Message = "User already exists";
                 return status;
             }
-            User user = new User()
+            Admin user = new Admin()
             {
                 NormalizedEmail = model.Email,
                 EmailConfirmed = true,
                 NormalizedUserName = model.Username,
+                IsAdmin = true,
                 EmailAddress = model.Email,
                 Email = model.Email,
                 FirstName = model.FirstName,
