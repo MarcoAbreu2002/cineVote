@@ -1,6 +1,7 @@
 using cineVote.Models.Domain;
 using cineVote.Models.DTO;
 using cineVote.Repositories.Abstract;
+using cineVote.Repositories.Implementation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,6 +33,14 @@ namespace cineVote.Controllers
             record.subscritions = filteredSubscriptions;
 
             return View(record);
+        }
+
+        [HttpPost]
+        public IActionResult ProcessNotification(string message, int competitionId)
+        {
+
+            return RedirectToAction("Competition", competitionId);
+
         }
 
         public async Task<IActionResult> Vote()
@@ -81,7 +90,6 @@ namespace cineVote.Controllers
             result.Categories = competitionCategories;
 
             result.Movies = await _ITMDBApiService.GetMovieById(nomineeIdTMDB);
-
 
             return View(result);
         }

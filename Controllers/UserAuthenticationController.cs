@@ -41,7 +41,7 @@ namespace cineVote.Controllers
             registrationModel.Role = "user";
             var result = await this._authService.RegisterAsync(registrationModel);
             TempData["msg"] = result.Message;
-            return RedirectToAction(nameof(Registration));
+            return RedirectToAction(nameof(Login));
         }
 
 

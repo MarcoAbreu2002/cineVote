@@ -3,6 +3,9 @@ using cineVote.Models.DTO;
 using cineVote.Repositories.Abstract;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Linq;
+using System.Threading;
 
 namespace cineVote.Controllers
 {
@@ -12,13 +15,34 @@ namespace cineVote.Controllers
         private readonly AppDbContext? _context;
         private readonly ICompetitionManager _competitionManager;
         private readonly ITMDBApiService _ITMDBApiService;
+        private Timer _timer;
 
-        public CompetitionController(AppDbContext? context, ICompetitionManager competitionManager, ITMDBApiService ITMDBApiService)
+        public CompetitionController(AppDbContext context, ICompetitionManager competitionManager, ITMDBApiService ITMDBApiService)
         {
             _context = context;
             _competitionManager = competitionManager;
             _ITMDBApiService = ITMDBApiService;
+
+            // Start the timer for update checking
+            TimeSpan interval = TimeSpan.FromSeconds(30); // Adjust the interval as needed
+            _timer = new Timer(CheckForUpdates, null, TimeSpan.Zero, interval);
         }
+
+        // Method for update checking
+        private void CheckForUpdates(object state)
+        {
+            using (var context = new AppDbContext()) // Create a new instance of DbContext
+            {
+                DateTime today = DateTime.Today;
+                bool anyStartDateLower = context.Competitions.Any(c => c.StartDate < today);
+
+                if (anyStartDateLower)
+                {
+                    Console.WriteLine("-------------ENCONTROU---------------");
+                }
+            }
+        }
+
         public IActionResult DisplayCompetition()
         {
             List<Competition> competitions = _context.Competitions.ToList();
@@ -131,11 +155,11 @@ namespace cineVote.Controllers
                 var thirdPlaceNominee = _context.Nominees
                     .FirstOrDefault(n => n.NomineeId == thirdPlace);
 
-                    nominees.Add(firstPlaceNominee);
+                nominees.Add(firstPlaceNominee);
 
-                    nominees.Add(secondPlaceNominee);
+                nominees.Add(secondPlaceNominee);
 
-                    nominees.Add(thirdPlaceNominee);
+                nominees.Add(thirdPlaceNominee);
             }
 
             competition.Categories = categories;

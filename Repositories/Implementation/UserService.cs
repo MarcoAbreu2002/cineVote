@@ -109,6 +109,11 @@ namespace cineVote.Repositories.Implementation
                     await _db.SaveChangesAsync();
                     status.StatusCode = 1;
                     status.Message = "Subscription made successfully";
+
+                    PopupNotificationObserver observer = new PopupNotificationObserver();
+
+                    subscription.Attach(observer);
+
                 }
                 else
                 {

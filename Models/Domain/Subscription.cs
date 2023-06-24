@@ -1,14 +1,39 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using cineVote.Repositories.Abstract;
 
 namespace cineVote.Models.Domain
 {
     [Table("tblSubscription")]
-    public class Subscription
+    public class Subscription : IObservable
     {
+        private List<IObserver> observers = new List<IObserver>();
+
+        public void Attach(IObserver observer)
+        {
+            observers.Add(observer);
+        }
+
+        public void Detach(IObserver observer)
+        {
+            observers.Remove(observer);
+        }
+
+        public void Notify(Subscription subscription)
+        {
+            foreach (var observer in observers)
+            {
+                observer.Update(subscription);
+            }
+        }
+
+
         [Key]
         [Column("SubscriptionId")]
         public int SubscriptionId { get; set; }
+
+        [Column("IsPublic")]
+        public bool IsPublic { get; set; }
 
         [Column("Subscription_name")]
         public string? Name { get; set; }
