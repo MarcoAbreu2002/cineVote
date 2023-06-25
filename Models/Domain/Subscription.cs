@@ -32,8 +32,6 @@ namespace cineVote.Models.Domain
         [Column("SubscriptionId")]
         public int SubscriptionId { get; set; }
 
-        [Column("IsPublic")]
-        public bool IsPublic { get; set; }
 
         [Column("Subscription_name")]
         public string? Name { get; set; }

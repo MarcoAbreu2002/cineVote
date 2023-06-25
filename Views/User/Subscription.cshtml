@@ -5,8 +5,8 @@
                 @if (Model != null)
                 {
                     <div class="col-md-12">
-                <div class="d-flex flex-column align-items-center text-center p-3 py-4 border-bottom border-3">
-                    <h1 class="font-weight-bold">@Model.Name</h1>
+                        <div class="d-flex flex-column align-items-center text-center p-3 py-4 border-bottom border-3">
+                            <h1 class="font-weight-bold">@Model.Name</h1>
                         </div>
                     </div>
                     <div class="col-md-12">
@@ -24,12 +24,13 @@
                             <div class="row mt-4">
                                 <div class="col-md-12">
                                     <div class="text-center">
-                                    <label class="labels fs-2 fw-bold">Categories:</label>
+                                        <label class="labels fs-2 fw-bold">Categories:</label>
                                     </div>
                                     <form action="/User/Vote" method="post" id="vote-form">
                                         <input type="hidden" name="username" value="@User.Identity.Name" />
                                         <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
-                                        <input type="hidden" name="subscriptionId" value="@Context.Request.Query["subscription"]" />
+                                        <input type="hidden" name="subscriptionId"
+                                            value="@Context.Request.Query["subscription"]" />
                                         @foreach (var category in Model.Categories)
                                         {
                                             <div class="category-container">
@@ -56,7 +57,8 @@
                                                                         <div class="card-body">
                                                                             <h5 class="card-title">@movieTitle</h5>
                                                                             <p class="card-text">Release Date: @releaseDate</p>
-                                                                            <input type="radio" class="vote-input" name="category-@category.CategoryId"
+                                                                            <input type="radio" class="vote-input"
+                                                                                name="category-@category.CategoryId"
                                                                                 value="@item.NomineeId"> Vote to @movieTitle
                                                                             <input type="hidden" name="username"
                                                                                 value="@User.Identity.Name" />
@@ -76,7 +78,9 @@
                                             </div>
                                         }
                                         <div class="d-flex justify-content-center mb-3">
-                                            <button class="btn text-white profile-button" type="submit" style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i>Submit</button>
+                                            <button class="btn text-white profile-button" type="submit"
+                                                style="background-color:rgb(67,37,101)"><i
+                                                    class="bi bi-pen"></i>Submit</button>
                                         </div>
                                     </form>
                                 </div>
@@ -92,6 +96,33 @@
         </div>
     </div>
 
+    <script>
+        // Function to check if the start date is lower than the present date
+        function checkStartDate() {
+            var startDateElement = document.getElementById('start-date');
+            var startDate = new Date(startDateElement.innerText);
+            var currentDate = new Date();
+                console.log("StartDate: " + startDate);
+                console.log("CurrentDate: " + currentDate);
+            if (startDate < currentDate) {
+                // Start date is lower than the present date
+                // Perform actions or display a message here
+                console.log("StartDate: " + startDate);
+                console.log("CurrentDate: " + currentDate);
+                console.log("Start date is lower than the present date");
+            }
+        }
 
+        // Function to check the start date periodically
+        function startCheckingStartDate() {
+            checkStartDate(); // Call the function initially
+
+            // Set an interval to call the function every second (adjust the interval as needed)
+            setInterval(checkStartDate, 1000); // 1000 milliseconds = 1 second
+        }
+
+        // Call the startCheckingStartDate function when the page finishes loading
+        window.addEventListener('load', startCheckingStartDate);
+    </script>
 
 </body>

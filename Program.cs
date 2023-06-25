@@ -4,7 +4,6 @@ using cineVote.Models.Domain;
 using cineVote.Repositories.Implementation;
 using cineVote.Repositories.Abstract;
 
-
 namespace cineVote
 {
     public class Program
@@ -13,12 +12,11 @@ namespace cineVote
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            //DbContext configuration
+            // Add DbContext registration with scoped lifetime
             builder.Services.AddDbContext<AppDbContext>(options =>
             {
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
-            });
-
+            }, ServiceLifetime.Scoped); // <-- Use ServiceLifetime.Scoped
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -27,13 +25,11 @@ namespace cineVote
                 .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
-
             builder.Services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = "/UserAuthentication/Login";
             });
 
-            
             builder.Services.AddHttpClient();
 
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
@@ -41,7 +37,7 @@ namespace cineVote
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITMDBApiService, TMDBApiService>();
-            
+            builder.Services.AddHostedService<BackgroundWorkerService>();
 
             var app = builder.Build();
 
@@ -64,8 +60,6 @@ namespace cineVote
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
-
-                
 
             app.Run();
         }
