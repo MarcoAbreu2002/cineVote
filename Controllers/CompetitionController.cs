@@ -35,7 +35,6 @@ namespace cineVote.Controllers
             return RedirectToAction("DisplayCompetition");
         }
 
-
         public async Task<IActionResult> Results(int competitionId)
         {
             var competition = _competitionManager.FindById(competitionId);
@@ -156,13 +155,6 @@ namespace cineVote.Controllers
 
             return View(competition);
         }
-
-
-
-
-
-
-
 
 
         public async Task<IActionResult> SingleCompetition(int competitionId)

@@ -22,6 +22,12 @@ namespace cineVote.Repositories.Implementation
             _userManager = userManager;
         }
 
+        public string startCompetition(Competition competition)
+        {
+            string userid = getAdminId();
+            return userid;
+        }
+
         public Task<Status> generateResults(dynamic topNominees, int numberOfParticipants, int competition_id)
         {
             var status = new Status();
