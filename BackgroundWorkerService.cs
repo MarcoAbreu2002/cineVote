@@ -39,7 +39,7 @@ namespace cineVote
         {
             using (IServiceScope scope = _serviceProvider.CreateScope())
             {
-                var CompetitionController  = scope.ServiceProvider.GetRequiredService<ICompetitionManager>();
+                ICompetitionManager CompetitionController  = scope.ServiceProvider.GetRequiredService<ICompetitionManager>();
                 
                 AppDbContext context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 List<Competition> competitions = context.Competitions.ToList();
@@ -53,14 +53,14 @@ namespace cineVote
                         if (competition.EndDate < localTime && competition.IsPublic == true)
                         {
                             string test = CompetitionController.startCompetition(competition);
-                            //_logger.LogInformation("ID: {userid}", CompetitionController.startCompetition(competition));
+                            _logger.LogInformation("ID: {userid}", CompetitionController.startCompetition(competition));
                             NotifyObserver(competition);
                         }
                         else
                         {
                             // Notify the observer
                             string test = CompetitionController.startCompetition(competition);
-                            //_logger.LogInformation("ID: {userid}", CompetitionController.startCompetition(competition));
+                            _logger.LogInformation("ID: {userid}", CompetitionController.startCompetition(competition));
                             NotifyObserver(competition);
                         }
                     }

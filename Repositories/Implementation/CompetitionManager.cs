@@ -191,10 +191,24 @@ namespace cineVote.Repositories.Implementation
 
         private string getAdminId()
         {
-            var principal = _httpContextAccessor.HttpContext.User;
-            string userId = _userManager.GetUserId(principal);
+            var principal = _httpContextAccessor?.HttpContext?.User;
+            if (principal == null)
+            {
+                return "User not Found";
+            }
+
+            string userId = _userManager?.GetUserId(principal);
+            if (userId == null)
+            {
+                // Handle the case where userId is null
+                // For example, you can throw an exception or return a default value.
+                return "User not Found";
+            }
+
             return userId;
         }
+
+
 
 
         Task<Competition> ICompetitionManager.getCompetition()
