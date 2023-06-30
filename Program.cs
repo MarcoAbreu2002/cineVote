@@ -32,6 +32,7 @@ namespace cineVote
 
             builder.Services.AddHttpClient();
 
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddScoped<IUserAuthService, UserAuthService>();
             builder.Services.AddScoped<ICompetitionManager, CompetitionManager>();
             builder.Services.AddScoped<IAdminService, AdminService>();

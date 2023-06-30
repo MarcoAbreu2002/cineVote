@@ -10,7 +10,7 @@ namespace cineVote.Repositories.Implementation
     {
         private UserController controller;
 
-        public void Update(Subscription subscription)
+        public void Update(Subscription subscription, string userName)
         {
             string message = "";
             if (subscription.Competition.StartDate >= DateTime.Now && subscription.Competition.EndDate <= DateTime.Now)
@@ -22,11 +22,16 @@ namespace cineVote.Repositories.Implementation
                 message = $"A competição '{subscription.Competition.Name}' está fechada!";
             }
 
-            ShowPopupNotification(message, subscription.Competition.Competition_Id);
+            ShowPopupNotification(message, subscription.Competition.Competition_Id, userName);
         }
 
-        private void ShowPopupNotification(string message, int competitionId)
+        private void ShowPopupNotification(string message, int competitionId, string userName)
         {
+            Notification notification = new Notification(){
+                SubscriptionId = competitionId,
+                userName = userName
+
+            };
             controller.ProcessNotification(message, competitionId);
         }
     }

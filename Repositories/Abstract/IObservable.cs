@@ -6,6 +6,6 @@ namespace cineVote.Repositories.Abstract
     {
         void Attach(IObserver observer);
         void Detach(IObserver observer);
-        void Notify(Subscription subscription);
+        void Notify(Subscription subscription, string userName);
     }
 }

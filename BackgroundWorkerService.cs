@@ -50,18 +50,16 @@ namespace cineVote
                 {
                     if (competition.StartDate < localTime && competition.IsPublic == false)
                     {
-                        if (competition.EndDate < localTime && competition.IsPublic == true)
-                        {
-                            string test = CompetitionController.startCompetition(competition);
-                            _logger.LogInformation("ID: {userid}", CompetitionController.startCompetition(competition));
-                            NotifyObserver(competition);
-                        }
-                        else
+                        if (competition.EndDate > localTime && competition.IsPublic == false)
                         {
                             // Notify the observer
                             string test = CompetitionController.startCompetition(competition);
                             _logger.LogInformation("ID: {userid}", CompetitionController.startCompetition(competition));
                             NotifyObserver(competition);
+                        }
+                        else if(competition.EndDate > localTime && competition.IsPublic == true)
+                        {
+                            //terminar competição
                         }
                     }
                 }

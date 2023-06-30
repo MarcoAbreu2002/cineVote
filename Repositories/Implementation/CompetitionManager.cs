@@ -24,9 +24,22 @@ namespace cineVote.Repositories.Implementation
 
         public string startCompetition(Competition competition)
         {
-            string userid = getAdminId();
-            return userid;
+            var data = this.FindById(competition.Competition_Id);
+            data.IsPublic = true;
+            _db.Competitions.Update(data);
+            _db.SaveChanges();
+            var subscriptions = _db.Subscriptions
+                .Where(s => s.Competition_Id == competition.Competition_Id)
+                .ToList();
+
+            foreach(var subscription in subscriptions)
+            {
+                subscription.Notify(subscription,subscription.userName);
+            }
+
+            return "Começou a competição"; 
         }
+
 
         public Task<Status> generateResults(dynamic topNominees, int numberOfParticipants, int competition_id)
         {
@@ -158,8 +171,6 @@ namespace cineVote.Repositories.Implementation
             try
             {
                 var data = this.FindById(competitionId);
-                if (data == null)
-                    return false;
                 _db.Competitions.Remove(data);
                 _db.SaveChanges();
                 return true;
@@ -200,8 +211,6 @@ namespace cineVote.Repositories.Implementation
             string userId = _userManager?.GetUserId(principal);
             if (userId == null)
             {
-                // Handle the case where userId is null
-                // For example, you can throw an exception or return a default value.
                 return "User not Found";
             }
 

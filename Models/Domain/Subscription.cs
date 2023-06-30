@@ -19,11 +19,11 @@ namespace cineVote.Models.Domain
             observers.Remove(observer);
         }
 
-        public void Notify(Subscription subscription)
+        public void Notify(Subscription subscription, string userName)
         {
             foreach (var observer in observers)
             {
-                observer.Update(subscription);
+                observer.Update(subscription, userName);
             }
         }
 
