@@ -54,7 +54,7 @@ namespace cineVote
                         {
                             // Notify the observer
                             string test = CompetitionController.startCompetition(competition);
-                            _logger.LogInformation("ID: {userid}", CompetitionController.startCompetition(competition));
+                            _logger.LogInformation("ID: {userid}", test);
                             NotifyObserver(competition);
                         }
                         else if(competition.EndDate > localTime && competition.IsPublic == true)

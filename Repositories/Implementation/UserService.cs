@@ -82,12 +82,13 @@ namespace cineVote.Repositories.Implementation
         {
             return _db.Competitions.Find(id);
         }
+
         public async Task<Status> Subscribe(string username, int competitionId)
         {
             var status = new Status();
             var userId = getUserId();
             User user = _db.Users.Find(userId);
-            var competition = FindById(competitionId);
+            Competition competition = FindById(competitionId);
 
             try
             {
@@ -110,10 +111,6 @@ namespace cineVote.Repositories.Implementation
                     status.StatusCode = 1;
                     status.Message = "Subscription made successfully";
 
-                    PopupNotificationObserver observer = new PopupNotificationObserver();
-
-                    subscription.Attach(observer);
-
                 }
                 else
                 {
@@ -130,6 +127,7 @@ namespace cineVote.Repositories.Implementation
 
             return status;
         }
+
 
 
 

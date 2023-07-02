@@ -4,6 +4,6 @@ namespace cineVote.Repositories.Abstract
 {
     public interface IObserver
     {
-        void Update(Subscription subscription, string userName);
+        void Update(Competition competition, string userName, Subscription subscription);
     }
 }

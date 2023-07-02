@@ -9,30 +9,40 @@ namespace cineVote.Repositories.Implementation
     public class PopupNotificationObserver : IObserver
     {
         private UserController controller;
+        private readonly AppDbContext _db;
 
-        public void Update(Subscription subscription, string userName)
+        public PopupNotificationObserver(AppDbContext db)
         {
-            string message = "";
-            if (subscription.Competition.StartDate >= DateTime.Now && subscription.Competition.EndDate <= DateTime.Now)
-            {
-                message = $"A competição '{subscription.Competition.Name}' está aberta!";
-            }
-            else if (subscription.Competition.EndDate > DateTime.Now)
-            {
-                message = $"A competição '{subscription.Competition.Name}' está fechada!";
-            }
-
-            ShowPopupNotification(message, subscription.Competition.Competition_Id, userName);
+            _db = db;
         }
 
-        private void ShowPopupNotification(string message, int competitionId, string userName)
+        public void Update(Competition competition, string userName, Subscription subscription)
         {
-            Notification notification = new Notification(){
-                SubscriptionId = competitionId,
-                userName = userName
+            string message = "";
+            if (competition.StartDate <= DateTime.Now && competition.EndDate > DateTime.Now)
+            {
+                message = $"A competição '{competition.Name}' está aberta!";
+            }
+            else if (competition.EndDate > DateTime.Now)
+            {
+                message = $"A competição '{competition.Name}' está fechada!";
+            }
+
+            ShowPopupNotification(message, subscription.Competition_Id, userName, subscription);
+        }
+
+        private void ShowPopupNotification(string message, int competitionId, string userName, Subscription subscription)
+        {
+            Notification notification = new Notification()
+            {
+                Name = message,
+                SubscriptionId = subscription.SubscriptionId,
+                userName = userName,
+                isRead = false
 
             };
-            controller.ProcessNotification(message, competitionId);
+            _db.Notifications.Add(notification);
+            _db.SaveChanges();
         }
     }
 }

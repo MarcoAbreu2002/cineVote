@@ -10,6 +10,9 @@ namespace cineVote.Models.Domain
         [Column("notificationId")]
         public int NotificationId { get; set; }
 
+        [Column("isRead")]
+        public Boolean isRead {get;set;}
+
         [Column("Name")]
         public string? Name { get; set; }
 

@@ -28,16 +28,22 @@ namespace cineVote.Repositories.Implementation
             data.IsPublic = true;
             _db.Competitions.Update(data);
             _db.SaveChanges();
-            var subscriptions = _db.Subscriptions
+
+            List<Subscription> subscriptions = _db.Subscriptions
                 .Where(s => s.Competition_Id == competition.Competition_Id)
                 .ToList();
 
-            foreach(var subscription in subscriptions)
+            PopupNotificationObserver observer = new PopupNotificationObserver(_db);
+            competition.Attach(observer);
+
+            // Assign each subscription to a specific observer
+            for (int i = 0; i < subscriptions.Count; i++)
             {
-                subscription.Notify(subscription,subscription.userName);
+                Subscription subscription = subscriptions[i];
+                competition.Notify(competition, subscription.userName, subscription);
             }
 
-            return "Começou a competição"; 
+            return "Começou a competição";
         }
 
 

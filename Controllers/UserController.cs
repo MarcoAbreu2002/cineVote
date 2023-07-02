@@ -32,16 +32,17 @@ namespace cineVote.Controllers
 
             record.subscritions = filteredSubscriptions;
 
+            string userName = User.Identity.Name;
+            var notifications = _context.Notifications
+                .Where(n => n.userName == userName)
+                .ToList();
+
+            ViewBag.Notifications = notifications;
+
             return View(record);
         }
 
-        [HttpPost]
-        public IActionResult ProcessNotification(string message, int competitionId)
-        {
 
-            return RedirectToAction("Competition", competitionId);
-
-        }
 
         public async Task<IActionResult> Vote()
         {

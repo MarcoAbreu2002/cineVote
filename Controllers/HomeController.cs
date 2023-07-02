@@ -1,4 +1,5 @@
 ﻿using cineVote.Models;
+using cineVote.Models.Domain;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -7,15 +8,22 @@ namespace cineVote.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly AppDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(AppDbContext db,ILogger<HomeController> logger)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Index()
         {
-            return View();
+            string userName = User.Identity.Name;
+            var notifications = _db.Notifications
+                .Where(n => n.userName == userName)
+                .ToList();
+
+            return View(notifications);
         }
 
         public IActionResult Privacy()

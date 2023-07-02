@@ -5,29 +5,8 @@ using cineVote.Repositories.Abstract;
 namespace cineVote.Models.Domain
 {
     [Table("tblSubscription")]
-    public class Subscription : IObservable
+    public class Subscription 
     {
-        private List<IObserver> observers = new List<IObserver>();
-
-        public void Attach(IObserver observer)
-        {
-            observers.Add(observer);
-        }
-
-        public void Detach(IObserver observer)
-        {
-            observers.Remove(observer);
-        }
-
-        public void Notify(Subscription subscription, string userName)
-        {
-            foreach (var observer in observers)
-            {
-                observer.Update(subscription, userName);
-            }
-        }
-
-
         [Key]
         [Column("SubscriptionId")]
         public int SubscriptionId { get; set; }

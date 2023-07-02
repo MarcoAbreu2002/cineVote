@@ -25,7 +25,6 @@ namespace cineVote.Controllers
         public IActionResult DisplayCompetition()
         {
             List<Competition> competitions = _context.Competitions.ToList();
-
             return View(competitions);
         }
 
