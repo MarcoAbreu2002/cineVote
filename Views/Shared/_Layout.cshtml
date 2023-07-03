@@ -1,4 +1,8 @@
-﻿<head>
+﻿@using cineVote.Models.Domain
+@{
+    var notifications = ViewContext.HttpContext.Items["notifications"] as List<Notification>;
+}
+<head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - cineVote</title>
@@ -63,7 +67,7 @@
                             </svg>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                            @foreach (var notification in Model)
+                            @foreach (var notification in notifications)
                                 {
                                     <li>
                                         <a class="dropdown-item" href="#">

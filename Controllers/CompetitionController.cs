@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace cineVote.Controllers
 {
     [Authorize]
+    [ServiceFilter(typeof(NotificationFilter))]
     public class CompetitionController : Controller
     {
         private readonly AppDbContext? _context;
@@ -25,6 +26,7 @@ namespace cineVote.Controllers
         public IActionResult DisplayCompetition()
         {
             List<Competition> competitions = _context.Competitions.ToList();
+            string userName = User.Identity.Name;
             return View(competitions);
         }
 

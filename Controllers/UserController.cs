@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace cineVote.Controllers
 {
+    [ServiceFilter(typeof(NotificationFilter))]
     [Authorize(Roles = "user")]
     public class UserController : Controller
     {
@@ -31,13 +32,6 @@ namespace cineVote.Controllers
             var filteredSubscriptions = subscriptions.Where(s => s.userName == username).ToList();
 
             record.subscritions = filteredSubscriptions;
-
-            string userName = User.Identity.Name;
-            var notifications = _context.Notifications
-                .Where(n => n.userName == userName)
-                .ToList();
-
-            ViewBag.Notifications = notifications;
 
             return View(record);
         }

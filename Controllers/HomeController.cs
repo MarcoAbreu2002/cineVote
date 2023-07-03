@@ -5,6 +5,7 @@ using System.Diagnostics;
 
 namespace cineVote.Controllers
 {
+    [ServiceFilter(typeof(NotificationFilter))]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,12 +19,9 @@ namespace cineVote.Controllers
 
         public IActionResult Index()
         {
-            string userName = User.Identity.Name;
-            var notifications = _db.Notifications
-                .Where(n => n.userName == userName)
-                .ToList();
 
-            return View(notifications);
+
+            return View();
         }
 
         public IActionResult Privacy()
