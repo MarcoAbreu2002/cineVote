@@ -1,11 +1,10 @@
-using Microsoft.EntityFrameworkCore;
 using cineVote.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using cineVote.Models.DTO;
-using Microsoft.Extensions.Options;
 using cineVote.Repositories.Abstract;
-using System.Security.Claims;
 using Newtonsoft.Json;
+using cineVote.Controllers;
+using Microsoft.AspNetCore.Mvc;
 
 namespace cineVote.Repositories.Implementation
 {
@@ -14,6 +13,8 @@ namespace cineVote.Repositories.Implementation
         private readonly AppDbContext _db;
         private readonly UserManager<Person> _userManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+
+        private readonly CompetitionController _competitionController;
 
         public CompetitionManager(AppDbContext db, IHttpContextAccessor httpContextAccessor, UserManager<Person> userManager)
         {
@@ -44,6 +45,32 @@ namespace cineVote.Repositories.Implementation
             }
 
             return "Começou a competição";
+        }
+
+        public string finishCompetition(Competition competition)
+        {
+            var data = this.FindById(competition.Competition_Id);
+            data.IsPublic = false;
+            _db.Competitions.Update(data);
+            _db.SaveChanges();
+
+            Results(competition.Competition_Id);
+
+            List<Subscription> subscriptions = _db.Subscriptions
+                .Where(s => s.Competition_Id == competition.Competition_Id)
+                .ToList();
+
+            PopupNotificationObserver observer = new PopupNotificationObserver(_db);
+            competition.Attach(observer);
+
+            // Assign each subscription to a specific observer
+            for (int i = 0; i < subscriptions.Count; i++)
+            {
+                Subscription subscription = subscriptions[i];
+                competition.Notify(competition, subscription.userName, subscription);
+            }
+
+            return "Terminou a competição";
         }
 
 
@@ -106,9 +133,59 @@ namespace cineVote.Repositories.Implementation
             return Task.FromResult(status);
         }
 
+        public void Results(int competitionId)
+        {
+            var competition = FindById(competitionId);
+
+            // Find all subscriptions with the same competition_id as Competition
+            var subscriptions = _db.Subscriptions
+                .Where(s => s.Competition_Id == competitionId)
+                .Select(s => s.SubscriptionId)
+                .ToList();
+
+            // Find all VoteSubscriptions that have the same subscription_id as Subscription
+            var voteSubscriptions = _db.voteSubscriptions
+                .Where(vs => subscriptions.Contains(vs.SubscriptionId))
+                .Select(vs => vs.VoteId)
+                .ToList();
+
+            // Find all Votes that have their vote_id in VoteSubscription
+            var votes = _db.Votes
+                .Where(v => voteSubscriptions.Contains(v.VoteId))
+                .ToList();
+
+            var voteCounts = votes
+                .GroupBy(v => new { v.CategoryId, v.NomineeId })
+                .Select(group => new
+                {
+                    CategoryId = group.Key.CategoryId,
+                    NomineeId = group.Key.NomineeId,
+                    Count = group.Count()
+                })
+                .ToList();
+
+            // Group voteCounts by CategoryId
+            var groupedVoteCounts = voteCounts
+                .GroupBy(vc => vc.CategoryId)
+                .ToDictionary(group => group.Key, group => group.ToList());
+
+            // Find the nominee with the most votes in each category
+            var topNominees = groupedVoteCounts
+    .Select(categoryVotes => new
+    {
+        CategoryId = categoryVotes.Key,
+        Nominees = categoryVotes.Value.OrderByDescending(vc => vc.Count).ToList()
+    })
+    .ToList();
 
 
+            var totalVoteCount = votes.Count;
+            var totalCategories = topNominees.Count;
+            int numberOfParticipants = totalVoteCount / totalCategories;
 
+            var result = generateResults(topNominees, numberOfParticipants, competitionId);
+
+        }
 
         public Task<Status> createCompetition(createCompetitionModel createCompetitionModel)
         {

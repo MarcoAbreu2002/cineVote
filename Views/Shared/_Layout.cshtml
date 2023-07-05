@@ -2,6 +2,7 @@
 @{
     var notifications = ViewContext.HttpContext.Items["notifications"] as List<Notification>;
 }
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -22,6 +23,8 @@
         margin-left: 2%
     }
 </style>
+
+
 
 <body>
     <header>
@@ -55,19 +58,19 @@
                     }
                     @if (User.IsInRole("user"))
                     {
-                        
-                    <li class="nav-item dropdown">
-                        <a type="button" class="btn" data-toggle="dropdown" href="#" id="notificationDropdown"
-                            role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <svg width="35" height="20" viewBox="0 0 30 24" fill="none"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path
-                                    d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.45 13.05 3 12.5 3C11.95 3 11.5 3.45 11.5 4V4.68C8.63 5.36 7 7.92 7 11V16L5 18V19H19V18L18 16Z"
-                                    fill="white" />
-                            </svg>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                            @foreach (var notification in notifications)
+
+                        <li class="nav-item dropdown">
+                            <a type="button" class="btn" data-toggle="dropdown" href="#" id="notificationDropdown"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <svg width="35" height="20" viewBox="0 0 30 24" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M12 22C13.1 22 14 21.1 14 20H10C10 21.1 10.9 22 12 22ZM18 16V11C18 7.93 16.36 5.36 13.5 4.68V4C13.5 3.45 13.05 3 12.5 3C11.95 3 11.5 3.45 11.5 4V4.68C8.63 5.36 7 7.92 7 11V16L5 18V19H19V18L18 16Z"
+                                        fill="white" />
+                                </svg>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
+                                @foreach (var notification in notifications)
                                 {
                                     <li>
                                         <a class="dropdown-item" href="#">
@@ -80,19 +83,19 @@
                                 }
                             </ul>
                         </li>
-                            <li class="nav-item ">
+                        <li class="nav-item ">
                             <a class="nav-link text-white" href="/Competition/DisplayCompetition">Competitions</a>
-                            </li>
-                            <li class="nav-item ">
+                        </li>
+                        <li class="nav-item ">
                             <a class="nav-link text-white" href="/User/Profile?username=@User.Identity.Name">Profile</a>
-                            </li>
-                            }
+                        </li>
+                    }
                     @if (!string.IsNullOrEmpty(User.Identity.Name))
-                            {
+                    {
 
-                    <li><a class="nav-link text-white" asp-area="" asp-controller="UserAuthentication"
-                            asp-action="Logout">Logout</a></li>
-}
+                        <li><a class="nav-link text-white" asp-area="" asp-controller="UserAuthentication"
+                                asp-action="Logout">Logout</a></li>
+                    }
 
                 </ul>
             </div>
@@ -113,4 +116,35 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            function checkForNewNotifications() {
+                $.ajax({
+                    url: '/notifications/check',
+                    method: 'GET',
+                    success: function (response) {
+                        // Handle the server response and update the page
+                        // For example, append the new notifications to the existing list
+                        var $notificationsList = $('#notifications-list');
+                        response.forEach(function (notification) {
+                            var $notificationItem = $('<li>').addClass('dropdown-item');
+                            var $notificationIcon = $('<span>').addClass('notification-icon').html('<i class="fas fa-bell"></i>');
+                            var $notificationText = $('<span>').addClass('notification-text').text(notification.Name);
+                            $notificationItem.append($notificationIcon, $notificationText);
+                            $notificationsList.append($notificationItem);
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle any errors that occur during the AJAX request
+                        console.error('Error checking for new notifications:', error);
+                    }
+                });
+            }
+
+            // Call the function every 10 seconds (adjust the interval as needed)
+            setInterval(checkForNewNotifications, 10000);
+        });
+    </script>
 </body>

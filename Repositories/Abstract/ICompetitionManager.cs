@@ -1,5 +1,7 @@
 using cineVote.Models.Domain;
 using cineVote.Models.DTO;
+using Microsoft.AspNetCore.Mvc;
+
 namespace cineVote.Repositories.Abstract
 {
     public interface ICompetitionManager
@@ -12,6 +14,9 @@ namespace cineVote.Repositories.Abstract
 
         string startCompetition (Competition competition);
 
+        string finishCompetition (Competition competition);
+
         Task<Status> generateResults(dynamic topNominees, int numberOfParticipants, int competition_id);
+        
     }
 }

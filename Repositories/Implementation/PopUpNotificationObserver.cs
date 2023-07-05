@@ -23,9 +23,9 @@ namespace cineVote.Repositories.Implementation
             {
                 message = $"A competição '{competition.Name}' está aberta!";
             }
-            else if (competition.EndDate > DateTime.Now)
+            else if (competition.EndDate < DateTime.Now && competition.IsPublic == false)
             {
-                message = $"A competição '{competition.Name}' está fechada!";
+                message = $"Os Resultados da competição '{competition.Name}' foram gerados!";
             }
 
             ShowPopupNotification(message, subscription.Competition_Id, userName, subscription);

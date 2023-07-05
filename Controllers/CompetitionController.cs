@@ -36,64 +36,6 @@ namespace cineVote.Controllers
             return RedirectToAction("DisplayCompetition");
         }
 
-        public async Task<IActionResult> Results(int competitionId)
-        {
-            var competition = _competitionManager.FindById(competitionId);
-
-            // Find all subscriptions with the same competition_id as Competition
-            var subscriptions = _context.Subscriptions
-                .Where(s => s.Competition_Id == competitionId)
-                .Select(s => s.SubscriptionId)
-                .ToList();
-
-            // Find all VoteSubscriptions that have the same subscription_id as Subscription
-            var voteSubscriptions = _context.voteSubscriptions
-                .Where(vs => subscriptions.Contains(vs.SubscriptionId))
-                .Select(vs => vs.VoteId)
-                .ToList();
-
-            // Find all Votes that have their vote_id in VoteSubscription
-            var votes = _context.Votes
-                .Where(v => voteSubscriptions.Contains(v.VoteId))
-                .ToList();
-
-            var voteCounts = votes
-                .GroupBy(v => new { v.CategoryId, v.NomineeId })
-                .Select(group => new
-                {
-                    CategoryId = group.Key.CategoryId,
-                    NomineeId = group.Key.NomineeId,
-                    Count = group.Count()
-                })
-                .ToList();
-
-            // Group voteCounts by CategoryId
-            var groupedVoteCounts = voteCounts
-                .GroupBy(vc => vc.CategoryId)
-                .ToDictionary(group => group.Key, group => group.ToList());
-
-            // Find the nominee with the most votes in each category
-            var topNominees = groupedVoteCounts
-    .Select(categoryVotes => new
-    {
-        CategoryId = categoryVotes.Key,
-        Nominees = categoryVotes.Value.OrderByDescending(vc => vc.Count).ToList()
-    })
-    .ToList();
-
-
-
-            var totalVoteCount = votes.Count;
-            var totalCategories = topNominees.Count;
-            int numberOfParticipants = totalVoteCount / totalCategories;
-
-            var result = _competitionManager.generateResults(topNominees, numberOfParticipants, competitionId);
-
-            return RedirectToAction("DisplayCompetition", "Competition");
-        }
-
-
-
         public async Task<IActionResult> ShowResultsCompetition(int competitionId)
         {
             var competition = _competitionManager.FindById(competitionId);

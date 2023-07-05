@@ -89,10 +89,26 @@ namespace cineVote.Controllers
             return View(result);
         }
 
+        public ActionResult TriggerNotification()
+        {
+            // Your logic to determine the notification message
+            var notificationMessage = "New notification message!";
+
+            // Call the JavaScript function to show the popup notification
+            return Content($"<script>showNotification('{notificationMessage}');</script>");
+        }
+
 
         public async Task<IActionResult> EditProfile(string username)
         {
             var record = await _userService.FindByUsernameAsync(username);
+            var subscriptions = _context.Subscriptions.ToList();
+
+            // Filter the subscriptions list based on a condition
+            var filteredSubscriptions = subscriptions.Where(s => s.userName == username).ToList();
+
+            record.subscritions = filteredSubscriptions;
+
             return View(record);
         }
 
