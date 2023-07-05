@@ -85,6 +85,29 @@ namespace cineVote.Controllers
 
             competition.Categories = categories;
             competition.Nominees = nominees;
+            var movieDictionary = new Dictionary<Category, List<Nominee>>();
+            int nomineeIndex = 0;
+
+            foreach (var category in competition.Categories)
+            {
+                var nomineesList = new List<Nominee>();
+
+                for (int i = 0; i < 3; i++)
+                {
+                    if (nomineeIndex < competition.Nominees.Count)
+                    {
+                        nomineesList.Add(competition.Nominees[nomineeIndex]);
+                        nomineeIndex++;
+                    }
+                    else
+                    {
+                        nomineesList.Add(null);
+                    }
+                }
+
+                movieDictionary.Add(category, nomineesList);
+            }
+
 
             var nomineeIds = nominees
                 .Where(n => n != null) // Check if TMDBId is not null

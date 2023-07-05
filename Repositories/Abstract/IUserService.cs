@@ -9,5 +9,6 @@ namespace cineVote.Repositories.Abstract
         Task<Status>  Subscribe (string username, int competitionId);
         Task<Status> Vote (string username, int competitionId, int categoryId, int nomineeId, int subscriptionId);
         bool EditProfile(User user);
+        bool readNotification(Notification notification);
     }
 }

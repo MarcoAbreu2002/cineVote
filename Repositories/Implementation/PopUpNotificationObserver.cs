@@ -21,11 +21,11 @@ namespace cineVote.Repositories.Implementation
             string message = "";
             if (competition.StartDate <= DateTime.Now && competition.EndDate > DateTime.Now)
             {
-                message = $"A competição '{competition.Name}' está aberta!";
+                message = $"The Competition '{competition.Name}' just started!";
             }
             else if (competition.EndDate < DateTime.Now && competition.IsPublic == false)
             {
-                message = $"Os Resultados da competição '{competition.Name}' foram gerados!";
+                message = $"The Results of the Competition '{competition.Name}' have been generated!";
             }
 
             ShowPopupNotification(message, subscription.Competition_Id, userName, subscription);

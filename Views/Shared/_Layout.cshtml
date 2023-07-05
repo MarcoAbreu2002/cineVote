@@ -22,6 +22,25 @@
     .margin-left {
         margin-left: 2%
     }
+
+    .unread {
+        color: purple;
+    }
+
+    .bold-text {
+        font-weight: bold;
+    }
+
+    .blue-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background-color: purple;
+        margin-left: 5px;
+        vertical-align: middle;
+        margin-top: -2px;
+    }
 </style>
 
 
@@ -70,17 +89,39 @@
                                 </svg>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown">
-                                @foreach (var notification in notifications)
+                                @if (notifications.Any())
+                                {
+                                    @foreach (var notification in notifications)
+                                    {
+                                        <li>
+                                            <a class="dropdown-item"
+                                                href="/User/clickNotification?competitionId=@notification.SubscriptionId&notificationId=@notification.NotificationId&notificationMessage=@notification.Name">
+
+                                                <span class="notification-icon @(!notification.isRead ? "unread" : "")">
+                                                    <i class="fas fa-bell"></i>
+                                                </span>
+                                                <span
+                                                    class="notification-text @(!notification.isRead ? "bold-text" : "")">@notification.Name</span>
+                                                @if (!notification.isRead)
+                                                {
+                                                    <span class="blue-dot"></span>
+                                                }
+                                            </a>
+                                        </li>
+                                    }
+                                }
+                                else
                                 {
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item">
                                             <span class="notification-icon">
                                                 <i class="fas fa-bell"></i>
                                             </span>
-                                            <span class="notification-text">@notification.Name</span>
+                                            <span class="notification-text">No Notifications to Show</span>
                                         </a>
                                     </li>
                                 }
+
                             </ul>
                         </li>
                         <li class="nav-item ">
@@ -116,7 +157,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
-    
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {

@@ -98,6 +98,39 @@ namespace cineVote.Controllers
             return Content($"<script>showNotification('{notificationMessage}');</script>");
         }
 
+        public async Task<IActionResult> clickNotification(int competitionId, int notificationId, string notificationMessage)
+        {
+            var notification = _context.Notifications.Find(notificationId);
+            _userService.readNotification(notification);
+
+            if (notificationMessage.StartsWith("The Competition"))
+            {
+                return RedirectToAction("Subscription", new { subscription = competitionId });
+            }
+            else if (notificationMessage.StartsWith("The Results"))
+            {
+                var competitions = _context.Competitions.ToList();
+                var subscriptions = _context.Subscriptions.ToList();
+
+                var filteredSubscription = subscriptions.FirstOrDefault(s => s.SubscriptionId == competitionId);
+
+                if (filteredSubscription != null)
+                {
+                    var filteredCompetition = competitions.FirstOrDefault(s => s.Competition_Id == filteredSubscription.Competition_Id);
+
+                    if (filteredCompetition != null)
+                    {
+                        return RedirectToAction("ShowResultsCompetition", "Competition", new { competitionId = filteredCompetition.Competition_Id });
+                    }
+                }
+                return RedirectToAction("Error");
+            }
+
+            return RedirectToAction("Error");
+        }
+
+
+
 
         public async Task<IActionResult> EditProfile(string username)
         {

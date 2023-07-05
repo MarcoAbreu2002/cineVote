@@ -31,6 +31,22 @@ namespace cineVote.Repositories.Implementation
             return user ?? throw new InvalidOperationException("User not found.");
         }
 
+        public bool readNotification(Notification notification)
+        {
+            try
+            {
+                notification.isRead = true;
+                _db.Notifications.Update(notification);
+                _db.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return false;
+            }
+        }
+
         public Task<Status> Vote(string username, int competitionId, int categoryId, int nomineeId, int subscriptionId)
         {
             var status = new Status();
