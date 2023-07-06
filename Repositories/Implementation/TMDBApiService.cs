@@ -40,11 +40,42 @@ public class TMDBApiService : ITMDBApiService
         }
     }
 
+    
+
+public async Task<List<Dictionary<string, object>>> GetSingleMovieById(int nomineeId)
+{
+    var movies = new List<Dictionary<string, object>>();
+    var client = new HttpClient();
+
+    var requestUri = $"https://api.themoviedb.org/3/movie/{nomineeId}?language=en-US&page=1";
+    var request = new HttpRequestMessage
+    {
+        Method = HttpMethod.Get,
+        RequestUri = new Uri(requestUri)
+    };
+
+    request.Headers.Add("accept", "application/json");
+    request.Headers.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Y2IwMjNjMmY4ZjNiODUwNTBkZjVhMjMxYzExZDZlNSIsInN1YiI6IjY0NzIwNDAzOWFlNjEzMDBhODA2Y2RkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.umLcRjDrFarEpbLBkYgyMKkHcRGXoJZsgjlh1kszVJA");
+
+    using (var response = await client.SendAsync(request))
+    {
+        response.EnsureSuccessStatusCode();
+        var body = await response.Content.ReadAsStringAsync();
+        movies = ParseMovieResponse(body, false);
+    }
+
+    return movies;
+}
+
+
+
+
+
+
     public async Task<List<Dictionary<string, object>>> GetMovieById(List<int> nomineeIds)
     {
         var movies = new List<Dictionary<string, object>>();
         var client = new HttpClient();
-        var apiKey = "YOUR_API_KEY"; // Replace with your actual API key
 
         foreach (var nomineeId in nomineeIds)
         {

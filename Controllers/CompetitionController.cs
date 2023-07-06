@@ -85,39 +85,42 @@ namespace cineVote.Controllers
 
             competition.Categories = categories;
             competition.Nominees = nominees;
-            var movieDictionary = new Dictionary<Category, List<Nominee>>();
+            var finalWinners = new Dictionary<Category, List<Dictionary<string, object>>>();
             int nomineeIndex = 0;
-
-            foreach (var category in competition.Categories)
-            {
-                var nomineesList = new List<Nominee>();
-
-                for (int i = 0; i < 3; i++)
-                {
-                    if (nomineeIndex < competition.Nominees.Count)
-                    {
-                        nomineesList.Add(competition.Nominees[nomineeIndex]);
-                        nomineeIndex++;
-                    }
-                    else
-                    {
-                        nomineesList.Add(null);
-                    }
-                }
-
-                movieDictionary.Add(category, nomineesList);
-            }
-
 
             var nomineeIds = nominees
                 .Where(n => n != null) // Check if TMDBId is not null
                 .Select(n => n.TMDBId)
                 .ToList();
+            int k = 0;
 
-            if (nomineeIds != null && nomineeIds.Count > 0)
+            foreach (var category in competition.Categories)
             {
-                competition.Movies = await _ITMDBApiService.GetMovieById(nomineeIds);
+                var tmdbDict = new List<Dictionary<string, object>>();
+                for (int i = 0; i < 3; i++)
+                {
+                    if (nomineeIndex < competition.Nominees.Count)
+                    {
+
+                        if (competition.Nominees[nomineeIndex] != null)
+                        {
+                            if (nomineeIds != null && nomineeIds.Count > 0)
+                            {
+                                tmdbDict.AddRange(await _ITMDBApiService.GetSingleMovieById(nomineeIds[k]));
+                                k++;
+                            }
+                        }
+                        else
+                        {
+                            tmdbDict.Add(null);
+                        }
+                        nomineeIndex++;
+                    }
+                }
+                finalWinners.Add(category, tmdbDict);
             }
+
+            competition.finalWinners = finalWinners;
 
             return View(competition);
         }

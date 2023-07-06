@@ -56,5 +56,8 @@ namespace cineVote.Models.Domain
 
         [NotMapped]
         public List<Dictionary<string, object>> Movies { get; set; }
+
+        [NotMapped]
+        public Dictionary<Category, List<Dictionary<string, object>>> finalWinners { get; set; }
     }
 }

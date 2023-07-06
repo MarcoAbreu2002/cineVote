@@ -22,32 +22,54 @@
                         </div>
                         <div class="category-container">
                             <div class="row mt-3">
-                                @foreach (var movie in Model.Movies)
+                                @foreach (var category in Model.finalWinners.Keys)
                                 {
-                                    var movieId = movie["Id"].ToString();
-                                    var movieTitle = movie["Title"].ToString();
-                                    var movieImagePath = movie["PosterPath"].ToString();
-                                    var movieOverview = movie["Overview"].ToString();
-                                    var releaseDate = movie["ReleaseDate"].ToString();
-                                    var baseUrl = "https://image.tmdb.org/t/p/";
-                                    var fileSize = "w300";
-                                    var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+                                    <div class="category-container">
+                                        <h5 class="category-title mt-2 fs-4">@category.Name</h5>
+                                        <div class="row mt-3">
+                                            @foreach (var movieDict in Model.finalWinners[category])
+                                            {
+                                                if (movieDict != null)
+                                                {
+                                                    var movieId = movieDict["Id"].ToString();
+                                                    var movieTitle = movieDict["Title"].ToString();
+                                                    var movieImagePath = movieDict["PosterPath"].ToString();
+                                                    var movieOverview = movieDict["Overview"].ToString();
+                                                    var releaseDate = movieDict["ReleaseDate"].ToString();
+                                                    var baseUrl = "https://image.tmdb.org/t/p/";
+                                                    var fileSize = "w300";
+                                                    var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
 
-                                    <div class="col-md-4 mb-4">
-                                        <div class="card">
-                                            <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
-                                            <div class="card-body">
-                                                <h5 class="card-title">@movieTitle</h5>
-                                                <p class="card-text">Release Date: @releaseDate</p>
-                                            </div>
+                                                    <div class="col-md-4 mb-4">
+                                                        <div class="card">
+                                                            <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">@movieTitle</h5>
+                                                                <p class="card-text">Release Date: @releaseDate</p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div class="col-md-4 mb-4">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <h5 class="card-title">No placement...</h5>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
                                         </div>
                                     </div>
                                 }
+
                             </div>
                         </div>
 
 
-                        }
+                
                     </div>
                 </div>
 
