@@ -35,37 +35,37 @@ public class TMDBApiService : ITMDBApiService
             response.EnsureSuccessStatusCode();
             var body = await response.Content.ReadAsStringAsync();
             // Parse the response and extract the movies
-            var movies = ParseMovieResponse(body,true);
+            var movies = ParseMovieResponse(body, true);
             return movies;
         }
     }
 
-    
 
-public async Task<List<Dictionary<string, object>>> GetSingleMovieById(int nomineeId)
-{
-    var movies = new List<Dictionary<string, object>>();
-    var client = new HttpClient();
 
-    var requestUri = $"https://api.themoviedb.org/3/movie/{nomineeId}?language=en-US&page=1";
-    var request = new HttpRequestMessage
+    public async Task<List<Dictionary<string, object>>> GetSingleMovieById(int nomineeId)
     {
-        Method = HttpMethod.Get,
-        RequestUri = new Uri(requestUri)
-    };
+        var movies = new List<Dictionary<string, object>>();
+        var client = new HttpClient();
 
-    request.Headers.Add("accept", "application/json");
-    request.Headers.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Y2IwMjNjMmY4ZjNiODUwNTBkZjVhMjMxYzExZDZlNSIsInN1YiI6IjY0NzIwNDAzOWFlNjEzMDBhODA2Y2RkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.umLcRjDrFarEpbLBkYgyMKkHcRGXoJZsgjlh1kszVJA");
+        var requestUri = $"https://api.themoviedb.org/3/movie/{nomineeId}?language=en-US&page=1";
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri(requestUri)
+        };
 
-    using (var response = await client.SendAsync(request))
-    {
-        response.EnsureSuccessStatusCode();
-        var body = await response.Content.ReadAsStringAsync();
-        movies = ParseMovieResponse(body, false);
+        request.Headers.Add("accept", "application/json");
+        request.Headers.Add("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Y2IwMjNjMmY4ZjNiODUwNTBkZjVhMjMxYzExZDZlNSIsInN1YiI6IjY0NzIwNDAzOWFlNjEzMDBhODA2Y2RkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.umLcRjDrFarEpbLBkYgyMKkHcRGXoJZsgjlh1kszVJA");
+
+        using (var response = await client.SendAsync(request))
+        {
+            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
+            movies = ParseMovieResponse(body, false);
+        }
+
+        return movies;
     }
-
-    return movies;
-}
 
 
 
@@ -95,7 +95,7 @@ public async Task<List<Dictionary<string, object>>> GetSingleMovieById(int nomin
             {
                 response.EnsureSuccessStatusCode();
                 var body = await response.Content.ReadAsStringAsync();
-                var movie = ParseMovieResponse(body,false);
+                var movie = ParseMovieResponse(body, false);
                 movies.AddRange(movie);
             }
         }
@@ -121,7 +121,8 @@ public async Task<List<Dictionary<string, object>>> GetSingleMovieById(int nomin
                 { "Overview", result.Value<string>("overview") },
                 { "PosterPath", result.Value<string>("poster_path") },
                 { "ReleaseDate", result.Value<string>("release_date") },
-                // Add more properties as needed
+                {"tagline", result.Value<string>("tagline")},
+                {"imdb_id", result.Value<string>("imdb_id")}
             };
                 movies.Add(movie);
             }
@@ -137,7 +138,8 @@ public async Task<List<Dictionary<string, object>>> GetSingleMovieById(int nomin
             { "Overview", movieData.Value<string>("overview") },
             { "PosterPath", movieData.Value<string>("poster_path") },
             { "ReleaseDate", movieData.Value<string>("release_date") },
-            // Add more properties as needed
+            {"tagline", movieData.Value<string>("tagline")},
+            {"imdb_id", movieData.Value<string>("imdb_id")}
         };
 
             movies.Add(movie);

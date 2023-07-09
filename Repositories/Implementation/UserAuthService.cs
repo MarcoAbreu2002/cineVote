@@ -31,6 +31,8 @@ namespace cineVote.Repositories.Implementation
                 status.Message = "User already exists";
                 return status;
             }
+            
+            
             User user = new User()
             {
                 NormalizedEmail = model.Email,
@@ -42,7 +44,7 @@ namespace cineVote.Repositories.Implementation
                 LastName = model.LastName,
                 UserName = model.Username,
                 Password = model.Password,
-                ImageUrl = "Testing",
+                ImageUrl = model.ImageUrl,
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)

@@ -1,0 +1,60 @@
+<style>
+    .container {
+        display: flex;
+        align-items: center;
+        justify-content: center
+    }
+
+    img {
+        width: 300px;
+        height: auto;
+    }
+
+    .text {
+        font-size: 20px;
+        padding-left: 20px;
+    }
+
+    .imdb-logo {
+        width: 100px;
+        height: auto;
+        background: none;
+    }
+</style>
+<div class="row bg-light margem-cima rounded">
+    <div class="tbl-container text-black">
+        <div class="text-black text-center mt-3 fs-3 fw-bold ">Movie in Detail</div>
+        @foreach (var movie in Model)
+        {
+            var movieId = movie["Id"].ToString();
+            var movieTitle = movie["Title"].ToString();
+            var movieImagePath = movie["PosterPath"].ToString();
+            var movieOverview = movie["Overview"].ToString();
+            var releaseDate = movie["ReleaseDate"].ToString();
+            var imdb_id = movie["imdb_id"].ToString();
+            var tagline = movie["tagline"].ToString();
+            var baseUrl = "https://image.tmdb.org/t/p/";
+            var fileSize = "w300";
+            var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+
+            <div class="container">
+                <div class="image">
+                    <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+                </div>
+                <div class="text">
+                    <h2>@movieTitle</h2>
+                    <h3>@tagline</h3>
+                    <p>@movieOverview</p>
+                    <p>@releaseDate</p>
+                    <a href="https://www.imdb.com/title/@imdb_id/" target="_blank">
+                        <img src="https://logowik.com/content/uploads/images/imdb-internet-movie-database5351.jpg"
+                            alt="IMDb Logo" class="imdb-logo">
+                    </a>
+
+                </div>
+
+            </div>
+
+        }
+    </div>
+</div>

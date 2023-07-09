@@ -30,6 +30,12 @@ namespace cineVote.Controllers
             return View(competitions);
         }
 
+        public async Task<IActionResult> ShowMoreDetails(int movieId)
+        {
+            var Movies = await _ITMDBApiService.GetSingleMovieById(movieId);
+            return View("ShowMoreDetails",Movies);
+        }
+
         public IActionResult Delete(int competitionId)
         {
             var result = _competitionManager.removeCompetition(competitionId);
@@ -40,25 +46,28 @@ namespace cineVote.Controllers
         {
             var competition = _competitionManager.FindById(competitionId);
 
-            if (competition == null)
-            {
-                // Handle the case when the competition is not found
-                return NotFound();
-            }
-
             var results = _context.Results
                 .Where(cc => cc.Competition_Id == competitionId)
                 .ToList();
 
+            List<Category> categories = GetCategories(results);
+            List<Nominee> nominees = GetNominees(results);
+
+            competition.Categories = categories;
+            competition.Nominees = nominees;
+            var finalWinners = await GetFinalWinnersAsync(competition, nominees);
+
+            competition.finalWinners = finalWinners;
+
+            return View(competition);
+        }
+
+        private List<Category> GetCategories(List<Result> results)
+        {
             List<Category> categories = new List<Category>();
-            List<Nominee> nominees = new List<Nominee>();
 
             foreach (var result in results)
             {
-                var firstPlace = result.FirstPlaceId;
-                var secondPlace = result.SecondPlaceId;
-                var thirdPlace = result.ThirdPlaceId;
-
                 var category = _context.Categories
                     .FirstOrDefault(cc => cc.CategoryId == result.CategoryId);
 
@@ -66,28 +75,40 @@ namespace cineVote.Controllers
                 {
                     categories.Add(category);
                 }
+            }
 
+            return categories;
+        }
+
+
+
+        private List<Nominee> GetNominees(List<Result> results)
+        {
+            List<Nominee> nominees = new List<Nominee>();
+
+            foreach (var result in results)
+            {
                 var firstPlaceNominee = _context.Nominees
-                    .FirstOrDefault(n => n.NomineeId == firstPlace);
+                    .FirstOrDefault(n => n.NomineeId == result.FirstPlaceId);
 
                 var secondPlaceNominee = _context.Nominees
-                    .FirstOrDefault(n => n.NomineeId == secondPlace);
+                    .FirstOrDefault(n => n.NomineeId == result.SecondPlaceId);
 
                 var thirdPlaceNominee = _context.Nominees
-                    .FirstOrDefault(n => n.NomineeId == thirdPlace);
+                    .FirstOrDefault(n => n.NomineeId == result.ThirdPlaceId);
 
                 nominees.Add(firstPlaceNominee);
-
                 nominees.Add(secondPlaceNominee);
-
                 nominees.Add(thirdPlaceNominee);
             }
 
-            competition.Categories = categories;
-            competition.Nominees = nominees;
+            return nominees;
+        }
+
+        private async Task<Dictionary<Category, List<Dictionary<string, object>>>> GetFinalWinnersAsync(Competition competition, List<Nominee> nominees)
+        {
             var finalWinners = new Dictionary<Category, List<Dictionary<string, object>>>();
             int nomineeIndex = 0;
-
             var nomineeIds = nominees
                 .Where(n => n != null) // Check if TMDBId is not null
                 .Select(n => n.TMDBId)
@@ -101,7 +122,6 @@ namespace cineVote.Controllers
                 {
                     if (nomineeIndex < competition.Nominees.Count)
                     {
-
                         if (competition.Nominees[nomineeIndex] != null)
                         {
                             if (nomineeIds != null && nomineeIds.Count > 0)
@@ -120,10 +140,9 @@ namespace cineVote.Controllers
                 finalWinners.Add(category, tmdbDict);
             }
 
-            competition.finalWinners = finalWinners;
-
-            return View(competition);
+            return finalWinners;
         }
+
 
 
         public async Task<IActionResult> SingleCompetition(int competitionId)

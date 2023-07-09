@@ -33,7 +33,7 @@ namespace cineVote.Models.DTO
         public string PasswordConfirm { get; set; }
 
         [Display(Name = "ImageUrl")]
-        public String ImageUrl {get;set;}
+        public byte[] ImageUrl {get;set;}
         public string? Role { get; set; }
 
     }

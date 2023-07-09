@@ -37,7 +37,11 @@ namespace cineVote.Controllers
         [HttpPost]
         public async Task<IActionResult> Registration(RegistrationModel registrationModel)
         {
-            if (ModelState.IsValid) { return View(registrationModel); }
+            if (!ModelState.IsValid) 
+            {
+                return View(registrationModel); 
+            }
+            
             registrationModel.Role = "user";
             var result = await this._authService.RegisterAsync(registrationModel);
             TempData["msg"] = result.Message;

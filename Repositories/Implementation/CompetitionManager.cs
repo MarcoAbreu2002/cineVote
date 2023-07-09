@@ -253,8 +253,22 @@ namespace cineVote.Repositories.Implementation
         {
             try
             {
-                var data = this.FindById(competitionId);
-                _db.Competitions.Remove(data);
+                var competitions = this.FindById(competitionId);
+                var subscriptions = _db.Subscriptions
+                .Where(cc => cc.Competition_Id == competitionId)
+                .ToList();
+                foreach (var subscription in subscriptions)
+                {
+                    var voteSubscriptions = _db.voteSubscriptions
+                    .Where(cc => cc.SubscriptionId == subscription.SubscriptionId)
+                    .ToList();
+
+                    _db.voteSubscriptions.RemoveRange(voteSubscriptions);
+                    
+                    _db.Subscriptions.Remove(subscription);
+                }
+
+                _db.Competitions.Remove(competitions);
                 _db.SaveChanges();
                 return true;
             }
