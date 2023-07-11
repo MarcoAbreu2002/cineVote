@@ -35,7 +35,7 @@ namespace cineVote.Models.Domain
 
         [Required]
         [Column("imageUrl")]
-        public byte[] ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
 
 
     }

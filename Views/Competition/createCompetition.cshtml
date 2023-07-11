@@ -29,9 +29,20 @@
 		/* Center the form horizontally */
 	}
 
-	.margem-left{
+	.margem-left {
 		margin-left: 1rem;
 		margin-top: 1rem;
+	}
+
+	.movie-card-container {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-between;
+	}
+
+	.movie-card {
+		flex-basis: calc(33.33% - 1rem);
+		margin-bottom: 1rem;
 	}
 </style>
 
@@ -45,7 +56,6 @@
 				</div>
 				<div class="card-body" style="color:black;">
 					<form asp-controller="Competition" asp-action="createCompetition" method="post">
-
 						<div class="mb-3">
 							<label class="form-label fs-6 fw-bold">Name of the Competition:</label>
 							<input asp-for="Name" type="text" class="form-control" />
@@ -60,10 +70,11 @@
 									{
 										<div class="col-3">
 											<div class="category-option margem-left d-grid gap-2">
-												<button type="button" class="btn text-white d-inline " style="background-color:rgb(67,37,101)"
-												onclick="addCatergoryToList('@item.CategoryId','@item.Name')" >@item.Name</button>
+												<button type="button" class="btn text-white d-inline "
+													style="background-color:rgb(67,37,101)"
+													onclick="addCatergoryToList('@item.CategoryId','@item.Name')">@item.Name</button>
 
-										</div>
+											</div>
 										</div>
 									}
 								}
@@ -73,13 +84,13 @@
 								}
 
 							</div>
-							
+
 							<div class="mb-2 mt-3">
 								<label class="form-label fs-6 fw-bold">Selected Categories:</label>
 								<div id="selectedCategoriesContainer" class="d-flex flex-wrap"></div>
 								<input asp-for="category" id="category" name="category" type="hidden" />
 							</div>
-						
+
 
 						</div>
 						<div class="mb-3">
@@ -94,60 +105,28 @@
 								value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
 						</div>
 
-					
-							<div class="mb-3">
-								<label class="form-label fs-6 fw-bold">Selected Movies:</label>
-								<div id="selectedMoviesContainer" class="d-flex flex-wrap"></div>
-								<input asp-for="NomineeDBId" id="NomineeDBId" name="NomineeDBId" type="hidden" />
-							</div>
 
-						<div class="card-footer">
-							<div class="row">
-								@if (Model.nominees != null)
-								{
-									<div class="row">
-										@foreach (var movie in Model.nominees)
-										{
-											var movieId = movie["Id"].ToString();
-											var movieTitle = movie["Title"].ToString();
-											var movieImagePath = movie["PosterPath"].ToString();
-											var movieOverview = movie["Overview"].ToString();
-											var releaseDate = movie["ReleaseDate"].ToString();
-											var baseUrl = "https://image.tmdb.org/t/p/";
-											var fileSize = "w500";
-											var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
-
-											<div class="col-md-4 mb-4">
-												<div class="card">
-													<img src="@imageUrl" class="card-img-top" alt="Movie Poster">
-													<div class="card-body">
-														<h5 class="card-title fs-5">@movieTitle</h5>
-														<p class="card-text">Release Date: @releaseDate</p>
-														
-													</div>
-													<div class="card-footer d-flex justify-content-center">
-														<button type="button" class="btn btn-success btn-add-nominee"
-																onclick="addToNomineeList('@movieId', '@movieTitle', '@movieOverview', '@releaseDate')">
-															Add
-															to Nominee List
-														</button>
-													</div>
-												</div>
-											</div>
-										}
-									</div>
-								}
-								else
-								{
-									<p>No nominees found.</p>
-								}
-
-
+						<div class="mb-3">
+							<label class="form-label fs-6 fw-bold">Selected Movies:</label>
+							<div id="selectedMoviesContainer" class="d-flex flex-wrap"></div>
+							<input asp-for="NomineeDBId" id="NomineeDBId" name="NomineeDBId" type="hidden" />
+						</div>
+						<div class="mb-3">
+							<label class="form-label fs-6 fw-bold">Enter the name of the movie:</label>
+							<div class="mb-3 d-flex">
+								<input type="text" id="movieNameInput" class="form-control"
+									onkeydown="handleMovieNameInput(event)" />
+								<button type="button" class="btn text-white" style="background-color:rgb(67,37,101)"
+									onclick="searchMovie()">Search</button>
 							</div>
 						</div>
 
+						<div id="searchResultsContainer" class="row"></div>
+
+
 						<div class="mb-3 d-flex justify-content-center">
-							<button type="submit" class="btn text-white" style="background-color:rgb(67,37,101)">Create</button>
+							<button class="btn text-white" style="background-color:rgb(67,37,101)"
+								onclick="createCompetition()">Create</button>
 						</div>
 					</form>
 				</div>
@@ -258,6 +237,89 @@
 			document.getElementById("category").value = JSON.stringify(selectedCategories);
 		}
 	}
+
+	function createMovieCard(movie) {
+		console.log("MOVIE:", JSON.stringify(movie));
+
+		var movieId = movie.Id ? movie.Id.toString() : "";
+		var movieTitle = movie.Title ? movie.Title.toString() : "";
+		var movieImagePath = movie.PosterPath ? movie.PosterPath.toString() : "";
+		var movieOverview = movie.Overview ? movie.Overview.toString() : "";
+		var releaseDate = movie.ReleaseDate ? movie.ReleaseDate.toString() : "";
+		var baseUrl = "https://image.tmdb.org/t/p/";
+		var fileSize = "w500";
+		var imageUrl = movieImagePath ? `${baseUrl}${fileSize}${movieImagePath}` : "";
+
+
+		var movieCard = document.createElement("div");
+		movieCard.className = "col-md-4 mb-4 movie-card";
+		movieCard.innerHTML = `
+		<div class="card">
+			<img src="${imageUrl}" class="card-img-top" alt="Movie Poster">
+			<div class="card-body">
+				<h5 class="card-title fs-5">${movieTitle}</h5>
+				<p class="card-text">Release Date: ${releaseDate}</p>
+			</div>
+			<div class="card-footer d-flex justify-content-center">
+				<button type="button" class="btn btn-success btn-add-nominee"
+					onclick="addToNomineeList('${movieId}', '${movieTitle}', '${movieOverview}', '${releaseDate}')">
+					Add to Nominee List
+				</button>
+			</div>
+		</div>
+	`;
+
+		return movieCard;
+	}
+
+	function searchMovie() {
+		var movieName = document.getElementById("movieNameInput").value;
+		if (movieName.trim() !== "") {
+			// Call the getMoviesByName endpoint
+			fetch(`/Competition/getMoviesByName?name=${encodeURIComponent(movieName)}`)
+				.then(response => response.json())
+				.then(data => {
+					// Clear the previous search results
+					var searchResultsContainer = document.getElementById("searchResultsContainer");
+					searchResultsContainer.innerHTML = "";
+
+					// Display the search results
+					if (data && data.length > 0) {
+						data.forEach(movie => {
+							var movieCard = createMovieCard(movie);
+							searchResultsContainer.appendChild(movieCard);
+						});
+					} else {
+						searchResultsContainer.innerHTML = "<p>No movies found.</p>";
+					}
+				})
+				.catch(error => {
+					console.error("Error fetching search results:", error);
+					// Display an error message if needed
+				});
+		} else {
+			// Show all movies if the input is empty
+			var movieCards = document.getElementsByClassName("movie-card");
+			for (var i = 0; i < movieCards.length; i++) {
+				var movieCard = movieCards[i];
+				movieCard.style.display = "block";
+			}
+		}
+	}
+	function createCompetition() {
+		// Add your form submission logic here
+		document.forms[0].submit();
+	}
+
+
+	function handleMovieNameInput(event) {
+		if (event.key === "Enter") {
+			searchMovie();
+			event.preventDefault();
+		}
+	}
+
+
 
 </script>
 

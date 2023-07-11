@@ -16,6 +16,30 @@ public class TMDBApiService : ITMDBApiService
         _client.BaseAddress = new Uri(BaseUrl);
     }
 
+    public async Task<List<Dictionary<string, object>>> GetMovieByName(string name)
+    {
+        var client = new HttpClient();
+        var request = new HttpRequestMessage
+        {
+            Method = HttpMethod.Get,
+            RequestUri = new Uri($"https://api.themoviedb.org/3/search/movie?query={name}&include_adult=false&language=en-US&page=1"),
+            Headers =
+        {
+            { "accept", "application/json" },
+            { "Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI2Y2IwMjNjMmY4ZjNiODUwNTBkZjVhMjMxYzExZDZlNSIsInN1YiI6IjY0NzIwNDAzOWFlNjEzMDBhODA2Y2RkZSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.umLcRjDrFarEpbLBkYgyMKkHcRGXoJZsgjlh1kszVJA" },
+        },
+        };
+        using (var response = await client.SendAsync(request))
+        {
+            response.EnsureSuccessStatusCode();
+            var body = await response.Content.ReadAsStringAsync();
+            var movies = ParseMovieResponse(body, true);
+            return movies;
+        }
+    }
+
+
+
     public async Task<List<Dictionary<string, object>>> GetPopularMovies()
     {
         var client = new HttpClient();

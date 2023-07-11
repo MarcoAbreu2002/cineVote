@@ -44,7 +44,7 @@ namespace cineVote.Repositories.Implementation
                 LastName = model.LastName,
                 UserName = model.Username,
                 Password = model.Password,
-                ImageUrl = model.ImageUrl,
+                ImageUrl = "testing",
             };
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)

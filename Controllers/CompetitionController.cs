@@ -33,7 +33,8 @@ namespace cineVote.Controllers
         public async Task<IActionResult> ShowMoreDetails(int movieId)
         {
             var Movies = await _ITMDBApiService.GetSingleMovieById(movieId);
-            return View("ShowMoreDetails",Movies);
+            var moviss = await _ITMDBApiService.GetMovieByName("Avatar");
+            return View("ShowMoreDetails", Movies);
         }
 
         public IActionResult Delete(int competitionId)
@@ -199,9 +200,16 @@ namespace cineVote.Controllers
         {
             var model = new createCompetitionModel();
             model.categoryList = _context.Categories.ToList();
-            model.nominees = await _ITMDBApiService.GetPopularMovies();
             return View(model);
         }
+
+        [Authorize(Roles = "admin")]
+        public async Task<IActionResult> getMoviesByName(string name)
+        {
+            var nominees = await _ITMDBApiService.GetMovieByName(name);
+            return Json(nominees);
+        }
+
 
         [HttpPost]
         public IActionResult CreateCompetition(createCompetitionModel createCompetitionModel)
