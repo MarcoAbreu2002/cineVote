@@ -33,7 +33,6 @@ namespace cineVote.Controllers
         public async Task<IActionResult> ShowMoreDetails(int movieId)
         {
             var Movies = await _ITMDBApiService.GetSingleMovieById(movieId);
-            var moviss = await _ITMDBApiService.GetMovieByName("Avatar");
             return View("ShowMoreDetails", Movies);
         }
 
