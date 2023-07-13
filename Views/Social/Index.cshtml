@@ -1,0 +1,27 @@
+@model cineVote.Models.Domain.Posts
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<div class="margem-top">
+    <div class="container rounded mt-5 mb-5 border">
+
+        <form asp-controller="Social" asp-action="Create" method="post">
+            <div class="mb-3">
+                <label class="form-label fs-6 fw-bold">Title of the Post:</label>
+                <input asp-for="Title" type="text" class="form-control" />
+            </div>
+
+            <div class="mb-2 mt-3">
+                <label class="form-label fs-6 fw-bold">Content of the post:</label>
+                <div class="d-flex flex-wrap"></div>
+                <input asp-for="Content" name="Content" type="text" />
+            </div>
+
+            <div class="mb-3 d-flex justify-content-center">
+                <button class="btn text-white" style="background-color:rgb(67,37,101)">Publish</button>
+            </div>
+        </form>
+
+    </div>
+</div>
