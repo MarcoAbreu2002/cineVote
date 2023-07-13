@@ -16,7 +16,7 @@ namespace cineVote.Models.Domain
         [Column("Content")]
         public string Content { get; set; }
 
-        [NotMapped]
+        [Column("Comments")]
         public List<Comments>? Comments { get; set; }
 
 

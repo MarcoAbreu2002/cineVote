@@ -1,27 +1,74 @@
-@model cineVote.Models.Domain.Posts
+@model IEnumerable<cineVote.Models.Domain.Posts>
 @{
     ViewData["Title"] = "Posts";
 }
 
 <div class="margem-top">
-    <div class="container rounded mt-5 mb-5 border">
+    <div class="container mt-5 mb-5">
+        <div class="card mb-3">
+            <div class="card-body">
+                <form method="post" id="post-form">
+                    <div class="mb-3">
+                        <label class="form-label fs-6 fw-bold text-dark">Title of the Post:</label>
+                        <input type="text" name="Title" class="form-control"
+                            placeholder="Write the Title of your post" />
+                    </div>
 
-        <form asp-controller="Social" asp-action="Create" method="post">
-            <div class="mb-3">
-                <label class="form-label fs-6 fw-bold">Title of the Post:</label>
-                <input asp-for="Title" type="text" class="form-control" />
-            </div>
+                    <div class="mb-2 mt-3">
+                        <label class="form-label fs-6 fw-bold text-dark">Content of the post:</label>
+                        <textarea  name="Content" class="form-control" placeholder="Write the Content" rows="4" cols="50" ></textarea>
+                    </div>
 
-            <div class="mb-2 mt-3">
-                <label class="form-label fs-6 fw-bold">Content of the post:</label>
-                <div class="d-flex flex-wrap"></div>
-                <input asp-for="Content" name="Content" type="text" />
+                    <div class="mb-3 d-flex justify-content-center">
+                        <button class="btn text-white" style="background-color:rgb(67,37,101)">Publish</button>
+                    </div>
+                </form>
             </div>
+        </div>
+        @foreach (var item in Model)
+        {
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title text-dark">@item.Title</h5>
+                    <p class="card-text text-dark">@item.Content</p>
+                </div>
+            </div>
+        }
 
-            <div class="mb-3 d-flex justify-content-center">
-                <button class="btn text-white" style="background-color:rgb(67,37,101)">Publish</button>
-            </div>
-        </form>
 
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#post-form').submit(function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Collect form data
+            var formData = $(this).serialize();
+
+            // Send an AJAX request
+            $.ajax({
+                url: '/Social/Create',
+                method: 'POST',
+                data: formData,
+                success: function (response) {
+                    // Handle the response if needed
+                    console.log(response);
+
+                    // Append the new post to the posts container
+                    $('#posts-container').append(response);
+
+                    // Clear the form inputs
+                    $('#post-form input[type="text"]').val('');
+                    $('#post-form textarea').val('');
+                },
+                error: function (error) {
+                    // Handle the error if needed
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>

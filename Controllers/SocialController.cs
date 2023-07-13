@@ -28,10 +28,15 @@ namespace cineVote.Controllers
     // POST: /Post/Create
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create(Posts post)
+    public async Task<IActionResult> Create(String Title, string Content)
     {
         if (ModelState.IsValid)
         {
+            Posts post = new Posts()
+            {
+                Title = Title,
+                Content = Content
+            };
             _context.Posts.Add(post);
             _context.SaveChanges();
             return RedirectToAction("Index");
