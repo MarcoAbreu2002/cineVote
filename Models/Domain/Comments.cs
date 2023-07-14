@@ -17,8 +17,15 @@ namespace cineVote.Models.Domain
         [Column("PostsId")]
         public int PostsId { get; set; }
 
+        [ForeignKey("userName")]
+        [Column("userName")]
+        public string userName { get; set; }
+
+        [Column("User")]
+        public User? User { get; set; }
+
         [Column("Posts")]
-        public Posts Post { get; set; }
+        public Posts? Post { get; set; }
 
 
     }

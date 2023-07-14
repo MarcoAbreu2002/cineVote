@@ -27,11 +27,20 @@ namespace cineVote.Controllers
         {
             var record = await _userService.FindByUsernameAsync(username);
             var subscriptions = _context.Subscriptions.ToList();
+            var userId = _userService.getUserId();
+            var followings = _context.UserRelationships.ToList();
 
             // Filter the subscriptions list based on a condition
             var filteredSubscriptions = subscriptions.Where(s => s.userName == username).ToList();
 
+            // Get the user IDs that the current user is following
+            var followingUserIds = followings.Where(f => f.FollowerId == userId).Select(f => f.FolloweeId).ToList();
+
+            // Retrieve the users that the current user is following
+            var followingsList = _context.People.Where(u => followingUserIds.Contains(u.Id)).ToList();
             record.subscritions = filteredSubscriptions;
+            record.followings = followingsList;
+
 
             return View(record);
         }
@@ -190,6 +199,21 @@ namespace cineVote.Controllers
             }
             TempData["msg"] = "Error has occured on server side";
             return View(user);
+        }
+
+        public async Task<IActionResult> Follow(string userIdToFollow)
+        {
+            var result = await _userService.Follow(userIdToFollow);
+
+            return RedirectToAction("Profile", "User", new { userId = userIdToFollow });
+        }
+
+        public async Task<IActionResult> Unfollow(string userIdToUnfollow)
+        {
+            var result = _userService.UnFollow(userIdToUnfollow);
+
+            return RedirectToAction("Profile", "User", new { userId = userIdToUnfollow });
+
         }
 
 

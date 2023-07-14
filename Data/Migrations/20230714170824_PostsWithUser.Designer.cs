@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230714170824_PostsWithUser")]
+    partial class PostsWithUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -94,6 +96,7 @@ namespace cineVote.Migrations
                         .HasColumnName("PostsId");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("userName")
@@ -363,9 +366,6 @@ namespace cineVote.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -379,8 +379,6 @@ namespace cineVote.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -538,32 +536,6 @@ namespace cineVote.Migrations
                     b.HasIndex("SubscriptionId");
 
                     b.ToTable("tblSubscriptionNotifications");
-                });
-
-            modelBuilder.Entity("cineVote.Models.Domain.UserRelationship", b =>
-                {
-                    b.Property<int>("UserRelationshipId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("UserRelationshipId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("UserRelationshipId"), 1L, 1);
-
-                    b.Property<string>("FolloweeId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FollowerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("UserRelationshipId");
-
-                    b.HasIndex("FolloweeId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("tblUserRelationship");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Vote", b =>
@@ -830,7 +802,8 @@ namespace cineVote.Migrations
                     b.HasOne("cineVote.Models.Domain.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Post");
 
@@ -906,14 +879,6 @@ namespace cineVote.Migrations
                     b.Navigation("Subscription");
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("cineVote.Models.Domain.Person", b =>
-                {
-                    b.HasOne("cineVote.Models.Domain.User", null)
-                        .WithMany("followings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Posts", b =>
@@ -1000,25 +965,6 @@ namespace cineVote.Migrations
                     b.Navigation("Notification");
 
                     b.Navigation("Subscription");
-                });
-
-            modelBuilder.Entity("cineVote.Models.Domain.UserRelationship", b =>
-                {
-                    b.HasOne("cineVote.Models.Domain.Person", "Followee")
-                        .WithMany()
-                        .HasForeignKey("FolloweeId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("cineVote.Models.Domain.Person", "Follower")
-                        .WithMany()
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Followee");
-
-                    b.Navigation("Follower");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Vote", b =>
@@ -1179,8 +1125,6 @@ namespace cineVote.Migrations
 
             modelBuilder.Entity("cineVote.Models.Domain.User", b =>
                 {
-                    b.Navigation("followings");
-
                     b.Navigation("subscritions");
 
                     b.Navigation("votes");

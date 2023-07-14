@@ -16,6 +16,13 @@ namespace cineVote.Models.Domain
         [Column("Content")]
         public string Content { get; set; }
 
+        [ForeignKey("userName")]
+        [Column("userName")]
+        public string userName { get; set; }
+
+        [Column("User")]
+        public User User { get; set; }
+
         [Column("Comments")]
         public List<Comments>? Comments { get; set; }
 

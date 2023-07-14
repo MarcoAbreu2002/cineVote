@@ -2,6 +2,7 @@ using cineVote.Models.Domain;
 using cineVote.Models.DTO;
 using cineVote.Repositories.Abstract;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace cineVote.Repositories.Implementation
 {
@@ -27,8 +28,8 @@ namespace cineVote.Repositories.Implementation
         public async Task<User> FindByUsernameAsync(string username)
         {
             var userId = getUserId();
-            var user = await _db.Users.FindAsync(userId);
-            return user ?? throw new InvalidOperationException("User not found.");
+            var user = await _userManager.FindByNameAsync(username);
+            return (User)(user ?? throw new InvalidOperationException("User not found."));
         }
 
         public bool readNotification(Notification notification)
@@ -73,12 +74,14 @@ namespace cineVote.Repositories.Implementation
         }
 
 
-        private string getUserId()
+        public string getUserId()
         {
             var principal = _httpContextAccessor.HttpContext.User;
             string userId = _userManager.GetUserId(principal);
             return userId;
         }
+
+    
 
         public bool EditProfile(User user)
         {
@@ -144,8 +147,43 @@ namespace cineVote.Repositories.Implementation
             return status;
         }
 
+        public async Task<Status> Follow(string userIdToFollow)
+        {
+            var status = new Status();
+            var userId = getUserId();
+            User currentUser = _db.Users.Find(userId);
+            User userToFollow = (User)await _userManager.FindByIdAsync(userIdToFollow);
 
+            if (currentUser != null && userToFollow != null)
+            {
+                var relationship = new UserRelationship
+                {
+                    Follower = currentUser,
+                    Followee = userToFollow
+                };
 
+                _db.UserRelationships.Add(relationship);
+                await _db.SaveChangesAsync();
+            }
+            return status;
+        }
+
+        public async Task<Status> UnFollow(string userIdToUnfollow)
+        {
+            var status = new Status();
+            var userId = getUserId();
+            User currentUser = _db.Users.Find(userId);
+
+            var relationship = await _db.UserRelationships
+                .FirstOrDefaultAsync(ur => ur.FollowerId == currentUser.Id && ur.FolloweeId == userIdToUnfollow);
+
+            if (relationship != null)
+            {
+                _db.UserRelationships.Remove(relationship);
+                await _db.SaveChangesAsync();
+            }
+            return status;
+        }
 
     }
 }

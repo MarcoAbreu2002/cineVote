@@ -26,6 +26,8 @@ public class AppDbContext : IdentityDbContext<Person>
 
     public DbSet<Comments> Comments {get;set;}
 
+    public DbSet<UserRelationship> UserRelationships {get;set;}
+
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {
@@ -52,6 +54,8 @@ public class AppDbContext : IdentityDbContext<Person>
         {
             relationship.DeleteBehavior = DeleteBehavior.Restrict;
         }
+
+        
     }
 
 

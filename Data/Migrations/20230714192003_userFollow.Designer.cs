@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230714192003_userFollow")]
+    partial class userFollow
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -363,9 +365,6 @@ namespace cineVote.Migrations
                     b.Property<bool>("TwoFactorEnabled")
                         .HasColumnType("bit");
 
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
@@ -379,8 +378,6 @@ namespace cineVote.Migrations
                         .IsUnique()
                         .HasDatabaseName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -908,14 +905,6 @@ namespace cineVote.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("cineVote.Models.Domain.Person", b =>
-                {
-                    b.HasOne("cineVote.Models.Domain.User", null)
-                        .WithMany("followings")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict);
-                });
-
             modelBuilder.Entity("cineVote.Models.Domain.Posts", b =>
                 {
                     b.HasOne("cineVote.Models.Domain.User", "User")
@@ -1179,8 +1168,6 @@ namespace cineVote.Migrations
 
             modelBuilder.Entity("cineVote.Models.Domain.User", b =>
                 {
-                    b.Navigation("followings");
-
                     b.Navigation("subscritions");
 
                     b.Navigation("votes");

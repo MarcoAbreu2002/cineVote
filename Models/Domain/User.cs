@@ -17,5 +17,7 @@ namespace cineVote.Models.Domain
         [Column("Votes")]
         public ICollection<Vote>? votes { get; set; }
 
+        public List<Person>? followings {get;set;}
+
     }
 }
