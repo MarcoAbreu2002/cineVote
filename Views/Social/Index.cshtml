@@ -19,7 +19,7 @@
 
                     <div class="mb-2 mt-3">
                         <label class="form-label fs-6 fw-bold text-dark">Content of the post:</label>
-                        <textarea name="Content" class="form-control" placeholder="Write the Content" rows="4"
+                        <textarea name="Content" class="form-control" placeholder="Write the Content" rows="1"
                             cols="50"></textarea>
                     </div>
 
@@ -49,16 +49,19 @@
                                 {
                                     if (cc != null)
                                     {
-                                        <p class="comment-content text-dark">
-                                            <a
-                                                href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a>
-                                            | @cc.Content
-                                        </p>
+                                        <div class="comment">
+                                            <p class="comment-content text-dark">
+                                                <a
+                                                    href="@Url.Action("Profile", "User", new { username = cc.userName })">@cc.userName</a>
+                                                | @cc.Content
+                                            </p>
+                                            <!-- Comment form -->
 
+                                        </div>
                                     }
                                 }
                             </div>
-                            <!-- Comment form -->
+                            <!-- Comment form for the post -->
                             <form class="comment-form" id="comment-form" method="post">
                                 <input type="hidden" name="PostsId" value="@item.PostsId">
                                 <textarea name="Content" class="form-control" placeholder="Write a comment" rows="1"
@@ -70,12 +73,21 @@
                     </div>
                 </div>
             }
+
         </div>
     </div>
 </div>
 
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css" />
+    <script type="text/javascript">
+        $('textarea').emojioneArea({
+            pickerPosition: 'bottom'
+        });
+
+    </script>
     <script>
         $(function () {
             $(document).on('submit', '#post-form', function (event) {
@@ -160,6 +172,7 @@
                     success: function (result) {
                         // Clear the form
                         commentForm[0].reset();
+                        $("#comment-form")[0].reset();
 
                         // Create a new comment element
                         var comment = $("<div>").addClass("comment");
@@ -174,11 +187,13 @@
 
                     },
                     error: function (xhr, status, error) {
-                        console.error(error);
+                        console.error("ERROR: " + error);
                     }
                 });
             });
         });
+
+
 
     </script>
 }

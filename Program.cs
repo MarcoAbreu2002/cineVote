@@ -38,8 +38,11 @@ namespace cineVote
             builder.Services.AddScoped<IAdminService, AdminService>();
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<ITMDBApiService, TMDBApiService>();
-            builder.Services.AddScoped<NotificationFilter>();
+            builder.Services.AddTransient<NotificationFilter>();
+            builder.Services.AddScoped<ISocialService, SocialService>();
             builder.Services.AddHostedService<BackgroundWorkerService>();
+            builder.Services.AddHttpContextAccessor();
+            
 
             var app = builder.Build();
 

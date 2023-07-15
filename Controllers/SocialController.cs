@@ -12,44 +12,21 @@ namespace cineVote.Controllers
     public class SocialController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ISocialService _socialService;
 
-        public SocialController(AppDbContext context)
+        public SocialController(AppDbContext context, ISocialService socialService)
         {
             _context = context;
+            _socialService = socialService;
         }
 
-        // GET: /Post
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             string userName = User.Identity.Name;
-            var user = _context.Users
-                .FirstOrDefault(u => u.UserName == userName);
-
-            if (user != null)
-            {
-                string userId = user.Id;
-                // Use the userId as needed
-            }
-
-            var posts = _context.Posts
-    .Where(p => p.userName == userName)
-    .OrderByDescending(p => p.PostsId)
-    .ToList();
-
-            foreach (var post in posts)
-            {
-                var comments = _context.Comments
-                    .Where(c => c.PostsId == post.PostsId)
-                    .OrderByDescending(c => c.CommentsId)
-                    .ToList();
-
-                // Assign the comments to the post
-                post.Comments = comments;
-            }
+            var posts = await _socialService.GetPostsAsync(userName);
 
             return View(posts);
         }
-
 
         // POST: /Post/Create
         [HttpPost]
@@ -59,23 +36,7 @@ namespace cineVote.Controllers
             if (ModelState.IsValid)
             {
                 string userName = User.Identity.Name;
-                var user = _context.Users
-                    .FirstOrDefault(u => u.UserName == userName);
-
-                if (user != null)
-                {
-                    string userId = user.Id;
-                    // Use the userId as needed
-                }
-                Posts post = new Posts()
-                {
-                    Title = Title,
-                    Content = Content,
-                    userName = userName,
-                    User = user
-                };
-                _context.Posts.Add(post);
-                _context.SaveChanges();
+                var post = _socialService.CreatePost(userName, Title, Content);
 
                 return Json(post);
             }
@@ -85,8 +46,26 @@ namespace cineVote.Controllers
             }
         }
 
+        /*
+                // POST: /Post/Comment/5
+                [HttpPost]
+                [ValidateAntiForgeryToken]
+                public IActionResult Comment(string Content, int PostsId)
+                {
+                      if (ModelState.IsValid)
+                      {
+                    string userName = User.Identity.Name;
+                    var comment = _socialService.CreateComment(userName, PostsId, Content);
 
+                    return Json(comment);
+                     }
+                     else
+                     {
+                         return BadRequest();
+                     }
+                }
 
+        */
         // POST: /Post/Comment/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -120,8 +99,6 @@ namespace cineVote.Controllers
                 return BadRequest();
             }
         }
-
-        
 
 
     }

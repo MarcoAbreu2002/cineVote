@@ -81,7 +81,7 @@ namespace cineVote.Repositories.Implementation
             return userId;
         }
 
-    
+
 
         public bool EditProfile(User user)
         {
@@ -174,13 +174,14 @@ namespace cineVote.Repositories.Implementation
             var userId = getUserId();
             User currentUser = _db.Users.Find(userId);
 
-            var relationship = await _db.UserRelationships
-                .FirstOrDefaultAsync(ur => ur.FollowerId == currentUser.Id && ur.FolloweeId == userIdToUnfollow);
+            var relationships = _db.UserRelationships.ToList();
+            var relationship = relationships.FirstOrDefault(cc => cc.FollowerId == userId && cc.FolloweeId == userIdToUnfollow);
+
 
             if (relationship != null)
             {
-                _db.UserRelationships.Remove(relationship);
-                await _db.SaveChangesAsync();
+                _db.UserRelationships.Remove((UserRelationship)relationship);
+                _db.SaveChangesAsync();
             }
             return status;
         }
