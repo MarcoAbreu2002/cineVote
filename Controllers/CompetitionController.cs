@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace cineVote.Controllers
 {
     [Authorize]
-    [ServiceFilter(typeof(NotificationFilter))]
     public class CompetitionController : Controller
     {
         private readonly AppDbContext? _context;
