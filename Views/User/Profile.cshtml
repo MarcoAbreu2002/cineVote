@@ -27,9 +27,20 @@
             <div class="row text-secondary rounded bg-light ">
                 <div class="col-md-3">
                     <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px"
-                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                        <span class="font-weight-bold fw-bold fs-5">@Model.UserName</span>
+                        @if (Model != null && Model.imageUrl != null)
+                        {
+                            string imageBase64 = Convert.ToBase64String(Model.imageUrl);
+                            string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
+                            <img class="rounded-circle mt-3" width="150px" src="@imageSrc" alt="Image" />
+                            <span class="font-weight-bold fw-bold fs-5">@Model.UserName</span>
+                        }
+                        else
+                        {
+                            <img class="rounded-circle mt-5" width="150px"
+                                src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                            <span class="font-weight-bold fw-bold fs-5">@Model.UserName</span>
+                        }
+
                     </div>
                 </div>
                 <div class="col-md-5 border-right">

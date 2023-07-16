@@ -13,10 +13,10 @@ namespace cineVote.Repositories.Abstract
 
         Task<Status> UnFollow(string userIdToUnfollow);
 
-        Task<List<int>> getFavorites();
+        Task<List<int>> getFavorites(string username);
 
         public string getUserId();
-        bool EditProfile(User user);
+        Task<Status> EditProfile(string FirstName, string LastName, IFormFile ImageUrl, string currentUserName);
         bool readNotification(Notification notification);
     }
 }

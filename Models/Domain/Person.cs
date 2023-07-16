@@ -38,5 +38,8 @@ namespace cineVote.Models.Domain
         [Column("imageUrl")]
         public byte[] imageUrl { get; set; }
 
+        [NotMapped]
+        public IFormFile newImageUrl {get; set;}
+
     }
 }

@@ -7,20 +7,52 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
 
 <style>
-    .post {
-        background-color: #f5f5f5;
-        border: 1px solid #ccc;
-        border-radius: 5px;
+    .comment-box {
+        background-color: #f0f2f5;
         padding: 10px;
-        margin-bottom: 20px;
     }
 
     .comment {
-        background-color: #f0f0f0;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-        padding: 5px;
-        margin-top: 10px;
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-author {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .comment-text {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .comment-actions {
+        font-size: 12px;
+    }
+
+    .comment-like,
+    .comment-reply {
+        margin-right: 10px;
+        color: #666;
+        cursor: pointer;
+    }
+
+    .comment-like:hover,
+    .comment-reply:hover {
+        text-decoration: underline;
     }
 </style>
 
@@ -52,39 +84,66 @@
         <div id="posts-container">
             @foreach (var item in Model)
             {
-                <div class="post">
-                    <h5 class="card-title text-dark">
-                        <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a> |
-                        @item.Title
-                    </h5>
-
-                    <p class="card-text text-dark">@item.Content</p>
-
-                    <div class="comments-section">
-                        <div class="comments">
-                            @foreach (var cc in item.Comments)
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h5 class="card-title text-dark text-center">
+                            @if (item.User.imageUrl != null)
                             {
-                                if (cc != null)
-                                {
-                                    <div class="comment">
-                                        <p class="comment-content text-dark">
-                                            <a
-                                                href="@Url.Action("Profile", "User", new { username = cc.userName })">@cc.userName</a>
-                                            | @cc.Content
-                                        </p>
-                                    </div>
-                                }
+                                string imageBase64 = Convert.ToBase64String(@item.User.imageUrl);
+                                string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
+                                <img class="rounded-circle mt-5" src="@item.User.imageUrl" alt="User Avatar" />
                             }
-                        </div>
+                            <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a> |
+                            @item.Title
+                        </h5>
+                        <p class="fw-bold text-dark">Content:</p>
+                        <p class="card-text text-dark">@item.Content</p>
 
-                        <!-- Comment form for the post -->
-                        <form class="comment-form" id="comment-form" method="post">
-                            <input type="hidden" name="PostsId" value="@item.PostsId">
-                            <textarea name="Content" class="form-control" placeholder="Write a comment" rows="1"
-                                cols="50"></textarea>
-                            <button type="submit" class="btn text-white"
-                                style="background-color: rgb(67, 37, 101)">Comment</button>
-                        </form>
+                        <p class="fw-bold text-dark">Comments:</p>
+                        <div class="comments-section">
+                            <div class="comments">
+                                @foreach (var cc in item.Comments)
+                                {
+                                    if (cc != null)
+                                    {
+                                        <div class="comment-box">
+                                            <div class="comment text-dark">
+                                                @if (cc.User.imageUrl != null)
+                                                {
+                                                    string imageBase64 = Convert.ToBase64String(cc.User.imageUrl);
+                                                    string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
+                                                    <img class="avatar" src="@cc.User.imageUrl" alt="User Avatar" />
+                                                }
+                                                else
+                                                {
+                                                    <img class="rounded-circle mt-5" width="150px"
+                                                        src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                                                }
+
+                                                <div class="comment-content">
+                                                    <h4 class="comment-author">
+                                                        <a
+                                                            href="@Url.Action("Profile", "User", new { username = cc.userName })">@cc.userName</a>
+                                                    </h4>
+                                                    <p class="comment-text">@cc.Content</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            </div>
+
+                            <!-- Comment form -->
+                            <form class="comment-form" id="comment-form" method="post">
+                                <input type="hidden" name="PostsId" value="@item.PostsId">
+                                <textarea name="Content" class="form-control" placeholder="Write a comment" rows="1"
+                                    cols="50"></textarea>
+                                <div class="d-flex justify-content-center">
+                                    <button type="submit" class="btn text-white mt-3"
+                                        style="background-color: rgb(67, 37, 101)">Comment</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             }
@@ -92,15 +151,10 @@
     </div>
 </div>
 
+
+
 @section Scripts {
-    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css" />
-    <script type="text/javascript">
-        $('textarea').emojioneArea({
-            pickerPosition: 'bottom'
-        });
-    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function () {
             $(document).on('submit', '#post-form', function (event) {

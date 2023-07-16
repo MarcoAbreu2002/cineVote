@@ -57,6 +57,12 @@
                                                                         <div class="card-body">
                                                                             <h5 class="card-title">@movieTitle</h5>
                                                                             <p class="card-text">Release Date: @releaseDate</p>
+                                                                            <form action="/Competition/ShowMoreDetails" method="post">
+                                                                                <input type="hidden" name="movieId" value="@movieId" />
+                                                                                <button class="btn text-white profile-button" type="submit"
+                                                                                    style="background-color:rgb(67,37,101)">More
+                                                                                    Details</button>
+                                                                            </form>
                                                                             <div id="vote-input-form">
                                                                                 <input type="radio" id="radioInput" class="vote-input"
                                                                                     name="category-@category.CategoryId"

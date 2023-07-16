@@ -20,10 +20,16 @@
         height: auto;
         background: none;
     }
+
+    .movie-image {
+        width: 700px;
+        height: 400px;
+        object-fit: cover;
+    }
 </style>
 <div class="row bg-light margem-cima rounded">
     <div class="tbl-container text-black">
-        <div class="text-black text-center mt-3 fs-3 fw-bold">Movie in Detail</div>
+        <div class="text-black text-center mt-3 fs-3 fw-bold ">Movie in Detail</div>
         @foreach (var movie in Model)
         {
             var movieId = movie["Id"].ToString();
@@ -37,15 +43,16 @@
             var fileSize = "w300";
             var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
 
-            <div class="container">
-                <div class="image">
-                    <img src="@imageUrl" class="card-img-top" alt="Movie Poster">
+            <div class="container mt-3 border-top border-3">
+
+                <div class="image mt-4 mb-4">
+                    <img src="@imageUrl" class="card-img-top img-fluid movie-image" alt="Movie Poster">
                 </div>
-                <div class="text">
-                    <h2>@movieTitle</h2>
-                    <h3>@tagline</h3>
+                <div class="text ">
+                    <h2 class="text-center mb-4 ">@movieTitle </h2>
+                    <h5>@tagline</h5>
                     <p>@movieOverview</p>
-                    <p>@releaseDate</p>
+                    <p>@releaseDate
                     <a href="https://www.imdb.com/title/@imdb_id/" target="_blank">
                         <img src="https://logowik.com/content/uploads/images/imdb-internet-movie-database5351.jpg"
                             alt="IMDb Logo" class="imdb-logo">
@@ -96,4 +103,3 @@
         });
     });
 </script>
-

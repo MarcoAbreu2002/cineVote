@@ -29,7 +29,7 @@ namespace cineVote.Controllers
             var subscriptions = _context.Subscriptions.ToList();
             var userId = _userService.getUserId();
             var followings = _context.UserRelationships.ToList();
-            var favoriteIds = await _userService.getFavorites();
+            var favoriteIds = await _userService.getFavorites(username);
             record.Movies = await _ITMDBApiService.GetMovieById(favoriteIds);
 
             // Filter the subscriptions list based on a condition
@@ -86,7 +86,7 @@ namespace cineVote.Controllers
 
             var result = _context.Competitions.Find(subscriptionToShow.Competition_Id);
 
-            if(hasVoteWithUserId)
+            if (hasVoteWithUserId)
             {
                 result.voted = true;
             }
@@ -206,19 +206,22 @@ namespace cineVote.Controllers
 
 
         [HttpPost]
-        public IActionResult EditProfile(User user)
+        public async Task<IActionResult> EditProfile(string FirstName, string LastName, IFormFile newImageUrl, string currentUserName)
         {
-            if (!ModelState.IsValid)
+            var result = await _userService.EditProfile(FirstName, LastName, newImageUrl, currentUserName);
+
+            if (result.StatusCode == 0)
             {
-                return View(user);
+                TempData["msg"] = result.Message;
+                return RedirectToAction("EditProfile", new { username = currentUserName });
             }
-            var result = _userService.EditProfile(user);
-            if (result)
+            else
             {
-                return RedirectToAction("Profile", new { username = user.UserName });
+                TempData["msg"] = result.Message;
+                return RedirectToAction("Profile", new { username = currentUserName });
             }
-            TempData["msg"] = "Error has occured on server side";
-            return View(user);
+
+
         }
 
         public async Task<IActionResult> Follow(string userIdToFollow)

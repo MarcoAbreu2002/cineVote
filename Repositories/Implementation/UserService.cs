@@ -32,11 +32,11 @@ namespace cineVote.Repositories.Implementation
             return (User)(user ?? throw new InvalidOperationException("User not found."));
         }
 
-        public async Task<List<int>> getFavorites()
+        public async Task<List<int>> getFavorites(string username)
         {
-            var userId = getUserId();
+            var user = await _userManager.FindByNameAsync(username);
             var favoriteIds = await _db.Favorites
-                .Where(f => f.User.Id == userId)
+                .Where(f => f.User.Id == user.Id)
                 .Select(f => f.TMDBId)
                 .ToListAsync();
 
@@ -96,20 +96,52 @@ namespace cineVote.Repositories.Implementation
 
 
 
-        public bool EditProfile(User user)
+        public async Task<Status> EditProfile(string FirstName, string LastName, IFormFile ImageUrl, string currentUserName)
         {
-            try
+            Status status = new Status();
+            var user = await _userManager.FindByNameAsync(currentUserName);
+
+            // Check if FirstName, LastName, and UserName are not null or empty.
+            if (string.IsNullOrEmpty(FirstName) || string.IsNullOrEmpty(LastName))
             {
-                _db.Users.Update(user);
-                _db.SaveChanges();
-                return true;
+                status.StatusCode = 0;
+                status.Message = "First Name, Last Name are required.";
+                return status;
             }
-            catch (Exception ex)
+
+            user.FirstName = FirstName;
+            user.LastName = LastName;
+
+            if (ImageUrl != null && ImageUrl.Length > 0)
             {
-                Console.WriteLine("Error occurred during user update: " + ex.Message);
-                return false;
+                using (var memoryStream = new MemoryStream())
+                {
+                    await ImageUrl.CopyToAsync(memoryStream);
+
+                    // Upload the file if less than 2 MB  
+                    if (memoryStream.Length < 2097152)
+                    {
+                        user.imageUrl = memoryStream.ToArray();
+                    }
+                    else
+                    {
+                        status.StatusCode = 0;
+                        status.Message = "File is too large";
+                        return status;
+                    }
+                }
             }
+
+            _db.People.Update(user);
+            _db.SaveChanges();
+
+            status.StatusCode = 1;
+            status.Message = "Profile Edited successfully";
+            return status;
         }
+
+
+
         public Competition FindById(int id)
         {
             return _db.Competitions.Find(id);

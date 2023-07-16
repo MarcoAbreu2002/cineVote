@@ -61,6 +61,7 @@ namespace cineVote.Repositories.Implementation
                     {
                         status.StatusCode = 0;
                         status.Message = "File is too large";
+                        return status;
                     }
                 }
             }

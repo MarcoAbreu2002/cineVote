@@ -15,46 +15,58 @@
     <div class="margem-top">
         <div class="container rounded bg-white mt-5 mb-5 border">
             <div class="row text-secondary bg-light ms-auto">
-                <div class="col-md-3 border-right">
-                    <div class="d-flex flex-column align-items-center text-center p-3 py-5">
-                        <img class="rounded-circle mt-5" width="150px"
-                            src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
-                        <span class="font-weight-bold fs-5 fw-bold">@Model.UserName</span>
-                    </div>
-                </div>
-                <div class="col-md-5 border-right">
-                    <div class="p-3 py-5">
-                        <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h4 class="text-right fs-2">Profile</h4>
+                <form asp-action="EditProfile" method="post" enctype="multipart/form-data">
+                    <div class="col-md-3 border-right">
+                        <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+
+                            @if (Model != null && Model.imageUrl != null)
+                            {
+                                string imageBase64 = Convert.ToBase64String(Model.imageUrl);
+                                string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
+                                <img class="rounded-circle mt-3" width="150px" src="@imageSrc" alt="Image" />
+                                <span class="font-weight-bold fw-bold fs-5">@Model.UserName</span>
+                                <div class="col-md-12 mt-2">
+                                    <label class="labels fw-bold">Change Picture:</label>
+                                    <input type="file" asp-for="newImageUrl" name="newImageUrl" class="form-control"
+                                        accept=".png,.jpg,.jpeg,.gif,.tif" />
+                                </div>
+                            }
+                            else
+                            {
+                                <img class="rounded-circle mt-5" width="150px"
+                                    src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
+                                <span class="font-weight-bold fw-bold fs-5">@Model.UserName</span>
+                                <div class="col-md-12 mt-2">
+                                    <label class="labels fw-bold">Change Picture:</label>
+                                    <input type="file" asp-for="newImageUrl" name="newImageUrl" class="form-control"
+                                        accept=".png,.jpg,.jpeg,.gif,.tif" />
+                                </div>
+                            }
                         </div>
-                        <form asp-action="EditProfile" method="post">
-                            <input type="hidden" class="form-control" asp-for="Password">
-                            <input type="hidden" class="form-control" asp-for="imageUrl">
-                            <input type="hidden" class="form-control" asp-for="Id">
-                            <input type="hidden" class="form-control" asp-for="PersonId">
-                            <input type="hidden" class="form-control" asp-for="IsAdmin">
-                            <input type="hidden" class="form-control" asp-for="Email">
-                            <input type="hidden" class="form-control" asp-for="NormalizedEmail">
-                            <input type="hidden" class="form-control" asp-for="NormalizedUserName">
-                            <input type="hidden" class="form-control" asp-for="EmailConfirmed">
+                    </div>
+                    <div class="col-md-5 border-right">
+                        <div class="p-3 py-5">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h4 class="text-right fs-2">Profile</h4>
+                            </div>
+
+                            <input type="hidden" name="currentUserName" value=@Model.UserName>
+
                             <div class="row mt-2">
                                 <div class="col-md-12 mt-2">
                                     <label class="labels fw-bold" asp-for="FirstName">Name: *</label>
-                                    <input type="text" class="form-control" asp-for="FirstName">
+                                    <input type="text" class="form-control" asp-for="FirstName" name="FirstName">
                                 </div>
                                 <div class="col-md-12 mt-2">
                                     <label class="labels fw-bold" asp-for="LastName">Surname: *</label>
-                                    <input type="text" class="form-control" asp-for="LastName">
+                                    <input type="text" class="form-control" asp-for="LastName" name="LastName">
                                 </div>
 
-                                <div class="col-md-12 mt-2">
-                                    <label class="labels fw-bold" asp-for="UserName">Username: *</label>
-                                    <input type="text" class="form-control" asp-for="UserName">
-                                </div>
-                                <div class="col-md-12 mt-2">
-                                    <label class="labels fw-bold" asp-for="EmailAddress">Email: *</label>
-                                    <input type="text" class="form-control" asp-for="EmailAddress">
-                                </div>
+                                @if (TempData["msg"] != null)
+                                {
+                                    <div class="msg text-danger mt-1">@TempData["msg"]</div>
+                                }
+
 
                                 <div class="mt-5">
                                     <button type="submit" class="btn text-white profile-button"
@@ -62,35 +74,11 @@
                                         Profile</button>
                                 </div>
                             </div>
-                        </form>
-                    </div>
-                </div>
-                <div class="col-md-4 bg-light border">
-                    <div class="p-3 py-5 text-right">
-                        <p class="fw-bold fs-4">Subscribed Competitions:</strong></p>
-                        <ul>
-                            @foreach (var subscription in Model.subscritions)
-                            {
-                                if (subscription != null)
-                                {
-                                    <li>
-                                        <span>@subscription.Name</span>
-                                        <div class="mt-2">
-                                            <a class="btn btn-primary btn-sm"
-                                                href="/User/Subscription?subscription=@subscription.SubscriptionId"
-                                                style="background-color:rgb(67,37,101)">See More</a>
-                                        </div>
-                                    </li>
-                                }
-                                else
-                                {
-                                    <li>No subscriptions yet!</li>
-                                }
-                            }
-                        </ul>
-                    </div>
-                </div>
+
+                </form>
             </div>
         </div>
+    </div>
+    </div>
     </div>
 </body>
