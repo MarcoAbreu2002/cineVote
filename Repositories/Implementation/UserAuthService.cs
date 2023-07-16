@@ -31,8 +31,8 @@ namespace cineVote.Repositories.Implementation
                 status.Message = "User already exists";
                 return status;
             }
-            
-            
+
+
             User user = new User()
             {
                 NormalizedEmail = model.Email,
@@ -44,8 +44,27 @@ namespace cineVote.Repositories.Implementation
                 LastName = model.LastName,
                 UserName = model.Username,
                 Password = model.Password,
-                ImageUrl = "testing",
             };
+
+            if (model.ImageUrl.Length > 0)
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    await model.ImageUrl.CopyToAsync(memoryStream);
+
+                    // Upload the file if less than 2 MB  
+                    if (memoryStream.Length < 2097152)
+                    {
+                        user.imageUrl = memoryStream.ToArray();
+                    }
+                    else
+                    {
+                        status.StatusCode = 0;
+                        status.Message = "File is too large";
+                    }
+                }
+            }
+
             var result = await _userManager.CreateAsync(user, model.Password);
             if (!result.Succeeded)
             {

@@ -208,6 +208,19 @@ namespace cineVote.Controllers
             return Json(nominees);
         }
 
+        public async Task<IActionResult> addToFavorite(int movieId)
+        {
+            var result = await _competitionManager.addToFavorites(movieId);
+            return Json(result);
+        }
+
+        public async Task<IActionResult> RemoveFavorite(int movieId)
+        {
+            var result = await _competitionManager.removeFavorites(movieId);
+            return Json(result);
+        }
+
+
 
         [HttpPost]
         public IActionResult CreateCompetition(createCompetitionModel createCompetitionModel)

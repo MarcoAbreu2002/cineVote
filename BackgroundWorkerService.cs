@@ -1,5 +1,12 @@
 using cineVote.Models.Domain;
 using cineVote.Repositories.Abstract;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 
 namespace cineVote
@@ -10,6 +17,7 @@ namespace cineVote
 
         private readonly ILogger<BackgroundWorkerService> _logger;
         private readonly IServiceProvider _serviceProvider;
+        //private readonly CompetitionController _competitionController;
 
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -39,41 +47,6 @@ namespace cineVote
                 ICompetitionManager CompetitionController = scope.ServiceProvider.GetRequiredService<ICompetitionManager>();
 
                 AppDbContext context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
-                HttpContext httpContext = _httpContextAccessor.HttpContext;
-
-                if (httpContext == null)
-                {
-                    // Log an error or handle the case where httpContext is null.
-                    _logger.LogError("HttpContext is null.");
-                    return;
-                }
-
-                // Check if the user is authenticated
-                if (httpContext.User.Identity.IsAuthenticated)
-                {
-                    string userName = httpContext.User.Identity.Name;
-
-                    if (context == null)
-                    {
-                        // Log an error or handle the case where context is null.
-                        _logger.LogError("AppDbContext is null.");
-                        return;
-                    }
-
-                    var notifications = context.Notifications.Where(n => n.userName == userName).ToList();
-
-                    httpContext.Items["notifications"] = notifications;
-                    // ... Rest of your code ...
-                }
-
-                if (context == null)
-                {
-                    // Log an error or handle the case where context is null.
-                    _logger.LogError("AppDbContext is null.");
-                    return;
-                }
-
                 List<Competition> competitions = context.Competitions.ToList();
 
                 DateTime localTime = DateTime.Now;

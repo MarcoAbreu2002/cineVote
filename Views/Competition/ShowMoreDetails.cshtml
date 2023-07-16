@@ -29,7 +29,7 @@
 </style>
 <div class="row bg-light margem-cima rounded">
     <div class="tbl-container text-black">
-        <div class="text-black text-center mt-3 fs-3 fw-bold">Movie Details</div>
+        <div class="text-black text-center mt-3 fs-3 fw-bold ">Movie in Detail</div>
         @foreach (var movie in Model)
         {
             var movieId = movie["Id"].ToString();
@@ -57,11 +57,50 @@
                         <img src="https://logowik.com/content/uploads/images/imdb-internet-movie-database5351.jpg"
                             alt="IMDb Logo" class="imdb-logo">
                     </a>
+                    <form id="favorite-form" action="/Competition/addToFavorite" method="post">
+                        <input type="hidden" name="movieId" value="@movieId" />
+                        <button class="btn text-white profile-button" id="favorite-button"
+                            style="background-color:rgb(67,37,101)" data-movieid="@movieId">Add to Favorite</button>
+                    </form>
+
 
                 </div>
-
             </div>
-
         }
     </div>
 </div>
+
+<script>
+    const favoriteButtons = document.querySelectorAll("#favorite-button");
+
+    favoriteButtons.forEach(button => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault(); // Prevent the default form submission behavior
+
+            const movieId = button.getAttribute("data-movieid");
+            const buttonText = button.innerText.trim();
+
+            // Perform an AJAX POST request to the server
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/Competition/addToFavorite", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        // Request successful, update the button text
+                        if (buttonText === "Add to Favorite") {
+                            button.innerText = "Remove from Favorites";
+                        } else {
+                            button.innerText = "Add to Favorite";
+                        }
+                    } else {
+                        // Request failed, handle the error
+                        console.error("Error adding to favorites.");
+                    }
+                }
+            };
+            xhr.send("movieId=" + encodeURIComponent(movieId));
+        });
+    });
+</script>
+

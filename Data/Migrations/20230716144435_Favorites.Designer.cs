@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230716144435_Favorites")]
+    partial class Favorites
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -180,35 +182,6 @@ namespace cineVote.Migrations
                     b.ToTable("tblCompetitionCategory");
                 });
 
-            modelBuilder.Entity("cineVote.Models.Domain.Favorite", b =>
-                {
-                    b.Property<int>("FavoriteId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasColumnName("FavoriteId");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FavoriteId"), 1L, 1);
-
-                    b.Property<int>("TMDBId")
-                        .HasColumnType("int")
-                        .HasColumnName("TMDBId");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("userName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)")
-                        .HasColumnName("userName");
-
-                    b.HasKey("FavoriteId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("tblFavorite");
-                });
-
             modelBuilder.Entity("cineVote.Models.Domain.Nominee", b =>
                 {
                     b.Property<int>("NomineeId")
@@ -340,6 +313,11 @@ namespace cineVote.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("FirstName");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("imageUrl");
+
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit")
                         .HasColumnName("IsAdmin");
@@ -393,11 +371,6 @@ namespace cineVote.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<byte[]>("imageUrl")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)")
-                        .HasColumnName("imageUrl");
 
                     b.HasKey("Id");
 
@@ -891,17 +864,6 @@ namespace cineVote.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Competition");
-                });
-
-            modelBuilder.Entity("cineVote.Models.Domain.Favorite", b =>
-                {
-                    b.HasOne("cineVote.Models.Domain.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("cineVote.Models.Domain.Nominee", b =>

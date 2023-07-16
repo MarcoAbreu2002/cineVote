@@ -33,10 +33,10 @@ namespace cineVote.Models.Domain
         [Column("IsAdmin")]
         public bool IsAdmin { get; set; }
 
+
         [Required]
         [Column("imageUrl")]
-        public string ImageUrl { get; set; }
-
+        public byte[] imageUrl { get; set; }
 
     }
 }

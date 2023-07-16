@@ -28,6 +28,8 @@ public class AppDbContext : IdentityDbContext<Person>
 
     public DbSet<UserRelationship> UserRelationships {get;set;}
 
+    public DbSet<Favorite> Favorites {get;set;}
+
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options)
     {

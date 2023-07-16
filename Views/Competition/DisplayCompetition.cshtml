@@ -4,95 +4,195 @@
 }
 
 <style>
-    table,
-    th,
-    td {
-        color: white;
-    }
-
-    .margem-direita {
-        margin-right: 6%;
-    }
-
-    .margem-esq {
-        margin-left: 4%
-    }
+    /* Your styles here */
 </style>
 
 <div class="row bg-light margem-cima rounded">
     <div class="tbl-container text-black">
         <div class="text-black text-center mt-3 fs-3 fw-bold ">Available Competitions</div>
-        <table class="table table-bordered table-striped mt-3" style="width:100%">
-            <thead>
-                <tr>
-                    <th class="text-dark text-center">
-                        Competition Name
-                    </th>
-                    <th class="text-black text-center">
-                        Start Date
-                    </th>
-                    <th class="text-black text-center">
-                        End Date
-                    </th>
-                    <th class="text-black text-center">
-                        Actions
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model)
+
+        <div class="row mt-3">
+            <!-- Yet to Start Competitions -->
+            <div class="col-md-4">
+                <div class="text-black text-center fs-4 fw-bold mb-3">Yet to Start</div>
+                @if (!Model.Any(c => DateTime.Now < c.StartDate))
                 {
-                    <tr>
-                        <td class="text-black">
-                            @item.Name
-                        </td>
-                        <td class="text-black text-center">
-                            @item.StartDate
-                        </td>
-                        <td class="text-black text-center">
-                            @item.EndDate
-                        </td>
-                        <td class="text-black">
-                            @if (User.IsInRole("admin"))
-                            {
-                                <div class="d-flex justify-content-center">
-                                    <a class="btn btn-success align-content-center margem-direita"
-                                        href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i
-                                            class="bi bi-pen"></i> Edit</a>
-                                    <a class="btn btn-danger align-content-center"
-                                        onclick="return window.confirm('Are you sure?')"
-                                        href="/Competition/Delete?competitionId=@item.Competition_Id"><i
-                                            class="bi bi-trash"></i> Delete</a>
-                                    <a class="btn btn-primary align-content-center margem-esq"
-                                        href="/Competition/Results?competitionId=@item.Competition_Id">Generate Results</a>
-                                </div>
-                            }
-                            else
-                            {
-                                @if (item.IsPublic == true)
+                    <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                        <h5 class="card-title">No competitions to show..</h5>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var item in Model.Where(c => DateTime.Now < c.StartDate))
+                    {
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                @item.Name
+                            </div>
+                            <div class="card-body">
+                                <p>Start Date: @item.StartDate</p>
+                                <p>End Date: @item.EndDate</p>
+                                @if (User.IsInRole("admin"))
                                 {
+                                    <!-- Admin actions here -->
                                     <div class="d-flex justify-content-center">
-                                        <a class="btn text-white btn-md align-content-center"
-                                            href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
-                                            style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See More</a>
+                                        <a class="btn btn-success align-content-center margem-direita"
+                                            href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i
+                                                class="bi bi-pen"></i> Edit</a>
+                                        <a class="btn btn-danger align-content-center"
+                                            onclick="return window.confirm('Are you sure?')"
+                                            href="/Competition/Delete?competitionId=@item.Competition_Id"><i
+                                                class="bi bi-trash"></i> Delete</a>
                                     </div>
                                 }
                                 else
                                 {
-                                    <div class="d-flex justify-content-center">
-                                        <a class="btn text-white btn-md align-content-center"
-                                            href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
-                                            style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See More</a>
-                                        <a class="btn btn-primary align-content-center margem-esq"
-                                            href="/Competition/ShowResultsCompetition?competitionId=@item.Competition_Id">Results</a>
+                                    <!-- User actions here -->
+                                    @if (item.IsPublic == true)
+                                    {
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn text-white btn-md align-content-center"
+                                                href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
+                                                style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See Competition</a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn text-white btn-md align-content-center"
+                                                href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
+                                                style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See Competition</a>
 
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <!-- Ongoing Competitions -->
+            <div class="col-md-4">
+                <div class="text-black text-center fs-4 fw-bold mb-3">Ongoing</div>
+                @if (!Model.Any(c => DateTime.Now >= c.StartDate && DateTime.Now <= c.EndDate))
+                {
+                    <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                        <h5 class="card-title">No competitions to show..</h5>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var item in Model.Where(c => DateTime.Now >= c.StartDate && DateTime.Now <= c.EndDate))
+                    {
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                @item.Name
+                            </div>
+                            <div class="card-body">
+                                <p>Start Date: @item.StartDate</p>
+                                <p>End Date: @item.EndDate</p>
+                                @if (User.IsInRole("admin"))
+                                {
+                                    <!-- Admin actions here -->
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-success align-content-center margem-direita"
+                                            href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i
+                                                class="bi bi-pen"></i> Edit</a>
+                                        <a class="btn btn-danger align-content-center"
+                                            onclick="return window.confirm('Are you sure?')"
+                                            href="/Competition/Delete?competitionId=@item.Competition_Id"><i
+                                                class="bi bi-trash"></i> Delete</a>
                                     </div>
                                 }
-                            }
-                        </td>
-                    </tr>
+                                else
+                                {
+                                    <!-- User actions here -->
+                                    @if (item.IsPublic == true)
+                                    {
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn text-white btn-md align-content-center"
+                                                href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
+                                                style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See Competition</a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn text-white btn-md align-content-center"
+                                                href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
+                                                style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See Competition</a>
+
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
                 }
-            </tbody>
-        </table>
+            </div>
+
+            <!-- Finished Competitions -->
+            <div class="col-md-4">
+                <div class="text-black text-center fs-4 fw-bold mb-3">Finished</div>
+                @if (!Model.Any(c => DateTime.Now > c.EndDate))
+                {
+                    <div class="d-flex justify-content-center align-items-center" style="height: 200px;">
+                        <h5 class="card-title">No competitions to show..</h5>
+                    </div>
+                }
+                else
+                {
+                    @foreach (var item in Model.Where(c => DateTime.Now > c.EndDate))
+                    {
+                        <div class="card mb-3">
+                            <div class="card-header">
+                                @item.Name
+                            </div>
+                            <div class="card-body">
+                                <p>Start Date: @item.StartDate</p>
+                                <p>End Date: @item.EndDate</p>
+                                @if (User.IsInRole("admin"))
+                                {
+                                    <!-- Admin actions here -->
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-success align-content-center margem-direita"
+                                            href="/Competition/EditCompetition?competitionId=@item.Competition_Id"><i
+                                                class="bi bi-pen"></i> Edit</a>
+                                        <a class="btn btn-danger align-content-center"
+                                            onclick="return window.confirm('Are you sure?')"
+                                            href="/Competition/Delete?competitionId=@item.Competition_Id"><i
+                                                class="bi bi-trash"></i> Delete</a>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <!-- User actions here -->
+                                    @if (item.IsPublic == true)
+                                    {
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn text-white btn-md align-content-center"
+                                                href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
+                                                style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See Competition</a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="d-flex justify-content-center">
+                                            <a class="btn text-white btn-md align-content-center"
+                                                href="/Competition/SingleCompetition?competitionId=@item.Competition_Id"
+                                                style="background-color:rgb(67,37,101)"><i class="bi bi-pen"></i> See Competition</a>
+                                            <a class="btn btn-primary align-content-center margem-esq"
+                                                href="/Competition/ShowResultsCompetition?competitionId=@item.Competition_Id">Results</a>
+
+                                        </div>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
     </div>
 </div>

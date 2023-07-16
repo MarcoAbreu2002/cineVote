@@ -17,6 +17,10 @@ namespace cineVote.Repositories.Abstract
         string finishCompetition (Competition competition);
 
         Task<Status> generateResults(dynamic topNominees, int numberOfParticipants, int competition_id);
+
+        Task<Status> addToFavorites (int movieId);
+
+        Task<Status> removeFavorites (int movieId);
         
     }
 }

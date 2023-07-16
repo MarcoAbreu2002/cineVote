@@ -57,17 +57,19 @@
                                                                         <div class="card-body">
                                                                             <h5 class="card-title">@movieTitle</h5>
                                                                             <p class="card-text">Release Date: @releaseDate</p>
-                                                                            <input type="radio" id="radioInput" class="vote-input"
-                                                                                name="category-@category.CategoryId"
-                                                                                value="@item.NomineeId"> Vote to @movieTitle
-                                                                            <input type="hidden" name="username"
-                                                                                value="@User.Identity.Name" />
-                                                                            <input type="hidden" name="competitionId"
-                                                                                value="@Model.Competition_Id" />
-                                                                            <input type="hidden" name="categoryId"
-                                                                                value="@category.CategoryId" />
-                                                                            <input type="hidden" name="subscriptionId"
-                                                                                value="@Context.Request.Query["subscription"]" />
+                                                                            <div id="vote-input-form">
+                                                                                <input type="radio" id="radioInput" class="vote-input"
+                                                                                    name="category-@category.CategoryId"
+                                                                                    value="@item.NomineeId"> Vote to @movieTitle
+                                                                                <input type="hidden" name="username"
+                                                                                    value="@User.Identity.Name" />
+                                                                                <input type="hidden" name="competitionId"
+                                                                                    value="@Model.Competition_Id" />
+                                                                                <input type="hidden" name="categoryId"
+                                                                                    value="@category.CategoryId" />
+                                                                                <input type="hidden" name="subscriptionId"
+                                                                                    value="@Context.Request.Query["subscription"]" />
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -95,24 +97,39 @@
             </div>
         </div>
     </div>
-
+    <input type="hidden" id="startDate" value="@Model.StartDate" />
+    <input type="hidden" id="endDate" value="@Model.EndDate" />
     <script>
-        function checkStartDate() {
-            var startDate = @Model.StartDate; // Convert the Model's StartDate to a JavaScript Date object
-            var now = new Date(); // Get the current date and time
-            console.log("Encontrou: " + now);
-            console.log("Encontoruo: " + startDate);
-            if (startDate > now) {
+        function parseDateFromString(dateString) {
+            var parts = dateString.split(/[- :\/]/);
+            // new Date(year, month, day, hours, minutes, seconds, milliseconds)
+            return new Date(parts[2], parts[1] - 1, parts[0], parts[3], parts[4], parts[5]);
+        }
 
-                // Hide the radio input
-                var radioInput = document.getElementById("radioInput");
-                radioInput.style.display = "none";
+        function checkStartDate() {
+            var startDateString = document.getElementById("startDate").value;
+            var endDateString = document.getElementById("endDate").value;
+
+            var startDate = parseDateFromString(startDateString);
+            var endDate = parseDateFromString(endDateString);
+            var now = new Date();
+
+            if (now < startDate || now >= endDate || @Model.voted) {
+                var cardBodyDivs = document.querySelectorAll('#vote-input-form');
+                cardBodyDivs.forEach(function (cardBodyDiv) {
+                    cardBodyDiv.remove();
+                });
 
                 // Hide the submit button
                 var submitButton = document.getElementById("submitButton");
                 submitButton.style.display = "none";
+
             }
         }
+
+
+        // Call the checkStartDate function when the page loads
+        checkStartDate();
 
     </script>
 

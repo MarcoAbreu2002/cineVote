@@ -29,6 +29,8 @@ namespace cineVote.Controllers
             var subscriptions = _context.Subscriptions.ToList();
             var userId = _userService.getUserId();
             var followings = _context.UserRelationships.ToList();
+            var favoriteIds = await _userService.getFavorites();
+            record.Movies = await _ITMDBApiService.GetMovieById(favoriteIds);
 
             // Filter the subscriptions list based on a condition
             var filteredSubscriptions = subscriptions.Where(s => s.userName == username).ToList();
@@ -70,10 +72,28 @@ namespace cineVote.Controllers
 
         public async Task<IActionResult> Subscription(int subscription)
         {
+            var userId = _userService.getUserId();
+
             var subscriptionToShow = _context.Subscriptions.Find(subscription);
+
+            var subscriptionVote = _context.voteSubscriptions
+                        .Where(cc => cc.SubscriptionId == subscriptionToShow.SubscriptionId)
+                        .Select(cc => cc.VoteId)
+                        .ToList();
+
+            bool hasVoteWithUserId = _context.Votes.Any(vote => vote.User.Id == userId && subscriptionVote.Contains(vote.VoteId));
+
 
             var result = _context.Competitions.Find(subscriptionToShow.Competition_Id);
 
+            if(hasVoteWithUserId)
+            {
+                result.voted = true;
+            }
+            else
+            {
+                result.voted = false;
+            }
             var competitionCategories = _context.CompetitionCategories
                            .Where(cc => cc.Competition_Id == result.Competition_Id)
                            .Select(cc => cc.Category)
