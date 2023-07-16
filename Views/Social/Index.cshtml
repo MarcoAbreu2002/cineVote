@@ -9,6 +9,8 @@
 <style>
     .comment-box {
         background-color: #f0f2f5;
+    .comment-box {
+        background-color: #f0f2f5;
         padding: 10px;
     }
 
@@ -54,6 +56,45 @@
     .comment-reply:hover {
         text-decoration: underline;
     }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        background-color: #ccc;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-author {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .comment-text {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .comment-actions {
+        font-size: 12px;
+    }
+
+    .comment-like,
+    .comment-reply {
+        margin-right: 10px;
+        color: #666;
+        cursor: pointer;
+    }
+
+        .comment-like:hover,
+        .comment-reply:hover {
+            text-decoration: underline;
+        }
 </style>
 
 <div class="margem-top">
@@ -151,9 +192,8 @@
     </div>
 </div>
 
-
-
 @section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(function () {
