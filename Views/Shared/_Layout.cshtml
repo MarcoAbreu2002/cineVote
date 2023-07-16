@@ -71,7 +71,13 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
             <div class="container-fluid margin-left">
-                <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">CineVote</a>
+                @if (string.IsNullOrEmpty(User.Identity.Name))
+                {
+                    <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">CineVote</a>
+                }else{
+                    <a class="navbar-brand text-white" asp-area="" asp-controller="Social" asp-action="Index">CineVote</a>
+                }
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -96,14 +102,17 @@
                         <li class="nav-item ">
                             <a class="nav-link text-white" href="/Competition/DisplayCompetition">Competitions</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/Social/Index">Forum</a>
+                        </li>
                     }
                     @if (User.IsInRole("user"))
                     {
                         var unreadNotifications = notifications != null ? notifications.Where(n => !n.isRead) : null;
 
                         <li class="nav-item dropdown">
-                            <a type="button" class="btn " data-toggle="dropdown" href="#"
-                                id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <a type="button" class="btn " data-toggle="dropdown" href="#" id="notificationDropdown"
+                                role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <svg width="35" height="20" viewBox="0 0 30 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg">
                                     <path
@@ -147,6 +156,9 @@
                                     </li>
                                 }
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" href="/Social/Index">Forum</a>
                         </li>
 
                         <li class="nav-item ">

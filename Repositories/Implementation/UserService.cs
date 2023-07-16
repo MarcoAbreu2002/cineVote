@@ -32,6 +32,19 @@ namespace cineVote.Repositories.Implementation
             return (User)(user ?? throw new InvalidOperationException("User not found."));
         }
 
+        public async Task<List<int>> getFavorites()
+        {
+            var userId = getUserId();
+            var favoriteIds = await _db.Favorites
+                .Where(f => f.User.Id == userId)
+                .Select(f => f.TMDBId)
+                .ToListAsync();
+
+            return favoriteIds;
+        }
+
+
+
         public bool readNotification(Notification notification)
         {
             try

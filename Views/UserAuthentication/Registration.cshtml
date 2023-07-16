@@ -1,5 +1,16 @@
 ﻿@model cineVote.Models.DTO.RegistrationModel;
 
+<style>
+    .text-danger {
+        color: red;
+    }
+</style>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+</head>
+
 <div class="row" style="display: flex;justify-content: center; align-items: center;">
     <div class="col-6">
 
@@ -9,37 +20,63 @@
                 <hr />
             </div>
             <div class="card-body col-md-8; text-black">
-                <form asp-controller="UserAuthentication" asp-action="Registration" method="post" enctype="multipart/form-data">
+                <form asp-controller="UserAuthentication" asp-action="Registration" method="post"
+                    enctype="multipart/form-data">
                     <div class="">
                         <label class="form-label fs-5">First Name:</label>
                         <input asp-for="FirstName" type="text" class="form-control" />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                     <div class="">
                         <label class="form-label fs-5">Last Name:</label>
                         <input asp-for="LastName" type="text" class="form-control" />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
                     </div>
                     <div class="">
                         <label class="form-label fs-5">Email:</label>
                         <input asp-for="Email" type="email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="">
                         <label class="form-label fs-5">Username:</label>
                         <input asp-for="Username" type="text" class="form-control" />
+                        <span asp-validation-for="Username" class="text-danger"></span>
                     </div>
                     <div class="">
                         <label class="form-label fs-5">Password:</label>
-                        <input asp-for="Password" type="password" class="form-control" />
+                        <div class="input-group">
+                            <input asp-for="Password" type="password" class="form-control" id="passwordInput" />
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
                     <div class="">
                         <label class="form-label fs-5">Confirm Password:</label>
-                        <input asp-for="PasswordConfirm" type="password" class="form-control" />
+                        <div class="input-group">
+                            <input asp-for="PasswordConfirm" type="password" class="form-control"
+                                id="confirmPasswordInput" />
+                            <button class="btn btn-outline-secondary" type="button" id="toggleConfirmPassword">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
                     </div>
                     <div class="">
                         <label class="form-label fs-5">Profile Image:</label>
-                        <input type="file" asp-for="ImageUrl" name="ImageUrl" class="form-control" accept=".png,.jpg,.jpeg,.gif,.tif" />
+                        <input type="file" asp-for="ImageUrl" name="ImageUrl" class="form-control"
+                            accept=".png,.jpg,.jpeg,.gif,.tif" />
                     </div>
+
+                    @if (TempData["msg"] != null)
+                    {
+                        <div class="msg text-danger mt-1">@TempData["msg"]</div>
+                    }
+
                     <div class="d-flex justify-content-center mt-4">
-                        <button type="submit" class="btn text-white" style="background-color:rgb(67,37,101)">Create Account</button>
+                        <button type="submit" class="btn text-white" style="background-color:rgb(67,37,101)">Create
+                            Account</button>
                     </div>
                 </form>
             </div>
@@ -49,3 +86,28 @@
 
     </div>
 </div>
+
+<script>
+    document.getElementById("togglePassword").addEventListener("click", function () {
+        var passwordInput = document.getElementById("passwordInput");
+        if (passwordInput.type === "password") {
+            passwordInput.type = "text";
+            this.innerHTML = '<i class="fa fa-eye-slash"></i>';
+        } else {
+            passwordInput.type = "password";
+            this.innerHTML = '<i class="fa fa-eye"></i>';
+        }
+    });
+
+    document.getElementById("toggleConfirmPassword").addEventListener("click", function () {
+        var confirmPasswordInput = document.getElementById("confirmPasswordInput");
+        if (confirmPasswordInput.type === "password") {
+            confirmPasswordInput.type = "text";
+            this.innerHTML = '<i class="fa fa-eye-slash"></i>';
+        } else {
+            confirmPasswordInput.type = "password";
+            this.innerHTML = '<i class="fa fa-eye"></i>';
+        }
+    });
+</script>
+

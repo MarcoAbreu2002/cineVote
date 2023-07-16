@@ -8,6 +8,16 @@
     .margem-top {
         margin-top: 14%
     }
+
+    .card {
+        display: inline-block;
+        max-width: 300px;
+    }
+
+    .card-img-top {
+        display: block;
+        margin: 0 auto;
+    }
 </style>
 
 
@@ -106,7 +116,51 @@
                         </ul>
                     </div>
                 </div>
+                @if (Model.Movies.Count > 0)
+                {
+                    <hr>
+                    <h2>Favorite Movies: </h2>
+                    <div class="alert alert-success mt-3" id="favoriteStatus" style="display: none;">
+                        Favorite Removed
+                    </div>
+                    <div class="row mt-3">
+                        @foreach (var movie in Model.Movies)
+                        {
+                            var movieId = movie["Id"].ToString();
+                            var movieTitle = movie["Title"].ToString();
+                            var movieImagePath = movie["PosterPath"].ToString();
+                            var movieOverview = movie["Overview"].ToString();
+                            var releaseDate = movie["ReleaseDate"].ToString();
+                            var baseUrl = "https://image.tmdb.org/t/p/";
+                            var fileSize = "w300";
+                            var imageUrl = $"{baseUrl}{fileSize}{movieImagePath}";
+                            <div class="col-4">
+                                <div class="card" data-movie-id="@movieId">
+                                    <img src="@imageUrl" class="card-img-top" alt="Movie Poster"
+                                        style="width: 100px; height: auto;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">@movieTitle</h5>
+                                        <form action="/Competition/ShowMoreDetails" method="post">
+                                            <input type="hidden" name="movieId" value="@movieId" />
+                                            <button class="btn text-white profile-button" type="submit"
+                                                style="background-color:rgb(67,37,101)">More Details</button>
+                                        </form>
+                                        <form action="/Competition/RemoveFavorite" method="post" id="removeFavoriteForm">
+                                            <input type="hidden" name="movieId" value="@movieId" />
+                                            <button class="btn text-white profile-button" type="submit"
+                                                style="background-color:rgb(67,37,101)">
+                                                Remove Favorite
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
             </div>
+
         </div>
     </div>
 </body>
@@ -152,4 +206,54 @@
             });
         });
     });
+    $(function () {
+        $(document).on('submit', '#removeFavoriteForm', function (event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var formData = $(this).serialize();
+            $.ajax({
+                url: '@Url.Action("RemoveFavorite", "Competition")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    // Handle the success response
+                    // For example, update the UI to reflect the successful remove action
+                    const message = response.message;
+                    $("#favoriteStatus").text(message);
+                    $("#favoriteStatus").show();
+
+                    // Remove the card after 5 seconds
+                    setTimeout(function () {
+                        $("#favoriteStatus").hide();
+                    }, 4000);
+
+                    // Find the parent container of the removed card by data-movie-id
+                    var movieId = getMovieIdFromFormData(formData);
+                    var cardToRemove = $(`[data-movie-id="${movieId}"]`);
+
+                    // Remove the card from the DOM
+                    cardToRemove.remove();
+                },
+                error: function (error) {
+                    // Handle the error if needed
+                    // For example, display an error message
+                    console.log(error);
+                }
+            });
+        });
+
+        // Function to extract the movieId from the serialized form data
+        function getMovieIdFromFormData(formData) {
+            var formDataArray = formData.split('&');
+            for (var i = 0; i < formDataArray.length; i++) {
+                var pair = formDataArray[i].split('=');
+                if (pair[0] === 'movieId') {
+                    return pair[1];
+                }
+            }
+            return null; // Return null if movieId not found
+        }
+    });
+
+
 </script>

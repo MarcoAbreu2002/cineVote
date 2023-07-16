@@ -59,5 +59,9 @@ namespace cineVote.Models.Domain
 
         [NotMapped]
         public Dictionary<Category, List<Dictionary<string, object>>> finalWinners { get; set; }
+
+
+        [NotMapped]
+        public bool voted {get;set;}
     }
 }

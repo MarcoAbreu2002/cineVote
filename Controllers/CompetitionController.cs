@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace cineVote.Controllers
 {
     [Authorize]
+    [ServiceFilter(typeof(NotificationFilter))]
     public class CompetitionController : Controller
     {
         private readonly AppDbContext? _context;
@@ -207,6 +208,19 @@ namespace cineVote.Controllers
             var nominees = await _ITMDBApiService.GetMovieByName(name);
             return Json(nominees);
         }
+
+        public async Task<IActionResult> addToFavorite(int movieId)
+        {
+            var result = await _competitionManager.addToFavorites(movieId);
+            return Json(result);
+        }
+
+        public async Task<IActionResult> RemoveFavorite(int movieId)
+        {
+            var result = await _competitionManager.removeFavorites(movieId);
+            return Json(result);
+        }
+
 
 
         [HttpPost]

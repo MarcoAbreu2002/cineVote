@@ -40,39 +40,6 @@ namespace cineVote
 
                 AppDbContext context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                HttpContext httpContext = _httpContextAccessor.HttpContext;
-
-                if (httpContext == null)
-                {
-                    // Log an error or handle the case where httpContext is null.
-                    _logger.LogError("HttpContext is null.");
-                    return;
-                }
-
-                // Check if the user is authenticated
-                if (httpContext.User.Identity.IsAuthenticated)
-                {
-                    string userName = httpContext.User.Identity.Name;
-
-                    if (context == null)
-                    {
-                        // Log an error or handle the case where context is null.
-                        _logger.LogError("AppDbContext is null.");
-                        return;
-                    }
-
-                    var notifications = context.Notifications.Where(n => n.userName == userName).ToList();
-
-                    httpContext.Items["notifications"] = notifications;
-                    // ... Rest of your code ...
-                }
-
-                if (context == null)
-                {
-                    // Log an error or handle the case where context is null.
-                    _logger.LogError("AppDbContext is null.");
-                    return;
-                }
 
                 List<Competition> competitions = context.Competitions.ToList();
 

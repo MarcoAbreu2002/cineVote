@@ -187,6 +187,50 @@ namespace cineVote.Repositories.Implementation
 
         }
 
+        public async Task<Status> addToFavorites(int movieId)
+        {
+            var status = new Status();
+            var userId = getAdminId();
+            var user = await _userManager.FindByIdAsync(userId);
+
+            Favorite favorite = new Favorite()
+            {
+                TMDBId = movieId,
+                userName = user.UserName,
+                User = (User)user
+            };
+            _db.Favorites.Add(favorite);
+            _db.SaveChanges();
+
+            status.StatusCode = 1;
+            status.Message = "Favorite added successfully";
+            return status;
+        }
+
+        public async Task<Status> removeFavorites(int movieId)
+        {
+            var status = new Status();
+            var userId = getAdminId();
+            var user = await _userManager.FindByIdAsync(userId);
+            var favorite = _db.Favorites.FirstOrDefault(f => f.TMDBId == movieId && f.User.Id == userId);
+
+            if (favorite != null)
+            {
+                _db.Favorites.Remove(favorite);
+                _db.SaveChanges();
+
+                status.StatusCode = 1;
+                status.Message = "Favorite removed successfully";
+            }
+            else
+            {
+                status.StatusCode = 0;
+                status.Message = "Favorite not found or already removed";
+            }
+            return status;
+        }
+
+
         public Task<Status> createCompetition(createCompetitionModel createCompetitionModel)
         {
             var status = new Status();
@@ -264,7 +308,7 @@ namespace cineVote.Repositories.Implementation
                     .ToList();
 
                     _db.voteSubscriptions.RemoveRange(voteSubscriptions);
-                    
+
                     _db.Subscriptions.Remove(subscription);
                 }
 

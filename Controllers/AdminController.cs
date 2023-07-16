@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace cineVote.Controllers
 {
     [Authorize(Roles = "admin")]
+    [ServiceFilter(typeof(NotificationFilter))]
     public class AdminController : Controller
     {
         private readonly AppDbContext? _context;

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace cineVote.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230716185444_Add User Image")]
+    partial class AddUserImage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -340,6 +342,11 @@ namespace cineVote.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("FirstName");
 
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("imageUrl");
+
                     b.Property<bool>("IsAdmin")
                         .HasColumnType("bit")
                         .HasColumnName("IsAdmin");
@@ -394,10 +401,10 @@ namespace cineVote.Migrations
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
-                    b.Property<byte[]>("imageUrl")
+                    b.Property<byte[]>("newImageUrl")
                         .IsRequired()
                         .HasColumnType("varbinary(max)")
-                        .HasColumnName("imageUrl");
+                        .HasColumnName("newImageUrl");
 
                     b.HasKey("Id");
 

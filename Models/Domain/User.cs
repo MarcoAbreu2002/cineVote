@@ -17,7 +17,10 @@ namespace cineVote.Models.Domain
         [Column("Votes")]
         public ICollection<Vote>? votes { get; set; }
 
-        public List<Person>? followings {get;set;}
+        public List<Person>? followings { get; set; }
+
+        [NotMapped]
+        public List<Dictionary<string, object>> Movies { get; set; }
 
     }
 }
