@@ -6,6 +6,57 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/emojionearea/3.4.2/emojionearea.min.js"></script>
 
+<style>
+    .comment-box {
+        background-color: #f0f2f5;
+        padding: 10px;
+    }
+
+    .comment {
+        display: flex;
+        align-items: flex-start;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        background-color: #ccc;
+        border-radius: 50%;
+        margin-right: 10px;
+    }
+
+    .comment-content {
+        flex: 1;
+    }
+
+    .comment-author {
+        margin: 0;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .comment-text {
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    .comment-actions {
+        font-size: 12px;
+    }
+
+    .comment-like,
+    .comment-reply {
+        margin-right: 10px;
+        color: #666;
+        cursor: pointer;
+    }
+
+        .comment-like:hover,
+        .comment-reply:hover {
+            text-decoration: underline;
+        }
+</style>
+
 <div class="margem-top">
     <div class="container mt-5 mb-5">
         <div class="card mb-3">
@@ -36,35 +87,44 @@
             {
                 <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title text-dark">
+                        <h5 class="card-title text-dark text-center">
                             <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a> |
                             @item.Title
                         </h5>
-
+                        <p class="fw-bold text-dark">Content:</p>
                         <p class="card-text text-dark">@item.Content</p>
 
+                        <p class="fw-bold text-dark">Comments:</p>
                         <div class="comments-section">
                             <div class="comments">
                                 @foreach (var cc in item.Comments)
                                 {
                                     if (cc != null)
                                     {
-                                        <p class="comment-content text-dark">
-                                            <a
-                                                href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a>
-                                            | @cc.Content
-                                        </p>
-
+                                        <div class="comment-box">
+                                            <div class="comment text-dark">
+                                                <div class="avatar"></div>
+                                                <div class="comment-content">
+                                                    <h4 class="comment-author">
+                                                        <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a> 
+                                                    </h4>
+                                                    <p class="comment-text">@cc.Content</p>
+                                                </div>
+                                            </div>
+                                        </div>
                                     }
                                 }
                             </div>
+
                             <!-- Comment form -->
                             <form class="comment-form" id="comment-form" method="post">
                                 <input type="hidden" name="PostsId" value="@item.PostsId">
                                 <textarea name="Content" class="form-control" placeholder="Write a comment" rows="1"
                                     cols="50"></textarea>
-                                <button type="submit" class="btn text-white"
+                                <div class="d-flex justify-content-center">
+                                <button type="submit" class="btn text-white mt-3"
                                     style="background-color: rgb(67, 37, 101)">Comment</button>
+                                </div>
                             </form>
                         </div>
                     </div>
