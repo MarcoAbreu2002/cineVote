@@ -46,11 +46,29 @@ namespace cineVote.Controllers
             }
         }
 
+        
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemovePost(int PostsId)
+        {
+            var result = await _socialService.RemovePost(PostsId);
+            return Json(result);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditPostAsync(string Title, string Content, int PostsId)
         {
-            var result = await _socialService.EditPost(Title,Content,PostsId);
+            var result = await _socialService.EditPost(Title, Content, PostsId);
+            return Json(result);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditCommentAsync(string Content, int CommentsId)
+        {
+            var result = await _socialService.EditComment(Content, CommentsId);
             return Json(result);
         }
 

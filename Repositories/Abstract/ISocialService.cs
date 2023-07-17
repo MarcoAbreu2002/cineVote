@@ -9,5 +9,8 @@ namespace cineVote.Repositories.Abstract
         Comments CreateComment(string userName, int postId, string content);
 
         Task<Status> EditPost (string title, string content, int postId);
+
+        Task<Status> RemovePost(int postId);
+        Task<Status> EditComment (string content, int postId);
     }
 }

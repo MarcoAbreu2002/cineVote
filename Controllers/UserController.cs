@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace cineVote.Controllers
 {
     [ServiceFilter(typeof(NotificationFilter))]
-    [Authorize(Roles = "user")]
     public class UserController : Controller
     {
         private readonly AppDbContext? _context;

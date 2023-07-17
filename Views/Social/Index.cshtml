@@ -96,17 +96,6 @@
         .comment-reply:hover {
             text-decoration: underline;
         }
-
-        #formStatus {
-            position: fixed;
-            bottom: 10px;
-            right: 10px;
-            padding: 10px;
-            background-color: #4CAF50;
-            color: white;
-            display: none;
-            /* Hide the div by default */
-        }
 </style>
 
 <div class="margem-top">
@@ -152,18 +141,20 @@
                             }
 
                             <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a>
-                            <a  id="postTitle-@item.PostsId" class="post-content">| @item.Title</a>
+                            <a id="postTitle-@item.PostsId" class="post-content">| @item.Title</a>
 
                             @if (@item.userName == User.Identity.Name)
                             {
                                 <button class="btn text-white" style="background-color: rgb(67, 37, 101)"
                                     onclick="showEditForm('@item.PostsId')">Edit</button>
+
                                 <div class="edit-form-container" style="display: none;">
                                     <form class="edit-form" method="post">
                                         <input type="hidden" id="editId" name="PostsId" value="@item.PostsId">
                                         <div class="mb-3">
                                             <label class="form-label fs-6 fw-bold text-dark">Title of the Post:</label>
-                                            <input type="text" id="editTitle" name="Title" class="form-control" value="@item.Title" />
+                                            <input type="text" id="editTitle" name="Title" class="form-control"
+                                                value="@item.Title" />
                                         </div>
                                         <div class="mb-2 mt-3">
                                             <label class="form-label fs-6 fw-bold text-dark">Content of the post:</label>
@@ -179,9 +170,18 @@
                                     </form>
                                 </div>
                             }
+                            @if (@item.userName == User.Identity.Name || User.IsInRole("admin"))
+                            {
+                                <form class="remove-form" method="post" data-postsid="@item.PostsId">
+                                    <input type="hidden" name="PostsId" value="@item.PostsId" />
+                                    <button class="btn text-white" style="background-color: rgb(67, 37, 101)"
+                                        type="submit">Remove</button>
+                                </form>
+                            }
+
                         </h5>
                         <p class="fw-bold text-dark post-content">Content:</p>
-                        <p class="card-text text-dark post-content" id="postContent-@item.PostsId"">@item.Content</p>
+                        <p class="card-text text-dark post-content" id="postContent-@item.PostsId"> @item.Content</p>
 
                         <p class="fw-bold text-dark">Comments:</p>
                         <div class="comments-section">
@@ -190,7 +190,7 @@
                                 {
                                     if (cc != null)
                                     {
-                                        <div class="comment-box">
+                                        <div class="comment-box" id=@cc.CommentsId>
                                             <div class="comment text-dark">
                                                 @if (cc.User.imageUrl != null)
                                                 {
@@ -209,7 +209,8 @@
                                                         <a
                                                             href="@Url.Action("Profile", "User", new { username = cc.userName })">@cc.userName</a>
                                                     </h4>
-                                                    <p class="comment-text">@cc.Content</p>
+
+                                                    <p class="comment-text" id="commentContent-@cc.CommentsId">@cc.Content</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -227,11 +228,11 @@
                                         style="background-color: rgb(67, 37, 101)">Comment</button>
                                 </div>
                             </form>
-                                
-                            </div>
+
                         </div>
                     </div>
                 </div>
+
             }
         </div>
     </div>
@@ -357,6 +358,21 @@
             $(`#${postId} .edit-form-container`).hide();
         }
 
+        function showEditCommentForm(editCommentId) {
+            // Hide the post content and show the edit form
+            $(`#${editCommentId} .comment-text`).hide();
+            $(`#${editCommentId} #comment-form`).hide();
+
+            $(`#${editCommentId} .edit-form-Comment-container`).show();
+        }
+
+        function cancelCommentEdit(editCommentId) {
+            // Hide the edit form and show the post content
+            $(`#${editCommentId} .comment-content`).show();
+            $(`#${editCommentId} #comment-form`).show();
+            $(`#${editCommentId} .edit-form-Comment-container`).hide();
+        }
+
         $(function () {
             // Your existing script for form submission goes here
 
@@ -368,7 +384,7 @@
                 // Get the values of the Title and Content fields
                 var title = $("#editTitle").val();
                 var content = $("#editContent").val();
-                var id = $("editId").val();
+                var id = $("#editId").val();
 
                 // Send form data to the server using AJAX
                 $.ajax({
@@ -378,20 +394,60 @@
                     success: function (result) {
                         // Update the post content with the edited data
 
-                        
-                        var postContent = $(`#postContent-${id}`).text();
-                        var postTitle = $(`#postTitle-${id}`).text();
 
-                        console.log("Content: " + postContent);
-                        console.log("Title: " + postTitle);
-                        cancelEdit(id);
+                        var postContent = $(`#postContent-${id}`);
+                        var postTitle = $(`#postTitle-${id}`);
+
+                        console.log("Content: " + content);
+                        console.log("id: " + id);
+                        postContent.text(content);
+                        postTitle.text(title);
+                        $(`#${id} .post-content`).show();
+                        $(`#${id} .edit-form-container`).hide();
 
 
                         const message = result.message;
+                        console.log("id: " + message);
                         $("#formStatus").text(message);
                         $("#formStatus").show();
 
                         // Remove the card after 5 seconds
+                        setTimeout(function () {
+                            $("#formStatus").hide();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("ERROR: " + error);
+                    }
+                });
+            });
+        });
+
+        $(function () {
+            // Your existing script for form submission goes here
+
+            // Code for handling remove post form submission
+            $(document).on('submit', '.remove-form', function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Get form data
+                var formData = $(this).serialize();
+                var postId = $(this).data('postsid');
+
+                // Send the postId to the server using AJAX
+                $.ajax({
+                    url: '@Url.Action("RemovePost", "Social")',
+                    type: 'POST',
+                    data: formData, // Data to be sent to the server (contains postId)
+                    success: function (result) {
+                        $(`#${postId}`).remove(); // Remove the card with the corresponding postId
+
+                        const message = result.message;
+                        console.log("id: " + message);
+                        $("#formStatus").text(message);
+                        $("#formStatus").show();
+
+                        // Remove the status message after 5 seconds
                         setTimeout(function () {
                             $("#formStatus").hide();
                         }, 3000);
