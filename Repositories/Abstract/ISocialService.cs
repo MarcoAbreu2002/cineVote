@@ -7,5 +7,7 @@ namespace cineVote.Repositories.Abstract
         Task<List<Posts>> GetPostsAsync(string userName);
         Posts CreatePost(string userName, string title, string content);
         Comments CreateComment(string userName, int postId, string content);
+
+        Task<Status> EditPost (string title, string content, int postId);
     }
 }

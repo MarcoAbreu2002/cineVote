@@ -46,26 +46,14 @@ namespace cineVote.Controllers
             }
         }
 
-        /*
-                // POST: /Post/Comment/5
-                [HttpPost]
-                [ValidateAntiForgeryToken]
-                public IActionResult Comment(string Content, int PostsId)
-                {
-                      if (ModelState.IsValid)
-                      {
-                    string userName = User.Identity.Name;
-                    var comment = _socialService.CreateComment(userName, PostsId, Content);
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditPostAsync(string Title, string Content, int PostsId)
+        {
+            var result = await _socialService.EditPost(Title,Content,PostsId);
+            return Json(result);
+        }
 
-                    return Json(comment);
-                     }
-                     else
-                     {
-                         return BadRequest();
-                     }
-                }
-
-        */
         // POST: /Post/Comment/5
         [HttpPost]
         [ValidateAntiForgeryToken]

@@ -72,6 +72,41 @@ namespace cineVote.Repositories.Implementation
             return posts;
         }
 
+        public async Task<Status> EditPost(string title, string content, int postId)
+        {
+            var status = new Status();
+
+            try
+            {
+                var postToEdit = _context.Posts.FirstOrDefault(u => u.PostsId == postId);
+
+                if (postToEdit == null)
+                {
+                    // If the post with the given postId is not found, return an error message.
+                    status.StatusCode = 0;
+                    status.Message = "Post not found";
+                }
+                else
+                {
+                    postToEdit.Title = title;
+                    postToEdit.Content = content;
+                    _context.Posts.Update(postToEdit);
+                    _context.SaveChanges();
+
+                    status.StatusCode = 1;
+                    status.Message = "Post edited successfully";
+                }
+            }
+            catch (Exception ex)
+            {
+                // If an exception occurs during the editing process, return an error message.
+                status.StatusCode = -1;
+                status.Message = "An error occurred while editing the post: " + ex.Message;
+            }
+
+            return status;
+        }
+
         public Posts CreatePost(string userName, string title, string content)
         {
             var user = _context.Users

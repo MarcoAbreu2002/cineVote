@@ -9,91 +9,103 @@
 <style>
     .comment-box {
         background-color: #f0f2f5;
-    .comment-box {
-        background-color: #f0f2f5;
-        padding: 10px;
-    }
 
-    .comment {
-        display: flex;
-        align-items: flex-start;
-    }
+        .comment-box {
+            background-color: #f0f2f5;
+            padding: 10px;
+        }
 
-    .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
+        .comment {
+            display: flex;
+            align-items: flex-start;
+        }
 
-    .comment-content {
-        flex: 1;
-    }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
 
-    .comment-author {
-        margin: 0;
-        font-size: 16px;
-        font-weight: bold;
-    }
+        .comment-content {
+            flex: 1;
+        }
 
-    .comment-text {
-        margin: 5px 0;
-        font-size: 14px;
-    }
+        .comment-author {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
 
-    .comment-actions {
-        font-size: 12px;
-    }
+        .comment-text {
+            margin: 5px 0;
+            font-size: 14px;
+        }
 
-    .comment-like,
-    .comment-reply {
-        margin-right: 10px;
-        color: #666;
-        cursor: pointer;
-    }
+        .comment-actions {
+            font-size: 12px;
+        }
 
-    .comment-like:hover,
-    .comment-reply:hover {
-        text-decoration: underline;
-    }
-
-    .avatar {
-        width: 40px;
-        height: 40px;
-        background-color: #ccc;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
-
-    .comment-content {
-        flex: 1;
-    }
-
-    .comment-author {
-        margin: 0;
-        font-size: 16px;
-        font-weight: bold;
-    }
-
-    .comment-text {
-        margin: 5px 0;
-        font-size: 14px;
-    }
-
-    .comment-actions {
-        font-size: 12px;
-    }
-
-    .comment-like,
-    .comment-reply {
-        margin-right: 10px;
-        color: #666;
-        cursor: pointer;
-    }
+        .comment-like,
+        .comment-reply {
+            margin-right: 10px;
+            color: #666;
+            cursor: pointer;
+        }
 
         .comment-like:hover,
         .comment-reply:hover {
             text-decoration: underline;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #ccc;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .comment-text {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        .comment-actions {
+            font-size: 12px;
+        }
+
+        .comment-like,
+        .comment-reply {
+            margin-right: 10px;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .comment-like:hover,
+        .comment-reply:hover {
+            text-decoration: underline;
+        }
+
+        #formStatus {
+            position: fixed;
+            bottom: 10px;
+            right: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            display: none;
+            /* Hide the div by default */
         }
 </style>
 
@@ -123,22 +135,53 @@
         </div>
 
         <div id="posts-container">
+
             @foreach (var item in Model)
             {
-                <div class="card mb-3">
+                <div class="card mb-3" id=@item.PostsId>
                     <div class="card-body">
                         <h5 class="card-title text-dark text-center">
+                            <div class="alert alert-success mt-3 formStatus" style="display: none;">
+                                Post edited!
+                            </div>
                             @if (item.User.imageUrl != null)
                             {
                                 string imageBase64 = Convert.ToBase64String(@item.User.imageUrl);
                                 string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
                                 <img class="rounded-circle mt-5" src="@item.User.imageUrl" alt="User Avatar" />
                             }
-                            <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a> |
-                            @item.Title
+
+                            <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a>
+                            <a id="postTitle-@item.PostsId" class="post-content">| @item.Title</a>
+
+                            @if (@item.userName == User.Identity.Name)
+                            {
+                                <button class="btn text-white" style="background-color: rgb(67, 37, 101)"
+                                    onclick="showEditForm('@item.PostsId')">Edit</button>
+                                <div class="edit-form-container" style="display: none;">
+                                    <form class="edit-form" method="post">
+                                        <input type="hidden" id="editId" name="PostsId" value="@item.PostsId">
+                                        <div class="mb-3">
+                                            <label class="form-label fs-6 fw-bold text-dark">Title of the Post:</label>
+                                            <input type="text" id="editTitle" name="Title" class="form-control" value="@item.Title" />
+                                        </div>
+                                        <div class="mb-2 mt-3">
+                                            <label class="form-label fs-6 fw-bold text-dark">Content of the post:</label>
+                                            <textarea name="Content" id="editContent" class="form-control" rows="1"
+                                                cols="50">@item.Content</textarea>
+                                        </div>
+                                        <div class="mb-3 d-flex justify-content-center">
+                                            <button class="btn text-white" style="background-color:rgb(67,37,101)"
+                                                type="submit">Save</button>
+                                            <button class="btn text-white" style="background-color: #888;"
+                                                onclick="cancelEdit('@item.PostsId')">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            }
                         </h5>
-                        <p class="fw-bold text-dark">Content:</p>
-                        <p class="card-text text-dark">@item.Content</p>
+                        <p class="fw-bold text-dark post-content">Content:</p>
+                        <p class="card-text text-dark post-content" id="postContent-@item.PostsId"">@item.Content</p>
 
                         <p class="fw-bold text-dark">Comments:</p>
                         <div class="comments-section">
@@ -300,7 +343,63 @@
             });
         });
 
+        function showEditForm(postId) {
+            // Hide the post content and show the edit form
+            $(`#${postId} .post-content`).hide();
+            $(`#${postId} .edit-form-container`).show();
+        }
 
+        function cancelEdit(postId) {
+            // Hide the edit form and show the post content
+            $(`#${postId} .post-content`).show();
+            $(`#${postId} .edit-form-container`).hide();
+        }
+
+        $(function () {
+            // Your existing script for form submission goes here
+
+            $(document).on('submit', '.edit-form', function (event) {
+                event.preventDefault(); // Prevent default form submission
+
+                // Get form data
+                var formData = $(this).serialize();
+                // Get the values of the Title and Content fields
+                var title = $("#editTitle").val();
+                var content = $("#editContent").val();
+                var id = $("editId").val();
+
+                // Send form data to the server using AJAX
+                $.ajax({
+                    url: '@Url.Action("EditPost", "Social")', // Change the URL to your edit action
+                    type: 'POST',
+                    data: formData,
+                    success: function (result) {
+                        // Update the post content with the edited data
+
+                        
+                        var postContent = $(`#postContent-${id}`).text();
+                        var postTitle = $(`#postTitle-${id}`).text();
+
+                        console.log("Content: " + postContent);
+                        console.log("Title: " + postTitle);
+                        cancelEdit();
+
+
+                        const message = result.message;
+                        $("#formStatus").text(message);
+                        $("#formStatus").show();
+
+                        // Remove the card after 5 seconds
+                        setTimeout(function () {
+                            $("#formStatus").hide();
+                        }, 3000);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("ERROR: " + error);
+                    }
+                });
+            });
+        });
 
     </script>
 }

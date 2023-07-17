@@ -29,6 +29,8 @@
 </style>
 <div class="row bg-light margem-cima rounded">
     <div class="tbl-container text-black">
+        <button class="btn text-white profile-button" style="background-color:rgb(67,37,101)" onclick="goBack()">&#8249;</button>
+
         <div class="text-black text-center mt-3 fs-3 fw-bold ">Movie in Detail</div>
         @foreach (var movie in Model)
         {
@@ -53,10 +55,10 @@
                     <h5>@tagline</h5>
                     <p>@movieOverview</p>
                     <p>@releaseDate
-                    <a href="https://www.imdb.com/title/@imdb_id/" target="_blank">
-                        <img src="https://logowik.com/content/uploads/images/imdb-internet-movie-database5351.jpg"
-                            alt="IMDb Logo" class="imdb-logo">
-                    </a>
+                        <a href="https://www.imdb.com/title/@imdb_id/" target="_blank">
+                            <img src="https://logowik.com/content/uploads/images/imdb-internet-movie-database5351.jpg"
+                                alt="IMDb Logo" class="imdb-logo">
+                        </a>
                     <form id="favorite-form" action="/Competition/addToFavorite" method="post">
                         <input type="hidden" name="movieId" value="@movieId" />
                         <button class="btn text-white profile-button" id="favorite-button"
@@ -102,4 +104,8 @@
             xhr.send("movieId=" + encodeURIComponent(movieId));
         });
     });
+    function goBack() {
+        window.history.back();
+    }
+
 </script>
