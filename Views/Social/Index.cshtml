@@ -152,7 +152,7 @@
                             }
 
                             <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a>
-                            <a id="postTitle-@item.PostsId" class="post-content">| @item.Title</a>
+                            <a  id="postTitle-@item.PostsId" class="post-content">| @item.Title</a>
 
                             @if (@item.userName == User.Identity.Name)
                             {
