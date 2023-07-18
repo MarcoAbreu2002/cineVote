@@ -181,7 +181,13 @@ namespace cineVote.Repositories.Implementation
 
             var totalVoteCount = votes.Count;
             var totalCategories = topNominees.Count;
-            int numberOfParticipants = totalVoteCount / totalCategories;
+            int numberOfParticipants;
+            if(totalVoteCount >0){
+                numberOfParticipants = totalVoteCount / totalCategories;
+            }
+            else{
+                numberOfParticipants = 0;
+            }
 
             var result = generateResults(topNominees, numberOfParticipants, competitionId);
 

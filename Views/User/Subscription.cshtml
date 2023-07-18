@@ -22,15 +22,17 @@
                                 </div>
                             </div>
                             <div class="row mt-4">
-                                <div class="col-md-12">
-                                    <div class="text-center">
-                                        <label class="labels fs-2 fw-bold">Categories:</label>
-                                    </div>
-                                    <form action="/User/Vote" method="post" id="vote-form">
-                                        <input type="hidden" name="username" value="@User.Identity.Name" />
-                                        <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
-                                        <input type="hidden" name="subscriptionId"
-                                            value="@Context.Request.Query["subscription"]" />
+                                <form action="/User/Vote" method="post" id="vote-form">
+                                    <input type="hidden" name="username" value="@User.Identity.Name" />
+                                    <input type="hidden" name="competitionId" value="@Model.Competition_Id" />
+                                    <input type="hidden" name="subscriptionId"
+                                        value="@Context.Request.Query["subscription"]" />
+                                    <div class="col-md-12">
+
+                                        <div class="text-center">
+                                            <label class="labels fs-2 fw-bold">Categories:</label>
+                                        </div>
+
                                         @foreach (var category in Model.Categories)
                                         {
                                             <div class="category-container">
@@ -90,8 +92,9 @@
                                                 style="background-color:rgb(67,37,101)"><i
                                                     class="bi bi-pen"></i>Submit</button>
                                         </div>
-                                    </form>
-                                </div>
+
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>

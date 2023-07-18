@@ -11,7 +11,7 @@ namespace cineVote.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly AppDbContext _db;
 
-        public HomeController(AppDbContext db,ILogger<HomeController> logger)
+        public HomeController(AppDbContext db, ILogger<HomeController> logger)
         {
             _logger = logger;
             _db = db;
@@ -25,6 +25,16 @@ namespace cineVote.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
+        public IActionResult HowItWorks()
         {
             return View();
         }

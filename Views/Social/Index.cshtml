@@ -96,6 +96,19 @@
         .comment-reply:hover {
             text-decoration: underline;
         }
+
+        .comment-buttons span {
+            display: inline;
+            margin-right: 10px;
+        }
+    }
+
+    .postImage {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
 </style>
 
 <div class="margem-top">
@@ -129,15 +142,16 @@
             {
                 <div class="card mb-3" id=@item.PostsId>
                     <div class="card-body">
-                        <h5 class="card-title text-dark text-center">
-                            <div class="alert alert-success mt-3 formStatus" style="display: none;">
-                                Post edited!
-                            </div>
+                        <div class="alert alert-success mt-3 formStatus" style="display: none;">
+                            Post edited!
+                        </div>
+                        <h5 class="card-title text-dark text-center comment-buttons">
+
                             @if (item.User.imageUrl != null)
                             {
                                 string imageBase64 = Convert.ToBase64String(@item.User.imageUrl);
                                 string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
-                                <img class="rounded-circle mt-5" src="@item.User.imageUrl" alt="User Avatar" />
+                                <img class="postImage" src="@imageSrc" alt="User Avatar" />
                             }
 
                             <a href="@Url.Action("Profile", "User", new { username = item.userName })">@item.userName</a>
@@ -145,8 +159,21 @@
 
                             @if (@item.userName == User.Identity.Name)
                             {
-                                <button class="btn text-white" style="background-color: rgb(67, 37, 101)"
-                                    onclick="showEditForm('@item.PostsId')">Edit</button>
+                                <span>
+                                    <button class="btn text-white" style="background-color: rgb(67, 37, 101)"
+                                        onclick="showEditForm('@item.PostsId')">Edit</button>
+                                </span>
+
+                                @if (@item.userName == User.Identity.Name || User.IsInRole("admin"))
+                                {
+                                    <span>
+                                        <form class="remove-form" method="post" data-postsid="@item.PostsId">
+                                            <input type="hidden" name="PostsId" value="@item.PostsId" />
+                                            <button onclick="return window.confirm('Are you sure?')" class="btn text-white"
+                                                style="background-color: rgb(67, 37, 101)" type="submit">Remove</button>
+                                        </form>
+                                    </span>
+                                }
 
                                 <div class="edit-form-container" style="display: none;">
                                     <form class="edit-form" method="post">
@@ -170,14 +197,7 @@
                                     </form>
                                 </div>
                             }
-                            @if (@item.userName == User.Identity.Name || User.IsInRole("admin"))
-                            {
-                                <form class="remove-form" method="post" data-postsid="@item.PostsId">
-                                    <input type="hidden" name="PostsId" value="@item.PostsId" />
-                                    <button class="btn text-white" style="background-color: rgb(67, 37, 101)"
-                                        type="submit">Remove</button>
-                                </form>
-                            }
+
 
                         </h5>
                         <p class="fw-bold text-dark post-content">Content:</p>
@@ -196,11 +216,11 @@
                                                 {
                                                     string imageBase64 = Convert.ToBase64String(cc.User.imageUrl);
                                                     string imageSrc = $"data:image/jpeg;base64,{imageBase64}";
-                                                    <img class="avatar" src="@cc.User.imageUrl" alt="User Avatar" />
+                                                    <img class="avatar" src="@imageSrc" alt="User Avatar" />
                                                 }
                                                 else
                                                 {
-                                                    <img class="rounded-circle mt-5" width="150px"
+                                                    <img class="avatar"
                                                         src="https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg">
                                                 }
 
@@ -240,8 +260,11 @@
 
 @section Scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        function confirmDelete() {
+            return confirm("Are you sure you want to delete this post?"); // Show the confirmation dialog
+        }
+
         $(function () {
             $(document).on('submit', '#post-form', function (event) {
                 event.preventDefault(); // Prevent default form submission
@@ -261,7 +284,7 @@
                         // Create a new card element for the new post
                         var card = $("<div>").addClass("card mb-3");
                         var cardBody = $("<div>").addClass("card-body");
-                        var cardTitle = $("<h5>").addClass("card-title text-dark");
+                        var cardTitle = $("<h5>").addClass("card-title text-dark text-center comment-buttons");
 
                         // Create the user link
                         var userLink = $("<a>").attr("href", "@Url.Action("Profile", "User")/" + result.userName).text(result.userName);
@@ -269,10 +292,12 @@
 
                         // Add the post title and content
                         cardTitle.append(" | " + result.title);
+                        var cardContetnt = $("<p>").addClass("fw-bold text-dark post-content").text("Content: ");
                         var cardContent = $("<p>").addClass("card-text text-dark").text(result.content);
+                        var comment = $("<p>").addClass("fw-bold text-dark").text("Comments: ");
 
                         // Append the card elements to the posts container
-                        cardBody.append(cardTitle, cardContent);
+                        cardBody.append(cardTitle, cardContetnt,cardContent,comment);
                         card.append(cardBody);
                         // Insert the new post below the form
                         $("#posts-container").prepend(card);
@@ -401,7 +426,7 @@
                         console.log("Content: " + content);
                         console.log("id: " + id);
                         postContent.text(content);
-                        postTitle.text(title);
+                        postTitle.text(" | " + title);
                         $(`#${id} .post-content`).show();
                         $(`#${id} .edit-form-container`).hide();
 

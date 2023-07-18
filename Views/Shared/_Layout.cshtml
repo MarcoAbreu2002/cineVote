@@ -76,16 +76,30 @@
                 }
                 else
                 {
-                    <a class="navbar-brand text-white" asp-area="" asp-controller="Social" asp-action="Index">CineVote</a>
+                    <a class="navbar-brand text-white" asp-area="" asp-controller="Home" asp-action="Index">CineVote</a>
                 }
+
 
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
+
+
+
+
                 <ul class="navbar-nav margin-right">
                     @if (string.IsNullOrEmpty(User.Identity.Name))
                     {
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="AboutUs">About
+                                Us</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="HowItWorks">How it
+                                works</a>
+                        </li>
                         <li class="nav-item ">
                             <a class="nav-link text-white" asp-area="" asp-controller="UserAuthentication"
                                 asp-action="Registration">Create Account</a>
@@ -94,6 +108,7 @@
                             <a class="nav-link text-white" asp-area="" asp-controller="UserAuthentication"
                                 asp-action="Login">Login</a>
                         </li>
+
                     }
                     @if (User.IsInRole("admin"))
                     {
@@ -229,7 +244,7 @@
             }
 
             // Call the function every 10 seconds (adjust the interval as needed)
-        setInterval(checkForNewNotifications, 10000);
+            setInterval(checkForNewNotifications, 10000);
         });
     </script>
 </body>

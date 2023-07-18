@@ -17,8 +17,6 @@
     <form asp-action="EditCompetition" method="post">
         <input type="hidden" asp-for="Competition_Id">
         <input type="hidden" asp-for="IsPublic">
-        <input type="hidden" asp-for="StartDate">
-        <input type="hidden" asp-for="EndDate">
         <input type="hidden" asp-for="CategoryId">
         <input type="hidden" asp-for="AdminId">
         <input type="hidden" asp-for="Categories">
@@ -26,11 +24,12 @@
         <div class="form-group mt-3 border-top border-3">
             <label asp-for="Name" class="mt-2 fs-6 fw-bold">Name *</label>
             <input type="text" class="form-control mt-2" asp-for="Name">
+
             <label asp-for="StartDate" class="mt-2 fs-6 fw-bold">Start Date *</Label>
-            <input type="datetime-local" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm") class="
-                form-control mt-2" asp-for="StartDate">
+            <input type="datetime-local" class="form-control"  class="form-control mt-2" asp-for="StartDate">
+
             <label asp-for="EndDate" class="mt-2 fs-6 fw-bold">End Date *</Label>
-            <input type="datetime-local" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm") class="
+            <input type="datetime-local" class="form-control" class="
                 form-control mt-2" asp-for="EndDate">
         </div>
 

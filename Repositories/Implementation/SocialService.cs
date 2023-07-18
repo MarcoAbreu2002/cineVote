@@ -22,19 +22,28 @@ namespace cineVote.Repositories.Implementation
 
         public async Task<List<Posts>> GetPostsAsync(string userName)
         {
+            /*
             if (string.Equals(userName, "admin", StringComparison.OrdinalIgnoreCase))
             {
-                var posts = _context.Posts
+                */
+                List<Posts> posts = _context.Posts
                     .ToList();
 
                 foreach (var post in posts)
                 {
                     post.User = _context.Users
                     .FirstOrDefault(u => u.UserName == post.userName);
+
                     var comments = _context.Comments
                         .Where(c => c.PostsId == post.PostsId)
                         .OrderByDescending(c => c.CommentsId)
                         .ToList();
+                    
+                    foreach(var comment in comments)
+                    {
+                        comment.User = _context.Users
+                        .FirstOrDefault(u=> u.UserName == comment.userName);
+                    }
 
                     // Assign the comments to the post
                     post.Comments = comments;
@@ -42,6 +51,7 @@ namespace cineVote.Repositories.Implementation
                 }
 
                 return posts;
+                /*
             }
             else
             {
@@ -94,6 +104,7 @@ namespace cineVote.Repositories.Implementation
 
                 return posts;
             }
+            */
         }
 
         public async Task<Status> EditPost(string title, string content, int postId)

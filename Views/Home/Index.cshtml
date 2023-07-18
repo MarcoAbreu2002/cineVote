@@ -6,9 +6,19 @@
 
 </body>
 
-<h3 class="display-1" style="font-weight: bold; margin-top: 50px;"><br />IMMERSE <br />YOURSELF IN <br />MOVIE WORLD</h3>
+<h3 class="display-1" style="font-weight: bold; margin-top: 50px;"><br />IMMERSE <br />YOURSELF IN <br />MOVIE WORLD
+</h3>
 <p1 class="display-6">Vote for your favorite nomineee</p1>
 <br />
 <div class="perfil-but">
-    <a class="btn text-white btn-lg btn-block" style="background-color:rgb(30,8,55)" href="/UserAuthentication/Registration">Starts Now!</a>
+    @if (string.IsNullOrEmpty(User.Identity.Name))
+    {
+        <a class="btn text-white btn-lg btn-block" style="background-color:rgb(30,8,55)"
+            href="/UserAuthentication/Registration">Starts Now!</a>
+    }
+    else
+    {
+        <a class="btn text-white btn-lg btn-block" style="background-color:rgb(30,8,55)"
+            href="/Competition/DisplayCompetition">Starts Now!</a>
+    }
 </div>
